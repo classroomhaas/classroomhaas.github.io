@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>My Friend Pedro</title>
+  <!-- Ruffle JS from root /ruffle/ folder -->
+  <script src="../ruffle/ruffle.js"></script>
+  <style>
+    body {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+      color: #fff;
+      font-family: sans-serif;
+    }
+    #game-container {
+      border: 4px solid #fff;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container"></div>
+
+  <script>
+    // Create Ruffle player manually
+    const ruffle = window.RufflePlayer.newest();
+    const player = ruffle.createPlayer();
+
+    // Append player to container
+    document.getElementById("game-container").appendChild(player);
+
+    // Enable debug logging (optional)
+    ruffle.log_level = "debug";
+
+    // Load the SWF from the same folder as this HTML
+    player.load("my-friend-pedro-1598012ef.swf");
+
+    // Catch errors
+    player.addEventListener("error", (e) => {
+      console.error("Ruffle error:", e.message);
+    });
+  </script>
+</body>
+</html>

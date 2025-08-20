@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CookieRun: Kingdom Instructions</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #2b2b2b;
+    color: #e0e0e0;
+    position: relative;
+  }
+
+  header {
+    background-color: #3a3a3a;
+    padding: 1.2rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+  }
+
+  header h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    background: linear-gradient(90deg, #4da6ff, #1e90ff, #4da6ff);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 8px rgba(77, 166, 255, 0.6);
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  main {
+    max-width: 800px;
+    margin: 3rem auto 2rem;
+    padding: 0 1rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .instruction-card {
+    background: #404040;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+  }
+
+  .instruction-card button {
+    background: #4da6ff;
+    border: none;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+
+  .instruction-card button:hover {
+    background: #1e90ff;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #ccc;
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CookieRun: Kingdom Instructions</h1>
+</header>
+
+<main>
+  <div class="instruction-card">
+    <span>1: Copy this URL</span>
+    <button onclick="copyText('https://www.easyfun.gg/cloud-games/cookierun-kingdom-cloud-online.html?start=1')">Copy</button>
+  </div>
+
+  <div class="instruction-card">
+    <span>2: Click the Smart Proxy and enter the URL</span>
+    <button onclick="goToProxy()">Smart Proxy</button>
+  </div>
+
+  <div class="instruction-card">
+    <span>3: Press play on EasyFun and enjoy (signing in to them is recommended)</span>
+  </div>
+</main>
+
+<footer>
+ Be patient with this process. Unfortunately I dont have a better method, so expect subpar reliability.
+
+ Made with &lt;3 by averageperson4.
+</footer>
+
+<script>
+  function copyText(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('URL copied to clipboard!');
+    });
+  }
+
+  function goToProxy() {
+    window.location.href = "https://zearnhaas.github.io/proxy";
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zearn</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #2b2b2b;
+    color: #e0e0e0;
+    position: relative;
+  }
+
+  #search-container {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #search-input {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    background: #2b2b2b;
+    color: white;
+    box-shadow: 0 0 6px rgba(77,166,255,0.3);
+    width: 200px;
+  }
+
+  #search-pane {
+    margin-top: 0.5rem;
+    width: 200px;
+    background: rgba(30,30,30,0.95);
+    border: 1px solid #4da6ff;
+    border-radius: 10px;
+    padding: 0.5rem;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  #search-pane a {
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.4rem 0;
+  }
+
+  #search-pane .search-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  #search-pane .search-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #search-pane .search-name {
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  header {
+    background-color: #3a3a3a;
+    padding: 1.2rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+  }
+
+  header h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    background: linear-gradient(90deg, #4da6ff, #1e90ff, #4da6ff);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 8px rgba(77, 166, 255, 0.6);
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  main {
+    max-width: 1200px;
+    margin: 3rem auto 2rem;
+    padding: 0 1rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  a.game-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .game-card {
+    background: #404040;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+    text-align: center;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .game-image {
+    flex-grow: 1;
+    overflow: hidden;
+  }
+
+  .game-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  .game-name {
+    font-weight: 600;
+    color: #ffffff;
+    background: #333;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #ccc;
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  @media (max-width: 600px) {
+    .games-grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+
+  #tsparticles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Smart Proxy button styles */
+#smart-proxy-btn {
+  position: fixed;
+  top: 1rem;
+  right: 75px;
+  background: #4da6ff;           /* blue background */
+  color: #ffffff;                /* white text */
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(77, 166, 255, 0.7);  /* blue glow */
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+  z-index: 101;
+}
+
+#smart-proxy-btn:hover {
+  background: #1e90ff;           /* darker blue on hover */
+}
+
+  #smart-proxy-btn:hover {
+    background: #580ee3;
+  }
+</style>
+</head>
+<body>
+
+<div id="tsparticles"></div>
+
+<div id="search-container">
+  <input type="text" id="search-input" placeholder="Search games..." />
+  <div id="search-pane"></div>
+</div>
+
+<!-- Smart Proxy button fixed top-right -->
+<button id="smart-proxy-btn" title="Smart Proxy (down sry)">Smart Proxy (unblocks everything)</button>
+
+<header>
+  <h1>billybobgames v2</h1>
+</header>
+
+<main>
+  <div class="games-grid" id="games-grid">
+    <a href="./bitlife/" class="game-link"><div class="game-card" data-name="bitlife"><div class="game-image"><img src="./siteimages/gamelogos/bitlife.jpeg" alt="Bitlife" /></div><div class="game-name">Bitlife</div></div></a>
+    <a href="./blockblast/" class="game-link"><div class="game-card" data-name="block blast"><div class="game-image"><img src="./siteimages/gamelogos/blockblast.jpeg" alt="Block Blast" /></div><div class="game-name">Block Blast</div></div></a>
+    <a href="./cluster-main/" class="game-link"><div class="game-card" data-name="cluster rush"><div class="game-image"><img src="./siteimages/gamelogos/clusterrush.jpeg" alt="Cluster Rush" /></div><div class="game-name">Cluster Rush</div></div></a>
+    <a href="./crk" class="game-link"><div class="game-card" data-name="cluster rush"><div class="game-image"><img src="./siteimages/gamelogos/crk.jpg" /></div><div class="game-name">CookieRun: Kingdom 🌐</div></div></a>
+    <a href="./drivemad/" class="game-link"><div class="game-card" data-name="drive mad"><div class="game-image"><img src="./siteimages/gamelogos/drivemad.png" alt="Drive Mad" /></div><div class="game-name">Drive Mad</div></div></a>
+    <a href="./flappybird/" class="game-link"><div class="game-card" data-name="flappy bird"><div class="game-image"><img src="./siteimages/gamelogos/flappybird.jpeg" alt="Flappy Bird" /></div><div class="game-name">Flappy Bird</div></div></a>
+    <a href="./minecraft" class="game-link"><div class="game-card" data-name="minecraft"><div class="game-image"><img src="./siteimages/gamelogos/minecraft.png" alt="Minecraft" /></div><div class="game-name">Minecraft</div></div></a>
+    <a href="./pedro/pedro.html" class="game-link"><div class="game-card" data-name="my friend pedro"><div class="game-image"><img src="./siteimages/gamelogos/pedro.jpg" alt="Pedro" /></div><div class="game-name">My Friend Pedro</div></div></a>
+    <a href="./polytrack/" class="game-link"><div class="game-card" data-name="polytrack"><div class="game-image"><img src="./siteimages/gamelogos/polytrack.jpeg" alt="Polytrack" /></div><div class="game-name">Polytrack</div></div></a>
+    <a href="./racesurvival/" class="game-link"><div class="game-card" data-name="race survival"><div class="game-image"><img src="./siteimages/gamelogos/racesurvival.jpeg" alt="Race Survival" /></div><div class="game-name">Race Survival</div></div></a>
+    <a href="./retro-bowl/" class="game-link"><div class="game-card" data-name="retro bowl"><div class="game-image"><img src="./siteimages/gamelogos/retrobowl.jpeg" alt="Retro Bowl" /></div><div class="game-name">Retro Bowl</div></div></a>
+    <a href="./roblox" class="game-link"><div class="game-card" data-name="roblox"><div class="game-image"><img src="./siteimages/gamelogos/roblox.jpg" alt="Retro Bowl" /></div><div class="game-name">Roblox 🌐</div></div></a>
+    <a href="./slope/" class="game-link"><div class="game-card" data-name="slope"><div class="game-image"><img src="./siteimages/gamelogos/slope.jpeg" alt="Slope" /></div><div class="game-name">Slope</div></div></a>
+    <a href="./snake/" class="game-link"><div class="game-card" data-name="snake"><div class="game-image"><img src="./siteimages/gamelogos/Snake.PNG" alt="Slope" /></div><div class="game-name">Snake</div></div></a>
+    <a href="./stickmanhook/" class="game-link"><div class="game-card" data-name="stickman hook"><div class="game-image"><img src="./siteimages/gamelogos/stickmanhook.png" alt="Stickman Hook" /></div><div class="game-name">Stickman Hook</div></div></a>
+    <a href="./subway-surfers/" class="game-link"><div class="game-card" data-name="subway surfers"><div class="game-image"><img src="./siteimages/gamelogos/subwaysurfers.png" alt="Subway Surfers" /></div><div class="game-name">Subway Surfers</div></div></a>
+    <a href="./tunnel-rush/" class="game-link"><div class="game-card" data-name="tunnel rush"><div class="game-image"><img src="./siteimages/gamelogos/tunnelrush.jpeg" alt="Tunnel Rush" /></div><div class="game-name">Tunnel Rush</div></div></a>
+    <a href="./wbwwb/" class="game-link"><div class="game-card" data-name="we become what we behold"><div class="game-image"><img src="./siteimages/gamelogos/wbwwb.jpeg" alt="We Become What We Behold" /></div><div class="game-name">We Become What We Behold</div></div></a>
+  </div>
+</main>
+
+<footer>
+  Made with &lt;3 by averageperson4. I don't own any of these games. This site is maintained especially for HAAS network restrictions.<br />
+  <a href="https://docs.google.com/forms/d/1xE5A3uYYN02mKgWIO0--GJwjwLFjWhrm-p0ewwLbSYk/" target="_blank" style="color: #4da6ff; text-decoration: underline;">
+    Request a Game/Feedback
+  </a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+<script>
+  tsParticles.load("tsparticles", {
+    fullScreen: { enable: false },
+    fpsLimit: 60,
+    interactivity: {
+      events: { onHover: { enable: true, mode: "repulse" }, resize: true },
+      modes: { repulse: { distance: 100, duration: 0.4 } }
+    },
+    particles: {
+      color: { value: "#4da6ff" },
+      links: { color: "#4da6ff", distance: 120, enable: true, opacity: 0.2, width: 1 },
+      collisions: { enable: false },
+      move: { enable: true, speed: 1, outModes: { default: "bounce" } },
+      number: { density: { enable: true, area: 800 }, value: 40 },
+      opacity: { value: 0.3 },
+      shape: { type: "circle" },
+      size: { value: { min: 1, max: 4 } }
+    },
+    detectRetina: true
+  });
+
+  const searchInput = document.getElementById("search-input");
+  const gameCards = document.querySelectorAll(".game-card");
+  const searchPane = document.getElementById("search-pane");
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.trim().toLowerCase();
+    searchPane.innerHTML = '';
+    if (query === '') {
+      searchPane.style.display = 'none';
+      return;
+    }
+    let results = [];
+    gameCards.forEach(card => {
+      const nameAttr = card.getAttribute("data-name");
+      if (nameAttr.includes(query)) {
+        const imgSrc = card.querySelector("img").src;
+        const title = card.querySelector(".game-name").textContent;
+        const link = card.parentElement.href;
+
+        const displayName = nameAttr === 'we become what we behold' ? 'WBWWB' : title;
+
+        const entry = document.createElement("a");
+        entry.href = link;
+        entry.className = "result";
+        entry.innerHTML = `<div class="search-img"><img src="${imgSrc}" alt=""></div><div class="search-name">${displayName}</div>`;
+        results.push(entry);
+      }
+    });
+    if (results.length > 0) {
+      results.forEach(e => searchPane.appendChild(e));
+      searchPane.style.display = 'flex';
+    } else {
+      searchPane.style.display = 'none';
+    }
+  });
+
+  searchInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") e.preventDefault();
+  });
+
+  const smartProxyBtn = document.getElementById('smart-proxy-btn');
+  smartProxyBtn.addEventListener('click', () => {
+    window.location.href = "https://zearnhaas.github.io/proxy";
+  });
+</script>
+</body>
+</html>
