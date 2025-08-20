@@ -149,7 +149,7 @@
   <div id="button-container">
     <button id="bypass-button">GoGuardian Fix</button>
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-      <a href="site.html" style="font-size: 14px; color: #aaa; text-decoration: underline; cursor: pointer;">
+      <a href="site" style="font-size: 14px; color: #aaa; text-decoration: underline; cursor: pointer;">
         No GoGuardian Fix
       </a>
       <div style="font-size: 12px; color: #666;">less features</div>
@@ -272,7 +272,7 @@ newTab.opener = null;
           div.textContent = 'Loading...';
 
           const iframe = document.createElement('iframe');
-          iframe.src = 'site.html';
+          iframe.src = 'site';
           document.body.innerHTML = '';
           document.body.appendChild(iframe);
 
