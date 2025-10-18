@@ -186,100 +186,61 @@
   const manualSelectFallback = document.getElementById('manual-select-fallback');
 
   let isConnected = false;
-  let pingIndex = 0;
-  let fallbackInterval = null;
-  let fallbackStartTime = null;
 
-  // --- NEW: get target URL from query string ---
   const params = new URLSearchParams(window.location.search);
-  const targetURL = params.get('url'); // e.g., https://youtube.com
+  const targetURL = params.get('url');
 
-  function pingServer(url) {
-    return fetch(url, { method: 'GET', mode: 'no-cors', cache: 'no-store' })
-      .then(() => true)
-      .catch(() => false);
+  async function pingServer(url) {
+    try {
+      const response = await fetch(url, { method: 'GET', cache: 'no-store' });
+      if (!response.ok) return false;
+      const text = await response.text();
+      // check if response mentions "ultraviolet"
+      return text.toLowerCase().includes("ultraviolet");
+    } catch {
+      return false;
+    }
   }
 
   function connectToServer(url) {
     isConnected = true;
-    clearInterval(fallbackInterval);
-
     app.style.display = 'none';
     fallbackScreen.style.display = 'none';
     iframeContainer.style.display = 'flex';
     proxyHomeBtn.style.display = 'block';
 
     if (targetURL) {
-      // Append target URL if provided
       proxyFrame.src = url + "?url=" + encodeURIComponent(targetURL);
     } else {
       proxyFrame.src = url;
     }
   }
 
-  function showFallback() {
-    app.style.display = 'none';
-    iframeContainer.style.display = 'none';
-    fallbackScreen.style.display = 'flex';
-    proxyHomeBtn.style.display = 'none';
-
-    fallbackStartTime = Date.now();
-    pingIndex = 0;
-    fallbackLoadingBar.style.width = '0%';
-    fallbackStatusText.textContent = `Pinging server 1...`;
-
-    fallbackInterval = setInterval(async () => {
-      if (isConnected) {
-        clearInterval(fallbackInterval);
-        return;
-      }
-
-      const server = servers[pingIndex];
-      fallbackStatusText.textContent = `Pinging server ${pingIndex + 1}...`;
-
-      const progressPercent = ((pingIndex + 1) / servers.length) * 100;
-      fallbackLoadingBar.style.width = `${progressPercent}%`;
-
-      const alive = await pingServer(server);
-
-      if (alive) {
-        connectToServer(server);
-        return;
-      } else {
-        pingIndex++;
-        if (pingIndex >= servers.length) {
-          pingIndex = 0;
-          fallbackLoadingBar.style.width = '0%';
-        }
-      }
-    }, 1000);
-  }
-
   async function initialConnect() {
-    for (let i = 0; i < servers.length; i++) {
-      if (isConnected) return;
-      statusText.textContent = `Pinging server ${i + 1}...`;
-      loadingBar.style.width = `${((i + 1) / servers.length) * 100}%`;
+    while (!isConnected) {
+      for (let i = 0; i < servers.length; i++) {
+        if (isConnected) return;
+        statusText.textContent = `Checking server ${i + 1}...`;
+        loadingBar.style.width = `${((i + 1) / servers.length) * 100}%`;
 
-      const alive = await pingServer(servers[i]);
-      if (alive) {
-        connectToServer(servers[i]);
-        return;
+        const isUltraviolet = await pingServer(servers[i]);
+        if (isUltraviolet) {
+          statusText.textContent = `Found Ultraviolet proxy at server ${i + 1}`;
+          connectToServer(servers[i]);
+          return;
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      statusText.textContent = "Retrying all servers...";
+      loadingBar.style.width = "0%";
     }
-    showFallback();
   }
 
   manualSelect.addEventListener('click', () => {
     const manual = prompt('Choose server:\n1. Server 1\n2. Server 2\n3. Server 3\n\nEnter 1, 2, or 3');
     const choice = parseInt(manual);
     if (choice >= 1 && choice <= servers.length) {
-      if (targetURL) {
-        connectToServer(servers[choice - 1] + "?url=" + encodeURIComponent(targetURL));
-      } else {
-        connectToServer(servers[choice - 1]);
-      }
+      connectToServer(servers[choice - 1]);
     }
   });
 
@@ -287,11 +248,7 @@
     const manual = prompt('Choose server:\n1. Server 1\n2. Server 2\n3. Server 3\n\nEnter 1, 2, or 3');
     const choice = parseInt(manual);
     if (choice >= 1 && choice <= servers.length) {
-      if (targetURL) {
-        connectToServer(servers[choice - 1] + "?url=" + encodeURIComponent(targetURL));
-      } else {
-        connectToServer(servers[choice - 1]);
-      }
+      connectToServer(servers[choice - 1]);
     }
   });
 
