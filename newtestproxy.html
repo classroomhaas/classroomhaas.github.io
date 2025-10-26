@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Proxy Selector</title>
+  <style>
+    body {
+      margin: 0;
+      background: #2b2b2b;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+    }
+    #app {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 1rem;
+      font-weight: 700;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+    #manual-select {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: #888;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    #manual-select:hover {
+      color: #4da6ff;
+    }
+    #iframe-container {
+      flex-grow: 1;
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      flex-direction: column;
+      position: relative;
+    }
+    #proxy-frame {
+      flex-grow: 1;
+      width: 100%;
+      border: none;
+    }
+    #proxy-home-btn {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background: rgba(26, 115, 232, 0.9);
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 1000;
+      transition: background 0.3s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      display: none;
+    }
+    #proxy-home-btn:hover {
+      background: rgba(26, 115, 232, 1);
+    }
+    #fallback-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+      color: #ccc;
+      font-size: 1rem;
+      user-select: none;
+      text-align: center;
+    }
+    #fallback-screen a {
+      color: #4da6ff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    /* Popup overlay for proxy confirmation */
+    #proxy-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+      color: white;
+      font-size: 1.5rem;
+      text-align: center;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+    #proxy-popup button {
+      margin: 0 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+    #proxy-popup button#popup-yes {
+      background-color: #1a73e8;
+      color: white;
+    }
+    #proxy-popup button#popup-no {
+      background-color: #888;
+      color: white;
+    }
+    #proxy-popup button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Finding the best proxy for you...</h1>
+    <div id="manual-select">Choose manually</div>
+  </div>
+
+  <div id="iframe-container">
+    <iframe id="proxy-frame" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+  </div>
+
+  <div id="proxy-home-btn">Proxy Home</div>
+
+  <div id="fallback-screen">
+    <div>All servers are currently sleeping/down.<br />Please wait as we try to wake them.<br />
+      If this takes more than a minute, please send feedback <a href="https://docs.google.com/forms/d/1xE5A3uYYN02mKgWIO0--GJwjwLFjWhrm-p0ewwLbSYk/" target="_blank" rel="noopener noreferrer">here</a>.
+    </div>
+  </div>
+
+  <!-- Proxy confirmation popup -->
+  <div id="proxy-popup">
+    <div style="margin-bottom: 1rem;">Does this proxy work?</div>
+    <div>
+      <button id="popup-yes">Yes</button>
+      <button id="popup-no">No</button>
+    </div>
+  </div>
+
+  <script>
+    const servers = [
+      'https://edgedcircles.com/',
+      'https://proxyorb.com/',
+      'https://coproxy.io/free-web-proxy/'
+    ];
+
+    const app = document.getElementById('app');
+    const iframeContainer = document.getElementById('iframe-container');
+    const proxyFrame = document.getElementById('proxy-frame');
+    const proxyHomeBtn = document.getElementById('proxy-home-btn');
+    const fallbackScreen = document.getElementById('fallback-screen');
+
+    const popup = document.getElementById('proxy-popup');
+    const yesBtn = document.getElementById('popup-yes');
+    const noBtn = document.getElementById('popup-no');
+
+    const manualSelect = document.getElementById('manual-select');
+
+    let currentServerIndex = 0;
+    const targetURL = new URLSearchParams(window.location.search).get('url');
+
+    function loadProxy(index) {
+      if (index >= servers.length) {
+        // All proxies failed → show fallback
+        iframeContainer.style.display = 'none';
+        popup.style.display = 'none';
+        fallbackScreen.style.display = 'flex';
+        return;
+      }
+      currentServerIndex = index;
+      iframeContainer.style.display = 'flex';
+      popup.style.display = 'flex';
+      if (targetURL) {
+        proxyFrame.src = servers[index] + "?url=" + encodeURIComponent(targetURL);
+      } else {
+        proxyFrame.src = servers[index];
+      }
+    }
+
+    yesBtn.addEventListener('click', () => {
+      popup.style.display = 'none';
+    });
+
+    noBtn.addEventListener('click', () => {
+      loadProxy(currentServerIndex + 1);
+    });
+
+    proxyHomeBtn.addEventListener('click', () => {
+      iframeContainer.style.display = 'none';
+      proxyHomeBtn.style.display = 'none';
+      app.style.display = 'flex';
+      fallbackScreen.style.display = 'none';
+      currentServerIndex = 0;
+      loadProxy(0);
+    });
+
+    manualSelect.addEventListener('click', () => {
+      const manual = prompt('Choose server:\n1. Server 1\n2. Server 2\n3. Server 3\n\nEnter 1, 2, or 3');
+      const choice = parseInt(manual);
+      if (choice >= 1 && choice <= servers.length) {
+        loadProxy(choice - 1);
+      }
+    });
+
+    // Start with the first proxy
+    loadProxy(0);
+  </script>
+</body>
+</html>
