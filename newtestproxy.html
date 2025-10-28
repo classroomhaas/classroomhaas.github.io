@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proxy Selector</title>
+<style>
+  /* Reset and basic styles */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body, html { height: 100%; font-family: 'Segoe UI', sans-serif; background: #1f1f1f; color: #eee; }
+
+  /* Centered app container */
+  #app {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%; text-align: center; padding: 2rem;
+  }
+
+  h1 { font-size: 2rem; margin-bottom: 1.5rem; }
+
+  button {
+    cursor: pointer; padding: 0.6rem 1.2rem; border: none; border-radius: 6px;
+    font-weight: bold; font-size: 1rem; transition: opacity 0.2s;
+  }
+  button:hover { opacity: 0.9; }
+
+  /* Iframe container */
+  #iframe-container {
+    display: none; position: relative; width: 100%; height: 100%;
+  }
+  #proxy-frame { width: 100%; height: 100%; border: none; }
+
+  /* Home button */
+  #proxy-home-btn {
+    position: fixed; top: 15px; left: 15px; padding: 8px 12px;
+    background: #1a73e8; color: white; border-radius: 6px;
+    font-weight: bold; display: none; z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3); transition: background 0.3s;
+  }
+  #proxy-home-btn:hover { background: #1662c4; }
+
+  /* Fallback screen */
+  #fallback-screen {
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem; text-align: center; height: 100%;
+    color: #aaa;
+  }
+  #fallback-screen a { color: #1a73e8; text-decoration: underline; }
+
+  /* Popup overlay */
+  #proxy-popup {
+    position: fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.6); display: none; flex-direction: column;
+    justify-content: center; align-items: center; z-index: 1001;
+    color: #fff; font-size: 1.5rem; text-align: center; padding: 1rem;
+  }
+  #popup-buttons { margin-top: 1rem; }
+  #popup-buttons button { margin: 0 0.5rem; }
+  #popup-yes { background: #1a73e8; color: white; }
+  #popup-no { background: #888; color: white; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <h1>Select the best proxy for you</h1>
+  <button id="manual-select">Choose manually</button>
+</div>
+
+<div id="iframe-container">
+  <iframe id="proxy-frame" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+</div>
+
+<button id="proxy-home-btn">Proxy Home</button>
+
+<div id="fallback-screen">
+  <p>All servers are down or unresponsive.<br>
+  Please wait or provide feedback <a href="https://docs.google.com/forms/d/1xE5A3uYYN02mKgWIO0--GJwjwLFjWhrm-p0ewwLbSYk/" target="_blank" rel="noopener noreferrer">here</a>.</p>
+</div>
+
+<div id="proxy-popup">
+  <div>Does this proxy work?</div>
+  <div id="popup-buttons">
+    <button id="popup-yes">Yes</button>
+    <button id="popup-no">No</button>
+  </div>
+</div>
+
+<script>
+const servers = [
+  'https://edgedcircles.com/',
+  'https://proxyorb.com/',
+  'https://coproxy.io/free-web-proxy/'
+];
+
+const targetURL = new URLSearchParams(window.location.search).get('url');
+
+const app = document.getElementById('app');
+const iframeContainer = document.getElementById('iframe-container');
+const proxyFrame = document.getElementById('proxy-frame');
+const proxyHomeBtn = document.getElementById('proxy-home-btn');
+const fallbackScreen = document.getElementById('fallback-screen');
+const popup = document.getElementById('proxy-popup');
+const yesBtn = document.getElementById('popup-yes');
+const noBtn = document.getElementById('popup-no');
+const manualSelect = document.getElementById('manual-select');
+
+let currentIndex = 0;
+
+// Function to load proxy and show popup
+function loadProxy(index) {
+  if(index >= servers.length){
+    iframeContainer.style.display = 'none';
+    popup.style.display = 'none';
+    fallbackScreen.style.display = 'flex';
+    return;
+  }
+  currentIndex = index;
+  iframeContainer.style.display = 'flex';
+  popup.style.display = 'flex';
+  fallbackScreen.style.display = 'none';
+  if(targetURL){
+    proxyFrame.src = servers[index] + "?url=" + encodeURIComponent(targetURL);
+  } else {
+    proxyFrame.src = servers[index];
+  }
+}
+
+// User confirms proxy works
+yesBtn.addEventListener('click', () => {
+  popup.style.display = 'none';
+});
+
+// User says proxy doesn't work → next proxy
+noBtn.addEventListener('click', () => {
+  loadProxy(currentIndex + 1);
+});
+
+// Proxy home button
+proxyHomeBtn.addEventListener('click', () => {
+  iframeContainer.style.display = 'none';
+  proxyHomeBtn.style.display = 'none';
+  popup.style.display = 'none';
+  fallbackScreen.style.display = 'none';
+  app.style.display = 'flex';
+  currentIndex = 0;
+  loadProxy(0);
+});
+
+// Manual select button
+manualSelect.addEventListener('click', () => {
+  const choice = parseInt(prompt(
+    servers.map((s,i)=>`${i+1}. ${s}`).join('\n') + '\n\nEnter 1,2,3...'
+  ));
+  if(choice >=1 && choice <= servers.length){
+    loadProxy(choice-1);
+  }
+});
+
+// Start with first proxy
+loadProxy(0);
+</script>
+
+</body>
+</html>

@@ -225,8 +225,39 @@
   <div id="search-pane"></div>
 </div>
 
-<!-- Smart Proxy button fixed top-right -->
-<button id="smart-proxy-btn" title="Smart Proxy">Smart Proxy</button>
+<!-- Navigation Buttons -->
+<div id="nav-buttons" style="display:flex; justify-content:center; gap:10px; margin:20px 0;">
+  <button id="changelog-btn" title="View Changelog" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:1em; transition:0.3s;">
+    Changelog
+  </button>
+
+  <button id="smart-proxy-btn" title="Smart Proxy" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:1em; transition:0.3s;">
+    Smart Proxy
+  </button>
+</div>
+
+<script>
+  // Smooth scroll to changelog section when clicked
+  document.getElementById('changelog-btn').addEventListener('click', () => {
+    const section = document.getElementById('changelog');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      alert('The changelog section could not be found.');
+    }
+  });
+
+  // Glow effect on hover
+  const navGlow = document.createElement('style');
+  navGlow.innerHTML = `
+    #nav-buttons button:hover {
+      background: #0088cc;
+      box-shadow: 0 0 15px #00aaff;
+    }
+  `;
+  document.head.appendChild(navGlow);
+</script>
+
 
 <header>
   <h1>billybobgames v2</h1>
@@ -261,7 +292,60 @@
   </div>
 </main>
 
-<footer>
+<!-- Changelog Section -->
+<section id="changelog" style="text-align:center; color:white; margin-top:60px; font-family:'Poppins', sans-serif;">
+  <h2 style="font-size:2em; font-weight:700; color:#00aaff; text-shadow:0 0 8px #00aaff;">Changelog</h2>
+
+  <div id="changelog-container" style="max-width:700px; margin:30px auto; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:left; font-size:0.95em; line-height:1.4;">
+    
+    <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
+      <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.1 — October 28, 2025</h3>
+      <p>Added the changelog feature</p>
+    </div>
+
+    <button id="show-more" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s; display:block; margin:15px auto 0;">
+      Show More
+    </button>
+  </div>
+</section>
+
+<script>
+  const showMoreBtn = document.getElementById('show-more');
+  const entries = document.querySelectorAll('.changelog-entry');
+  let shown = 1;
+
+  showMoreBtn.addEventListener('click', () => {
+    if (shown < entries.length) {
+      entries[shown].style.display = 'block';
+      entries[shown].style.animation = 'fadeIn 0.5s ease';
+      shown++;
+      if (shown === entries.length) showMoreBtn.textContent = 'See Less';
+    } else {
+      for (let i = 1; i < entries.length; i++) {
+        entries[i].style.display = 'none';
+      }
+      shown = 1;
+      showMoreBtn.textContent = 'Show More';
+    }
+  });
+
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    #show-more:hover {
+      background: #0088cc;
+      box-shadow: 0 0 12px #00aaff;
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+
+
+  
+  <footer>
   "NKC" is now maintaining this site and taking over for "averageperson4" who isn't contributing much to the site anymore. The new request issue form is down below. Any issues and game suggestions will be highly appreciated. New games will (or try to) be added every weekend.
 <br />
 <br />
