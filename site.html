@@ -293,27 +293,22 @@
 </main>
 
 <!-- Changelog Section -->
-<section id="changelog" style="text-align:center; color:white; margin-top:80px; font-family:'Poppins', sans-serif;">
-  <h2 style="font-size:2.5em; font-weight:700; color:#00aaff; text-shadow:0 0 10px #00aaff;">Changelog</h2>
+<section id="changelog" style="text-align:center; color:white; margin-top:60px; font-family:'Poppins', sans-serif;">
+  <h2 style="font-size:2em; font-weight:700; color:#00aaff; text-shadow:0 0 8px #00aaff;">Changelog</h2>
 
-  <div id="changelog-container" style="max-width:850px; margin:40px auto; background:rgba(20,20,20,0.9); border-radius:20px; padding:30px; box-shadow:0 0 25px rgba(0,170,255,0.3); text-align:left;">
-
-    <div class="changelog-entry" style="margin-bottom:25px; border-left:4px solid #00aaff; padding-left:15px;">
-      <h3 style="color:#00aaff; margin-bottom:8px;">Version 2.0 — October 2025</h3>
+  <div id="changelog-container" style="max-width:700px; margin:30px auto; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:left; font-size:0.95em; line-height:1.4;">
+    
+    <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
+      <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.2 — October 2025</h3>
       <p>Insert text here</p>
     </div>
 
-    <div class="changelog-entry" style="margin-bottom:25px; border-left:4px solid #00aaff; padding-left:15px; display:none;">
-      <h3 style="color:#00aaff; margin-bottom:8px;">Version 1.9 — September 2025</h3>
-      <p>Insert text here</p>
+    <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px; display:none;">
+      <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.1 — October 28, 2025</h3>
+      <p>Added the change-log feature</p>
     </div>
 
-    <div class="changelog-entry" style="margin-bottom:25px; border-left:4px solid #00aaff; padding-left:15px; display:none;">
-      <h3 style="color:#00aaff; margin-bottom:8px;">Version 1.8 — August 2025</h3>
-      <p>Insert text here</p>
-    </div>
-
-    <button id="show-more" style="background:#00aaff; border:none; padding:12px 25px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:1em; transition:0.3s; display:block; margin:20px auto 0;">
+    <button id="show-more" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s; display:block; margin:15px auto 0;">
       Show More
     </button>
   </div>
@@ -325,28 +320,34 @@
   let shown = 1;
 
   showMoreBtn.addEventListener('click', () => {
-    shown++;
-    if (shown <= entries.length) {
-      entries[shown - 1].style.display = 'block';
-      entries[shown - 1].style.animation = 'fadeIn 0.6s ease';
-      if (shown === entries.length) showMoreBtn.style.display = 'none';
+    if (shown < entries.length) {
+      entries[shown].style.display = 'block';
+      entries[shown].style.animation = 'fadeIn 0.5s ease';
+      shown++;
+      if (shown === entries.length) showMoreBtn.textContent = 'See Less';
+    } else {
+      for (let i = 1; i < entries.length; i++) {
+        entries[i].style.display = 'none';
+      }
+      shown = 1;
+      showMoreBtn.textContent = 'Show More';
     }
   });
 
-  // Add fade-in animation for smooth reveal
   const style = document.createElement('style');
   style.innerHTML = `
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
     #show-more:hover {
       background: #0088cc;
-      box-shadow: 0 0 15px #00aaff;
+      box-shadow: 0 0 12px #00aaff;
     }
   `;
   document.head.appendChild(style);
 </script>
+
 
   
   <footer>
