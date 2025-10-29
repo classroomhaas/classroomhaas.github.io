@@ -5,6 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Zearn</title>
 <style>
+
+header {
+  background-color: #3a3a3a;
+  padding: 1.2rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+/* Center container for title + button */
+.header-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px; /* spacing between button and title */
+}
+
+/* Make Changelog button match your theme */
+#changelog-btn {
+  background: #00aaff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1em;
+  transition: 0.3s;
+}
+
+#changelog-btn:hover {
+  background: #0088cc;
+  box-shadow: 0 0 15px #00aaff;
+}
+
+  
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -227,11 +265,8 @@
 
 <!-- Navigation Buttons -->
 <div id="nav-buttons" style="display:flex; justify-content:center; gap:10px; margin:20px 0;">
-  <button id="changelog-btn" title="View Changelog" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:1em; transition:0.3s;">
-    Changelog
-  </button>
 
-  <button id="smart-proxy-btn" title="Smart Proxy" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:1em; transition:0.3s;">
+ <button id="smart-proxy-btn" title="Smart Proxy" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:1em; transition:0.3s;">
     Smart Proxy
   </button>
 </div>
@@ -260,8 +295,12 @@
 
 
 <header>
-  <h1>billybobgames v2</h1>
+  <div class="header-center">
+    <button id="changelog-btn" title="View Changelog">Changelog</button>
+    <h1>billybobgames v2</h1>
+  </div>
 </header>
+
 
 <main>
   <div class="games-grid" id="games-grid">
