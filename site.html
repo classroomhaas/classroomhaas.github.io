@@ -78,11 +78,16 @@
   header {
     background-color: #3a3a3a;
     padding: 1.2rem 2rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  header .header-container {
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    z-index: 10;
+    width: 100%;
   }
 
   header h1 {
@@ -95,6 +100,26 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 8px rgba(77, 166, 255, 0.6);
+    margin: 0;
+  }
+
+  #changelog-btn {
+    position: absolute;
+    right: calc(50% + 175px);
+    background:#00aaff;
+    border:none;
+    padding:10px 20px;
+    border-radius:12px;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:1em;
+    transition:0.3s;
+  }
+
+  #changelog-btn:hover {
+    background:#0088cc;
+    box-shadow: 0 0 12px #00aaff;
   }
 
   @keyframes gradientShift {
@@ -176,6 +201,12 @@
     .games-grid {
       grid-template-columns: repeat(1, 1fr);
     }
+
+    #changelog-btn {
+      position: static;
+      margin-left: 0;
+      margin-top: 1rem;
+    }
   }
 
   #tsparticles {
@@ -188,31 +219,27 @@
   }
 
   /* Smart Proxy button styles */
-#smart-proxy-btn {
-  position: fixed;
-  top: 1rem;
-  right: 75px;
-  background: #4da6ff;           /* blue background */
-  color: #ffffff;                /* white text */
-  border: none;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: 0 0 6px rgba(77, 166, 255, 0.7);  /* blue glow */
-  transition: background-color 0.3s ease;
-  white-space: nowrap;
-  z-index: 101;
-}
-
-#smart-proxy-btn:hover {
-  background: #1e90ff;           /* darker blue on hover */
-}
+  #smart-proxy-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: #4da6ff;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(77, 166, 255, 0.7);
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+    z-index: 101;
+  }
 
   #smart-proxy-btn:hover {
-    background: #580ee3;
+    background: #1e90ff;
   }
 </style>
 </head>
@@ -225,43 +252,14 @@
   <div id="search-pane"></div>
 </div>
 
-<!-- Navigation Buttons -->
-<div id="nav-buttons" style="display:flex; justify-content:center; gap:10px; margin:20px 0;">
-  <button id="changelog-btn" title="View Changelog" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:1em; transition:0.3s;">
-    Changelog
-  </button>
-
-  <button id="smart-proxy-btn" title="Smart Proxy" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:1em; transition:0.3s;">
-    Smart Proxy
-  </button>
-</div>
-
-<script>
-  // Smooth scroll to changelog section when clicked
-  document.getElementById('changelog-btn').addEventListener('click', () => {
-    const section = document.getElementById('changelog');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      alert('The changelog section could not be found.');
-    }
-  });
-
-  // Glow effect on hover
-  const navGlow = document.createElement('style');
-  navGlow.innerHTML = `
-    #nav-buttons button:hover {
-      background: #0088cc;
-      box-shadow: 0 0 15px #00aaff;
-    }
-  `;
-  document.head.appendChild(navGlow);
-</script>
-
-
 <header>
-  <h1>billybobgames v2</h1>
+  <div class="header-container">
+    <h1>billybobgames v2</h1>
+    <button id="changelog-btn" title="View Changelog">Changelog</button>
+  </div>
 </header>
+
+<button id="smart-proxy-btn" title="Smart Proxy">Smart Proxy</button>
 
 <main>
   <div class="games-grid" id="games-grid">
@@ -299,12 +297,12 @@
 
   <div id="changelog-container" style="max-width:700px; margin:30px auto; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:left; font-size:0.95em; line-height:1.4;">
 
-     <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
+    <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
       <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.101 — October 29, 2025</h3>
       <p>Added 1 game (due to bug):</p>
       <p>Iron Snout</p>
     </div>
-    
+
     <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
       <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.1 — October 28, 2025</h3>
       <p>Added the changelog feature</p>
@@ -320,51 +318,13 @@
   </div>
 </section>
 
-<script>
-  const showMoreBtn = document.getElementById('show-more');
-  const entries = document.querySelectorAll('.changelog-entry');
-  let shown = 1;
-
-  showMoreBtn.addEventListener('click', () => {
-    if (shown < entries.length) {
-      entries[shown].style.display = 'block';
-      entries[shown].style.animation = 'fadeIn 0.5s ease';
-      shown++;
-      if (shown === entries.length) showMoreBtn.textContent = 'See Less';
-    } else {
-      for (let i = 1; i < entries.length; i++) {
-        entries[i].style.display = 'none';
-      }
-      shown = 1;
-      showMoreBtn.textContent = 'Show More';
-    }
-  });
-
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    #show-more:hover {
-      background: #0088cc;
-      box-shadow: 0 0 12px #00aaff;
-    }
-  `;
-  document.head.appendChild(style);
-</script>
-
-
-  
-  <footer>
+<footer>
   "NKC" is now maintaining this site and taking over for "averageperson4" who isn't contributing much to the site anymore. The new request issue form is down below. Any issues and game suggestions will be highly appreciated. New games will (or try to) be added every weekend.
-<br />
-<br />
+  <br /><br />
   <a href="https://docs.google.com/forms/d/e/1FAIpQLSehIZWpUlPu8cv4Ew4hIhjYopDhIsQwGViUc1NYf9YrvBGecA/viewform?usp=dialog" target="_blank" style="color: #4da6ff; text-decoration: underline;">
     Request a Game/Feedback
   </a>
-  <br />
-  <br />
+  <br /><br />
   <a href="https://discord.gg/qG7x2QWEXA" target="_blank" style="color: #4da6ff; text-decoration: underline;">
     Join our Discord!
   </a>
@@ -392,6 +352,43 @@
     detectRetina: true
   });
 
+  // Changelog scroll
+  document.getElementById('changelog-btn').addEventListener('click', () => {
+    const section = document.getElementById('changelog');
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Changelog show more
+  const showMoreBtn = document.getElementById('show-more');
+  const entries = document.querySelectorAll('.changelog-entry');
+  let shown = 1;
+  showMoreBtn.addEventListener('click', () => {
+    if (shown < entries.length) {
+      entries[shown].style.display = 'block';
+      entries[shown].style.animation = 'fadeIn 0.5s ease';
+      shown++;
+      if (shown === entries.length) showMoreBtn.textContent = 'See Less';
+    } else {
+      for (let i = 1; i < entries.length; i++) entries[i].style.display = 'none';
+      shown = 1;
+      showMoreBtn.textContent = 'Show More';
+    }
+  });
+
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    #show-more:hover {
+      background: #0088cc;
+      box-shadow: 0 0 12px #00aaff;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Game search
   const searchInput = document.getElementById("search-input");
   const gameCards = document.querySelectorAll(".game-card");
   const searchPane = document.getElementById("search-pane");
@@ -399,10 +396,8 @@
   searchInput.addEventListener("input", () => {
     const query = searchInput.value.trim().toLowerCase();
     searchPane.innerHTML = '';
-    if (query === '') {
-      searchPane.style.display = 'none';
-      return;
-    }
+    if (!query) return searchPane.style.display = 'none';
+
     let results = [];
     gameCards.forEach(card => {
       const nameAttr = card.getAttribute("data-name");
@@ -410,7 +405,6 @@
         const imgSrc = card.querySelector("img").src;
         const title = card.querySelector(".game-name").textContent;
         const link = card.parentElement.href;
-
         const displayName = nameAttr === 'we become what we behold' ? 'WBWWB' : title;
 
         const entry = document.createElement("a");
@@ -420,20 +414,16 @@
         results.push(entry);
       }
     });
-    if (results.length > 0) {
+    if (results.length) {
       results.forEach(e => searchPane.appendChild(e));
       searchPane.style.display = 'flex';
-    } else {
-      searchPane.style.display = 'none';
-    }
+    } else searchPane.style.display = 'none';
   });
 
-  searchInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") e.preventDefault();
-  });
+  searchInput.addEventListener("keydown", e => { if (e.key === "Enter") e.preventDefault(); });
 
-  const smartProxyBtn = document.getElementById('smart-proxy-btn');
-  smartProxyBtn.addEventListener('click', () => {
+  // Smart proxy
+  document.getElementById('smart-proxy-btn').addEventListener('click', () => {
     window.location.href = "./proxy.html";
   });
 </script>
