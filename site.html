@@ -358,22 +358,28 @@
     if (section) section.scrollIntoView({ behavior: 'smooth' });
   });
 
-  // Changelog show more
-  const showMoreBtn = document.getElementById('show-more');
-  const entries = document.querySelectorAll('.changelog-entry');
-  let shown = 1;
-  showMoreBtn.addEventListener('click', () => {
-    if (shown < entries.length) {
-      entries[shown].style.display = 'block';
-      entries[shown].style.animation = 'fadeIn 0.5s ease';
-      shown++;
-      if (shown === entries.length) showMoreBtn.textContent = 'See Less';
-    } else {
-      for (let i = 1; i < entries.length; i++) entries[i].style.display = 'none';
-      shown = 1;
-      showMoreBtn.textContent = 'Show More';
-    }
-  });
+ // Changelog show more (fixed)
+const showMoreBtn = document.getElementById('show-more');
+const entries = document.querySelectorAll('.changelog-entry');
+let shown = 1; // first entry is visible by default
+
+// Hide all entries except the first on page load
+entries.forEach((entry, index) => {
+  if (index > 0) entry.style.display = 'none';
+});
+
+showMoreBtn.addEventListener('click', () => {
+  if (shown < entries.length) {
+    entries[shown].style.display = 'block';
+    entries[shown].style.animation = 'fadeIn 0.5s ease';
+    shown++;
+    if (shown === entries.length) showMoreBtn.textContent = 'See Less';
+  } else {
+    for (let i = 1; i < entries.length; i++) entries[i].style.display = 'none';
+    shown = 1;
+    showMoreBtn.textContent = 'Show More';
+  }
+});
 
   const style = document.createElement('style');
   style.innerHTML = `
