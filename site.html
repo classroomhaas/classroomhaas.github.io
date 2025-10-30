@@ -209,6 +209,27 @@
     }
   }
 
+
+  #proxy-home-btn {
+  position: absolute;
+  left: calc(50% + 175px);
+  background: #00aaff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1em;
+  transition: 0.3s;
+}
+
+#proxy-home-btn:hover {
+  background: #0088cc;
+  box-shadow: 0 0 12px #00aaff;
+}
+
+
   #tsparticles {
     position: fixed;
     top: 0; left: 0;
@@ -254,8 +275,9 @@
 
 <header>
   <div class="header-container">
-    <h1>billybobgames v2</h1>
     <button id="changelog-btn" title="View Changelog">Changelog</button>
+    <h1>billybobgames v2</h1>
+    <button id="proxy-home-btn" title="Go to Proxy Home">Proxy Home</button>
   </div>
 </header>
 
@@ -298,8 +320,13 @@
   <div id="changelog-container" style="max-width:700px; margin:30px auto; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:left; font-size:0.95em; line-height:1.4;">
 
     <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
+      <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.102 — October 30, 2025</h3>
+      <p>Moved "Proxy Home" button<p>
+    </div>
+    
+    <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
       <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.101 — October 29, 2025</h3>
-      <p>Moved changelog button<p>
+      <p>Moved "Changelog" button<p>
       <br />
       <p>Removed 1 game (due to bug):</p>
       <p>Iron Snout</p>
@@ -434,6 +461,11 @@ showMoreBtn.addEventListener('click', () => {
   document.getElementById('smart-proxy-btn').addEventListener('click', () => {
     window.location.href = "./proxy.html";
   });
+
+  document.getElementById('proxy-home-btn').addEventListener('click', () => {
+  window.location.href = "./proxy.html"; // or whatever your Proxy Home page path is
+});
+
 </script>
 </body>
 </html>
