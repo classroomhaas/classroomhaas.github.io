@@ -1,0 +1,12 @@
+var snowBlockPic = new Image();
+var chestPic = new Image();
+var playerPic = new Image()
+var player2Pic = new Image();
+var gunPic = new Image();
+var gunLeftPic = new Image();
+snowBlockPic.src="images/snow.png"
+chestPic.src="images/chest.png";
+playerPic.src="images/player.png";
+player2Pic.src="images/player2.png";
+gunPic.src="images/gun.png"
+gunLeftPic.src="images/gunLeft.png"

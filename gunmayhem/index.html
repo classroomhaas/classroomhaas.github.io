@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>Gun Mayhem</title>
+    <style>
+        #end{
+            display: none;
+            position: absolute;
+            padding: 2rem;
+            text-align: center;
+            top: 33%;
+            left: 30%;
+            background-color: black;
+            color: white;
+            border-radius: 1.15rem;
+            box-shadow: 0px 0px 12px 10px rgb(122, 122, 122);
+            font-size: 1.25rem;
+        }
+        #end.active{
+            display: block;
+        }
+        .player{
+            position: absolute;
+            top: 5%;
+            left: 35%;
+            padding: 1rem 2rem;
+            background-color: white;
+            min-height: 8vh;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 2px 2px 10px #1d1d1d;
+            background-color: #dd453d;
+            color: white;
+            font-size: 1.25rem;
+        }
+        .p2{
+            transform: translateX(120%);
+            background-color: #4d55d3;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" height="600" width="800">
+    </canvas>
+    <div  id="end" class="active">
+        <p>Game Over</p>
+        <p id="winner">Winner : Player1</p>
+    </div>
+    <div class="player p1">
+        <p class="red">Player 1</p>
+        <p id="player1">Lives : 5</p>
+    </div>
+    <div class="player p2">
+        <p class="blue">Player 2</p>
+        <p id="player2">Lives : 5</p>
+    </div>
+
+</body>
+<script src="js/graphics.js"></script>
+<script src="js/map.js"></script>
+<script src="js/images.js"></script>
+<script src="js/gun.js"></script>
+<script src="js/chest.js"></script>
+<script src="js/shot.js"></script>
+<script src="js/player.js"></script>
+<script src="js/enemy.js"></script>
+<script src="js/input.js"></script>
+<script src="js/index.js"></script>
+
+
+</html>
