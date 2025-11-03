@@ -1,0 +1,12 @@
+Player models, platforms, bullet and muzzle effects:
+    Author: Secret Hideout
+    https://secrethideout.itch.io/team-wars-platformer-battle
+
+Backgrounds:
+    night.png
+    Author: Alekei
+    https://opengameart.org/content/background-night
+
+    space.png
+    Author: Scribe
+    https://opengameart.org/content/2d-space-background
