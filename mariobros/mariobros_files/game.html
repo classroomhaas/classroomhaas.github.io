@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)https://josh100.neocities.org/macvg/projects/mario-bros/game -->
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="./cloak.js"></script>
+    
+    
+    <title class="cloak">New Super Mario Bros | MacVG</title>
+    <link class="favicon" rel="shortcut icon" href="https://josh100.neocities.org/logo.png">
+    <script src="./cloaker.js"></script>
+    </head><body style="text-align: center; background: #000"><span id="macvgmacvg" name="game305"></span>
+  
+  
+   <canvas id="unity-canvas" width="3490" height="1280" style="width: 100%; height: 40rem; background: rgb(35, 31, 32); cursor: default;"></canvas>
+    <script src="./MarioVsLuigi-WebGL.loader.js"></script>
+    <script>
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+      }
+
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        dataUrl: "Build/MarioVsLuigi-WebGL.data.unityweb",
+        frameworkUrl: "Build/MarioVsLuigi-WebGL.framework.js.unityweb",
+        codeUrl: "Build/MarioVsLuigi-WebGL.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "ipodtouch0218",
+        productName: "NSMB-MarioVsLuigi",
+        productVersion: "1.7.1.0-beta",
+        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
+        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
+      });
+    </script>
+  
+
+<script src="blob:https://josh100.neocities.org/4c9d9a77-3566-496e-8447-c3e90f4cf049"></script></body></html>
