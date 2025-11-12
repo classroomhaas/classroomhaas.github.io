@@ -320,6 +320,21 @@
   }
 }
 
+  #tsparticles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0; /* behind everything else */
+  pointer-events: none; /* so it doesn't block clicks */
+}
+
+body, main, header, footer, .changelog, .games-grid {
+  position: relative;
+  z-index: 1; /* make sure content is above the particles */
+}
+
 </style>
 </head>
 <body>
@@ -649,6 +664,27 @@ showMoreBtn.addEventListener('click', () => {
 
   document.getElementById('proxy-home-btn').addEventListener('click', () => {
   window.location.href = "./proxy.html"; // or whatever your Proxy Home page path is
+});
+
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+<script>
+tsParticles.load("tsparticles", {
+  fullScreen: { enable: true, zIndex: 0 },
+  fpsLimit: 60,
+  interactivity: {
+    events: { onHover: { enable: true, mode: "repulse" }, resize: true },
+    modes: { repulse: { distance: 100, duration: 0.4 } }
+  },
+  particles: {
+    color: { value: "#4da6ff" },
+    links: { color: "#4da6ff", distance: 120, enable: true, opacity: 0.2, width: 1 },
+    move: { enable: true, speed: 1, outModes: { default: "bounce" } },
+    number: { density: { enable: true, area: 800 }, value: 40 },
+    opacity: { value: 0.3 },
+    shape: { type: "circle" },
+    size: { value: { min: 1, max: 4 } }
+  },
+  detectRetina: true
 });
 
 </script>
