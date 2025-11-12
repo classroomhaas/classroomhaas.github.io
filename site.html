@@ -234,16 +234,6 @@
   box-shadow: 0 0 12px #00aaff;
 }
 
-
-  #tsparticles {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-    pointer-events: none;
-  }
-
   /* Smart Proxy button styles */
   #smart-proxy-btn {
     position: fixed;
@@ -333,6 +323,26 @@
 body, main, header, footer, .changelog, .games-grid {
   position: relative;
   z-index: 1; /* make sure content is above the particles */
+}
+
+  /* Ensure header buttons and title are above particles */
+header, header * {
+    position: relative;  /* ensures z-index works */
+    z-index: 101;        /* higher than particle div */
+}
+
+/* Smart Proxy button */
+#smart-proxy-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 102;        /* above everything */
+}
+
+/* Main content and changelog section */
+main, section#changelog, footer {
+    position: relative;
+    z-index: 100;
 }
 
 </style>
