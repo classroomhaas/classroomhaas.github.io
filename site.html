@@ -29,7 +29,7 @@
     position: fixed;
     top: 1rem;
     left: 1rem;
-    z-index: 100;
+    z-index: 105;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -553,22 +553,22 @@ tsParticles.load("tsparticles", {
 </section>
 
 <script>
-  const showMoreBtn = document.getElementById('show-more');
   const entries = document.querySelectorAll('.changelog-entry');
-  let shown = 1; // first entry visible by default
+  const showMoreBtn = document.getElementById('show-more');
+  let shown = 1;
 
-  // Hide all entries except the first on page load
+  // Hide all but the first entry
   entries.forEach((entry, index) => {
     if (index > 0) entry.style.display = 'none';
   });
 
-  // Create "Show Less" button dynamically
+  // Create "Show Less" button
   const showLessBtn = document.createElement('button');
   showLessBtn.textContent = 'Show Less';
   showLessBtn.style.cssText = `
     background:#444; border:none; padding:10px 20px; border-radius:12px;
-    color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s;
-    display:none; margin-left:10px;
+    color:white; cursor:pointer; font-weight:bold; font-size:0.95em;
+    margin-left:10px; display:none; transition:0.3s;
   `;
   showMoreBtn.parentNode.appendChild(showLessBtn);
 
@@ -578,9 +578,9 @@ tsParticles.load("tsparticles", {
       entries[shown].style.display = 'block';
       entries[shown].style.animation = 'fadeIn 0.5s ease';
       shown++;
-      showLessBtn.style.display = 'inline-block'; // show "Show Less" button
+      showLessBtn.style.display = 'inline-block';
     }
-    if (shown === entries.length) showMoreBtn.disabled = true;
+    if (shown >= entries.length) showMoreBtn.disabled = true;
   });
 
   // Show less entries
@@ -588,17 +588,19 @@ tsParticles.load("tsparticles", {
     if (shown > 1) {
       shown--;
       entries[shown].style.display = 'none';
-      if (shown === 1) showLessBtn.style.display = 'none';
       showMoreBtn.disabled = false;
     }
+    if (shown === 1) showLessBtn.style.display = 'none';
   });
 
-  // Animation & hover styles
   const style = document.createElement('style');
   style.innerHTML = `
-    @keyframes fadeIn { from {opacity:0; transform:translateY(8px);} to {opacity:1; transform:translateY(0);} }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(8px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
     #show-more:hover { background:#0088cc; box-shadow:0 0 12px #00aaff; }
-    #show-less:hover { background:#666; box-shadow:0 0 12px #00aaff; }
+    button:hover { filter: brightness(1.2); }
   `;
   document.head.appendChild(style);
 </script>
