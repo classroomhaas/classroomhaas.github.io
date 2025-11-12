@@ -387,15 +387,16 @@
   </h2>
 
   <div style="
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    gap: 40px; 
-    justify-items: center;
-    align-items: start;
+    display: flex; 
+    justify-content: center; 
+    gap: 30px; 
+    flex-wrap: wrap; 
+    max-width: 1100px; 
+    margin: 0 auto;
   ">
     <!-- Left: Changelog -->
     <div id="changelog-container" style="
-      width: 100%;
+      flex: 1 1 350px;
       max-width: 700px;
       background: rgba(20,20,20,0.9);
       border-radius: 18px;
@@ -407,7 +408,7 @@
     ">
       <h3 style="color:#00aaff; font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
 
-      <!-- Entries (keep your existing changelog-entry divs here) -->
+      <!-- Changelog entries go here -->
       <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
         <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.106 — November 10, 2025</h3>
         <p>Added 3 games:</p>
@@ -415,7 +416,6 @@
         <p>Shoot Out Reloaded</p>
         <p>The Impossible Quiz</p>
       </div>
-      <!-- repeat for other changelog entries -->
 
       <button id="show-more" style="
         background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s; display:block; margin:15px auto 0;
@@ -426,7 +426,7 @@
 
     <!-- Right: Mirrors / Other Links -->
     <div id="other-links-container" style="
-      width: 100%;
+      flex: 0 1 300px;
       max-width: 350px;
       background: rgba(20,20,20,0.9);
       border-radius: 18px;
@@ -457,8 +457,7 @@
         </a>
       </div>
     </div>
-
-  </div> <!-- end grid container -->
+  </div>
 </section>
 
 <style>
