@@ -564,8 +564,92 @@ body, main, header, footer, .changelog, .games-grid {
   </a>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 <script>
+  // === GAME SEARCH ===
+  const searchInput = document.getElementById("search-input");
+  const gameCards = document.querySelectorAll(".game-card");
+  const searchPane = document.getElementById("search-pane");
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.trim().toLowerCase();
+    searchPane.innerHTML = '';
+    if (!query) return searchPane.style.display = 'none';
+
+    let results = [];
+    gameCards.forEach(card => {
+      const nameAttr = card.getAttribute("data-name").toLowerCase();
+      if (nameAttr.includes(query)) {
+        const imgSrc = card.querySelector("img").src;
+        const title = card.querySelector(".game-name").textContent;
+        const link = card.parentElement.href;
+        const displayName = nameAttr === 'we become what we behold' ? 'WBWWB' : title;
+
+        const entry = document.createElement("a");
+        entry.href = link;
+        entry.className = "result";
+        entry.style.display = "flex";
+        entry.style.alignItems = "center";
+        entry.style.gap = "0.5rem";
+        entry.style.padding = "4px 0";
+        entry.style.color = "#fff";
+        entry.style.textDecoration = "none";
+        entry.innerHTML = `
+          <div class="search-img"><img src="${imgSrc}" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:6px;"></div>
+          <div class="search-name">${displayName}</div>
+        `;
+        results.push(entry);
+      }
+    });
+
+    if (results.length) {
+      results.forEach(e => searchPane.appendChild(e));
+      searchPane.style.display = 'flex';
+      searchPane.style.flexDirection = 'column';
+    } else searchPane.style.display = 'none';
+  });
+
+  searchInput.addEventListener("keydown", e => { if (e.key === "Enter") e.preventDefault(); });
+
+  // === CHANGLOG SCROLL AND SHOW MORE/LESS ===
+  const changelogBtn = document.getElementById('changelog-btn');
+  const changelogSection = document.getElementById('changelog');
+  const showMoreBtn = document.getElementById('show-more');
+  const entries = document.querySelectorAll('.changelog-entry');
+  let shown = 1; // first entry visible
+
+  // Hide all except first
+  entries.forEach((entry, index) => { if (index > 0) entry.style.display = 'none'; });
+
+  changelogBtn.addEventListener('click', () => {
+    if (changelogSection) changelogSection.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  showMoreBtn.addEventListener('click', () => {
+    if (shown < entries.length) {
+      entries[shown].style.display = 'block';
+      entries[shown].style.animation = 'fadeIn 0.5s ease';
+      shown++;
+      if (shown === entries.length) showMoreBtn.textContent = 'Show Less';
+    } else {
+      for (let i = 1; i < entries.length; i++) entries[i].style.display = 'none';
+      shown = 1;
+      showMoreBtn.textContent = 'Show More';
+    }
+  });
+
+  // === SMART PROXY & PROXY HOME BUTTONS ===
+  const smartProxyBtn = document.getElementById('smart-proxy-btn');
+  const proxyHomeBtn = document.getElementById('proxy-home-btn');
+
+  smartProxyBtn.addEventListener('click', () => {
+    window.location.href = "./proxy.html";
+  });
+
+  proxyHomeBtn.addEventListener('click', () => {
+    window.location.href = "./proxy.html";
+  });
+
+  // === PARTICLE BACKGROUND ===
   tsParticles.load("tsparticles", {
     fullScreen: { enable: false },
     fpsLimit: 60,
@@ -586,112 +670,18 @@ body, main, header, footer, .changelog, .games-grid {
     detectRetina: true
   });
 
-  // Changelog scroll
-  document.getElementById('changelog-btn').addEventListener('click', () => {
-    const section = document.getElementById('changelog');
-    if (section) section.scrollIntoView({ behavior: 'smooth' });
-  });
-
- // Changelog show more (fixed)
-const showMoreBtn = document.getElementById('show-more');
-const entries = document.querySelectorAll('.changelog-entry');
-let shown = 1; // first entry is visible by default
-
-// Hide all entries except the first on page load
-entries.forEach((entry, index) => {
-  if (index > 0) entry.style.display = 'none';
-});
-
-showMoreBtn.addEventListener('click', () => {
-  if (shown < entries.length) {
-    entries[shown].style.display = 'block';
-    entries[shown].style.animation = 'fadeIn 0.5s ease';
-    shown++;
-    if (shown === entries.length) showMoreBtn.textContent = 'See Less';
-  } else {
-    for (let i = 1; i < entries.length; i++) entries[i].style.display = 'none';
-    shown = 1;
-    showMoreBtn.textContent = 'Show More';
-  }
-});
-
+  // Add fadeIn animation style
   const style = document.createElement('style');
   style.innerHTML = `
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    #show-more:hover {
-      background: #0088cc;
-      box-shadow: 0 0 12px #00aaff;
-    }
+    #show-more:hover { background: #0088cc; box-shadow: 0 0 12px #00aaff; }
   `;
   document.head.appendChild(style);
 
-  // Game search
-  const searchInput = document.getElementById("search-input");
-  const gameCards = document.querySelectorAll(".game-card");
-  const searchPane = document.getElementById("search-pane");
-
-  searchInput.addEventListener("input", () => {
-    const query = searchInput.value.trim().toLowerCase();
-    searchPane.innerHTML = '';
-    if (!query) return searchPane.style.display = 'none';
-
-    let results = [];
-    gameCards.forEach(card => {
-      const nameAttr = card.getAttribute("data-name");
-      if (nameAttr.includes(query)) {
-        const imgSrc = card.querySelector("img").src;
-        const title = card.querySelector(".game-name").textContent;
-        const link = card.parentElement.href;
-        const displayName = nameAttr === 'we become what we behold' ? 'WBWWB' : title;
-
-        const entry = document.createElement("a");
-        entry.href = link;
-        entry.className = "result";
-        entry.innerHTML = `<div class="search-img"><img src="${imgSrc}" alt=""></div><div class="search-name">${displayName}</div>`;
-        results.push(entry);
-      }
-    });
-    if (results.length) {
-      results.forEach(e => searchPane.appendChild(e));
-      searchPane.style.display = 'flex';
-    } else searchPane.style.display = 'none';
-  });
-
-  searchInput.addEventListener("keydown", e => { if (e.key === "Enter") e.preventDefault(); });
-
-  // Smart proxy
-  document.getElementById('smart-proxy-btn').addEventListener('click', () => {
-    window.location.href = "./proxy.html";
-  });
-
-  document.getElementById('proxy-home-btn').addEventListener('click', () => {
-  window.location.href = "./proxy.html"; // or whatever your Proxy Home page path is
-});
-
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
-<script>
-tsParticles.load("tsparticles", {
-  fullScreen: { enable: true, zIndex: 0 },
-  fpsLimit: 60,
-  interactivity: {
-    events: { onHover: { enable: true, mode: "repulse" }, resize: true },
-    modes: { repulse: { distance: 100, duration: 0.4 } }
-  },
-  particles: {
-    color: { value: "#4da6ff" },
-    links: { color: "#4da6ff", distance: 120, enable: true, opacity: 0.2, width: 1 },
-    move: { enable: true, speed: 1, outModes: { default: "bounce" } },
-    number: { density: { enable: true, area: 800 }, value: 40 },
-    opacity: { value: 0.3 },
-    shape: { type: "circle" },
-    size: { value: { min: 1, max: 4 } }
-  },
-  detectRetina: true
-});
-
+  
 </script>
 </body>
 </html>
