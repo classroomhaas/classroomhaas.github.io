@@ -401,7 +401,7 @@ tsParticles.load("tsparticles", {
   <div class="header-container">
     <button id="changelog-btn" title="View Changelog">Changelog</button>
     <h1>billybobgames v2</h1>
-    <button id="proxy-home-btn" title="Go to Proxy Home">Proxy Home</button>
+    <button id="proxy-home-btn" title="GotW Entry">GotW Entry</button>
   </div>
 </header>
 
@@ -710,7 +710,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const proxyHomeBtn = document.getElementById('proxy-home-btn');
 
   if(smartProxyBtn) smartProxyBtn.addEventListener('click', () => window.location.href = proxyUrl);
-  if(proxyHomeBtn) proxyHomeBtn.addEventListener('click', () => window.location.href = proxyUrl);
+  if(proxyHomeBtn) proxyHomeBtn.addEventListener('click', () => 
+    window.open("https://docs.google.com/forms/d/e/1FAIpQLSeEDxNxyOYUb0g0hH12EijhNAXDRmr0k0JrtdThVjpFIcbfyg/viewform?usp=dialog", "_blank")
+);
 });
   
 </script>
