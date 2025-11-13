@@ -29,7 +29,7 @@
     position: fixed;
     top: 1rem;
     left: 1rem;
-    z-index: 100;
+    z-index: 105;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -234,16 +234,6 @@
   box-shadow: 0 0 12px #00aaff;
 }
 
-
-  #tsparticles {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1;
-    pointer-events: none;
-  }
-
   /* Smart Proxy button styles */
   #smart-proxy-btn {
     position: fixed;
@@ -335,11 +325,72 @@ body, main, header, footer, .changelog, .games-grid {
   z-index: 1; /* make sure content is above the particles */
 }
 
+  /* Ensure header buttons and title are above particles */
+header, header * {
+    position: relative;  /* ensures z-index works */
+    z-index: 101;        /* higher than particle div */
+}
+
+/* Smart Proxy button */
+#smart-proxy-btn {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 102;        /* above everything */
+}
+
+/* Main content and changelog section */
+main, section#changelog, footer {
+    position: relative;
+    z-index: 100;
+}
+
 </style>
 </head>
 <body>
 
+<!-- Include this in your <body> where you want the background -->
 <div id="tsparticles"></div>
+
+<!-- Include the tsParticles library -->
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+
+<script>
+tsParticles.load("tsparticles", {
+    fullScreen: { enable: false }, // keeps it inside the div
+    fpsLimit: 60,
+    interactivity: {
+        events: {
+            onHover: { enable: true, mode: "repulse" },
+            resize: true
+        },
+        modes: { repulse: { distance: 100, duration: 0.4 } }
+    },
+    particles: {
+        color: { value: "#4da6ff" },
+        links: { color: "#4da6ff", distance: 120, enable: true, opacity: 0.2, width: 1 },
+        move: { enable: true, speed: 1, outModes: { default: "bounce" } },
+        number: { density: { enable: true, area: 800 }, value: 40 },
+        opacity: { value: 0.3 },
+        shape: { type: "circle" },
+        size: { value: { min: 1, max: 4 } }
+    },
+    detectRetina: true
+});
+</script>
+
+<style>
+#tsparticles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1; /* behind your content */
+    pointer-events: none; /* so clicks pass through */
+    background: #2b2b2b; /* fallback background color */
+}
+</style>
 
 <div id="search-container">
   <input type="text" id="search-input" placeholder="Search games..." />
@@ -409,7 +460,7 @@ body, main, header, footer, .changelog, .games-grid {
       <h3 style="color:#00aaff; font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
 
       <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
-        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.107 — November 11, 2025</h3>
+        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.2 — November 11, 2025</h3>
         <p>Adjusted the looks of the site</p>
       </div>
 
@@ -502,54 +553,59 @@ body, main, header, footer, .changelog, .games-grid {
 </section>
 
 <script>
-  const showMoreBtn = document.getElementById('show-more');
-  const entries = document.querySelectorAll('.changelog-entry');
-  let shown = 1; // first entry visible by default
+const entries = document.querySelectorAll('.changelog-entry');
+const showMoreBtn = document.getElementById('show-more');
 
-  // Hide all entries except the first on page load
-  entries.forEach((entry, index) => {
-    if (index > 0) entry.style.display = 'none';
-  });
+// Hide all changelog entries except the first one
+let shown = 1;
+entries.forEach((entry, index) => {
+  if (index > 0) entry.style.display = 'none';
+});
 
-  // Create "Show Less" button dynamically
-  const showLessBtn = document.createElement('button');
-  showLessBtn.textContent = 'Show Less';
-  showLessBtn.style.cssText = `
-    background:#444; border:none; padding:10px 20px; border-radius:12px;
-    color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s;
-    display:none; margin-left:10px;
-  `;
-  showMoreBtn.parentNode.appendChild(showLessBtn);
+// Create and insert the "Show Less" button
+const showLessBtn = document.createElement('button');
+showLessBtn.textContent = 'Show Less';
+showLessBtn.style.cssText = `
+  background:#444; border:none; padding:10px 20px; border-radius:12px;
+  color:white; cursor:pointer; font-weight:bold; font-size:0.95em;
+  transition:0.3s; display:none; margin-left:10px;
+`;
+showMoreBtn.parentNode.appendChild(showLessBtn);
 
-  // Show more entries
-  showMoreBtn.addEventListener('click', () => {
-    if (shown < entries.length) {
-      entries[shown].style.display = 'block';
-      entries[shown].style.animation = 'fadeIn 0.5s ease';
-      shown++;
-      showLessBtn.style.display = 'inline-block'; // show "Show Less" button
-    }
-    if (shown === entries.length) showMoreBtn.disabled = true;
-  });
+// Handle "Show More" clicks
+showMoreBtn.addEventListener('click', () => {
+  if (shown < entries.length) {
+    entries[shown].style.display = 'block';
+    entries[shown].style.animation = 'fadeIn 0.4s ease';
+    shown++;
+    showLessBtn.style.display = 'inline-block';
+  }
+  if (shown === entries.length) {
+    showMoreBtn.disabled = true;
+  }
+});
 
-  // Show less entries
-  showLessBtn.addEventListener('click', () => {
-    if (shown > 1) {
-      shown--;
-      entries[shown].style.display = 'none';
-      if (shown === 1) showLessBtn.style.display = 'none';
-      showMoreBtn.disabled = false;
-    }
-  });
+// Handle "Show Less" clicks
+showLessBtn.addEventListener('click', () => {
+  if (shown > 1) {
+    entries[shown - 1].style.display = 'none';
+    shown--;
+    showMoreBtn.disabled = false;
+    if (shown === 1) showLessBtn.style.display = 'none';
+  }
+});
 
-  // Animation & hover styles
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @keyframes fadeIn { from {opacity:0; transform:translateY(8px);} to {opacity:1; transform:translateY(0);} }
-    #show-more:hover { background:#0088cc; box-shadow:0 0 12px #00aaff; }
-    #show-less:hover { background:#666; box-shadow:0 0 12px #00aaff; }
-  `;
-  document.head.appendChild(style);
+// Add the fade-in animation
+const style = document.createElement('style');
+style.innerHTML = `
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  #show-more:hover { background:#0088cc; box-shadow:0 0 12px #00aaff; }
+  button#show-less:hover { background:#666; box-shadow:0 0 12px #00aaff; }
+`;
+document.head.appendChild(style);
 </script>
 
 <footer>
@@ -565,7 +621,8 @@ body, main, header, footer, .changelog, .games-grid {
 </footer>
 
 <script>
-  // === GAME SEARCH ===
+document.addEventListener('DOMContentLoaded', () => {
+  // ========= SEARCH BAR =========
   const searchInput = document.getElementById("search-input");
   const gameCards = document.querySelectorAll(".game-card");
   const searchPane = document.getElementById("search-pane");
@@ -573,15 +630,15 @@ body, main, header, footer, .changelog, .games-grid {
   searchInput.addEventListener("input", () => {
     const query = searchInput.value.trim().toLowerCase();
     searchPane.innerHTML = '';
-    if (!query) return searchPane.style.display = 'none';
+    if (!query) return searchPane.style.display='none';
 
     let results = [];
     gameCards.forEach(card => {
-      const nameAttr = card.getAttribute("data-name").toLowerCase();
+      const nameAttr = card.getAttribute("data-name")?.toLowerCase() || "";
       if (nameAttr.includes(query)) {
-        const imgSrc = card.querySelector("img").src;
-        const title = card.querySelector(".game-name").textContent;
-        const link = card.parentElement.href;
+        const imgSrc = card.querySelector("img")?.src || '';
+        const title = card.querySelector(".game-name")?.textContent || '';
+        const link = card.parentElement?.href || '#';
         const displayName = nameAttr === 'we become what we behold' ? 'WBWWB' : title;
 
         const entry = document.createElement("a");
@@ -593,94 +650,59 @@ body, main, header, footer, .changelog, .games-grid {
         entry.style.padding = "4px 0";
         entry.style.color = "#fff";
         entry.style.textDecoration = "none";
-        entry.innerHTML = `
-          <div class="search-img"><img src="${imgSrc}" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:6px;"></div>
-          <div class="search-name">${displayName}</div>
-        `;
+        entry.innerHTML = `<div class="search-img"><img src="${imgSrc}" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:6px;"></div><div class="search-name">${displayName}</div>`;
         results.push(entry);
       }
     });
 
-    if (results.length) {
+    if(results.length){
       results.forEach(e => searchPane.appendChild(e));
       searchPane.style.display = 'flex';
       searchPane.style.flexDirection = 'column';
     } else searchPane.style.display = 'none';
   });
 
-  searchInput.addEventListener("keydown", e => { if (e.key === "Enter") e.preventDefault(); });
-
-  // === CHANGLOG SCROLL AND SHOW MORE/LESS ===
+  // ========= CHANGELOG BUTTON =========
   const changelogBtn = document.getElementById('changelog-btn');
   const changelogSection = document.getElementById('changelog');
-  const showMoreBtn = document.getElementById('show-more');
-  const entries = document.querySelectorAll('.changelog-entry');
-  let shown = 1; // first entry visible
-
-  // Hide all except first
-  entries.forEach((entry, index) => { if (index > 0) entry.style.display = 'none'; });
 
   changelogBtn.addEventListener('click', () => {
-    if (changelogSection) changelogSection.scrollIntoView({ behavior: 'smooth' });
-  });
-
-  showMoreBtn.addEventListener('click', () => {
-    if (shown < entries.length) {
-      entries[shown].style.display = 'block';
-      entries[shown].style.animation = 'fadeIn 0.5s ease';
-      shown++;
-      if (shown === entries.length) showMoreBtn.textContent = 'Show Less';
-    } else {
-      for (let i = 1; i < entries.length; i++) entries[i].style.display = 'none';
-      shown = 1;
-      showMoreBtn.textContent = 'Show More';
+    if(changelogSection){
+      const yOffset = -20;
+      const y = changelogSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
   });
 
-  // === SMART PROXY & PROXY HOME BUTTONS ===
+  // ========= SHOW MORE / SHOW LESS =========
+  const showMoreBtn = document.getElementById('show-more');
+  const entries = document.querySelectorAll('.changelog-entry');
+  let shown = 1;
+
+  entries.forEach((entry,index) => { if(index > 0) entry.style.display='none'; });
+
+  showMoreBtn.addEventListener('click', () => {
+    if(shown < entries.length){
+      entries[shown].style.display='block';
+      entries[shown].style.animation='fadeIn 0.5s ease';
+      shown++;
+      if(shown === entries.length) showMoreBtn.textContent='Show Less';
+    } else {
+      for(let i=1; i<entries.length; i++) entries[i].style.display='none';
+      shown = 1;
+      showMoreBtn.textContent='Show More';
+    }
+  });
+
+  // ========= PROXY BUTTONS =========
+  const proxyUrl = './proxy.html'; // change to the actual path of your proxy page
+
   const smartProxyBtn = document.getElementById('smart-proxy-btn');
   const proxyHomeBtn = document.getElementById('proxy-home-btn');
 
-  smartProxyBtn.addEventListener('click', () => {
-    window.location.href = "./proxy.html";
-  });
-
-  proxyHomeBtn.addEventListener('click', () => {
-    window.location.href = "./proxy.html";
-  });
-
-  // === PARTICLE BACKGROUND ===
-  tsParticles.load("tsparticles", {
-    fullScreen: { enable: false },
-    fpsLimit: 60,
-    interactivity: {
-      events: { onHover: { enable: true, mode: "repulse" }, resize: true },
-      modes: { repulse: { distance: 100, duration: 0.4 } }
-    },
-    particles: {
-      color: { value: "#4da6ff" },
-      links: { color: "#4da6ff", distance: 120, enable: true, opacity: 0.2, width: 1 },
-      collisions: { enable: false },
-      move: { enable: true, speed: 1, outModes: { default: "bounce" } },
-      number: { density: { enable: true, area: 800 }, value: 40 },
-      opacity: { value: 0.3 },
-      shape: { type: "circle" },
-      size: { value: { min: 1, max: 4 } }
-    },
-    detectRetina: true
-  });
-
-  // Add fadeIn animation style
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    #show-more:hover { background: #0088cc; box-shadow: 0 0 12px #00aaff; }
-  `;
-  document.head.appendChild(style);
-
+  if(smartProxyBtn) smartProxyBtn.addEventListener('click', () => window.location.href = proxyUrl);
+  if(proxyHomeBtn) proxyHomeBtn.addEventListener('click', () => window.location.href = proxyUrl);
+});
   
 </script>
 </body>
