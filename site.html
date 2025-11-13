@@ -553,70 +553,59 @@ tsParticles.load("tsparticles", {
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  // ======= CHANGELOG: show more / show less =======
-  // Guard: if we've already initialized, do nothing
-  if (window.__changelogInitialized) return;
-  window.__changelogInitialized = true;
+const entries = document.querySelectorAll('.changelog-entry');
+const showMoreBtn = document.getElementById('show-more');
 
-  const showMoreBtn = document.getElementById('show-more');
-  if (!showMoreBtn) return; // nothing to do if button missing
-
-  const entries = Array.from(document.querySelectorAll('.changelog-entry'));
-  // If no entries or only one entry, hide the button
-  if (!entries.length || entries.length === 1) {
-    showMoreBtn.style.display = 'none';
-    return;
-  }
-
-  // Initially hide all entries except first
-  let shownCount = 1;
-  entries.forEach((el, idx) => {
-    el.style.display = idx === 0 ? 'block' : 'none';
-  });
-
-  // Ensure the button shows appropriate text
-  const updateButtonText = () => {
-    showMoreBtn.textContent = shownCount < entries.length ? 'Show More' : 'Show Less';
-  };
-  updateButtonText();
-
-  // When clicked, progressively reveal entries until all shown, then collapse.
-  showMoreBtn.addEventListener('click', () => {
-    if (shownCount < entries.length) {
-      // reveal the next entry
-      entries[shownCount].style.display = 'block';
-      // trigger CSS animation if available
-      entries[shownCount].style.animation = 'fadeIn 0.45s ease';
-      shownCount++;
-
-      // If we've now shown more than 1 entry, ensure button indicates collapse is available
-      if (shownCount > 1) {
-        showMoreBtn.textContent = 'Show Less';
-      }
-
-      // If we've shown all, keep button as "Show Less"
-      if (shownCount === entries.length) {
-        showMoreBtn.textContent = 'Show Less';
-      }
-    } else {
-      // Collapse back to only the first entry
-      for (let i = 1; i < entries.length; i++) {
-        entries[i].style.display = 'none';
-        entries[i].style.animation = '';
-      }
-      shownCount = 1;
-      updateButtonText();
-      // scroll a little so user sees the top of changelog (optional)
-      const changelogSection = document.getElementById('changelog');
-      if (changelogSection) {
-        const yOffset = -20;
-        const y = changelogSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-      }
-    }
-  });
+// Hide all changelog entries except the first one
+let shown = 1;
+entries.forEach((entry, index) => {
+  if (index > 0) entry.style.display = 'none';
 });
+
+// Create and insert the "Show Less" button
+const showLessBtn = document.createElement('button');
+showLessBtn.textContent = 'Show Less';
+showLessBtn.style.cssText = `
+  background:#444; border:none; padding:10px 20px; border-radius:12px;
+  color:white; cursor:pointer; font-weight:bold; font-size:0.95em;
+  transition:0.3s; display:none; margin-left:10px;
+`;
+showMoreBtn.parentNode.appendChild(showLessBtn);
+
+// Handle "Show More" clicks
+showMoreBtn.addEventListener('click', () => {
+  if (shown < entries.length) {
+    entries[shown].style.display = 'block';
+    entries[shown].style.animation = 'fadeIn 0.4s ease';
+    shown++;
+    showLessBtn.style.display = 'inline-block';
+  }
+  if (shown === entries.length) {
+    showMoreBtn.disabled = true;
+  }
+});
+
+// Handle "Show Less" clicks
+showLessBtn.addEventListener('click', () => {
+  if (shown > 1) {
+    entries[shown - 1].style.display = 'none';
+    shown--;
+    showMoreBtn.disabled = false;
+    if (shown === 1) showLessBtn.style.display = 'none';
+  }
+});
+
+// Add the fade-in animation
+const style = document.createElement('style');
+style.innerHTML = `
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  #show-more:hover { background:#0088cc; box-shadow:0 0 12px #00aaff; }
+  button#show-less:hover { background:#666; box-shadow:0 0 12px #00aaff; }
+`;
+document.head.appendChild(style);
 </script>
 
 <footer>
