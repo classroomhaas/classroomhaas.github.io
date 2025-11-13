@@ -553,56 +553,45 @@ tsParticles.load("tsparticles", {
 </section>
 
 <script>
-  const entries = document.querySelectorAll('.changelog-entry');
-  const showMoreBtn = document.getElementById('show-more');
-  let shown = 1;
+const showMoreBtn = document.getElementById('show-more');
+const showLessBtn = document.getElementById('show-less');
+const entries = document.querySelectorAll('.changelog-entry');
+let shown = 1;
 
-  // Hide all but the first entry
-  entries.forEach((entry, index) => {
-    if (index > 0) entry.style.display = 'none';
-  });
+// Hide all but the first
+entries.forEach((entry, i) => { if (i > 0) entry.style.display = 'none'; });
 
-  // Create "Show Less" button
-  const showLessBtn = document.createElement('button');
-  showLessBtn.textContent = 'Show Less';
-  showLessBtn.style.cssText = `
-    background:#444; border:none; padding:10px 20px; border-radius:12px;
-    color:white; cursor:pointer; font-weight:bold; font-size:0.95em;
-    margin-left:10px; display:none; transition:0.3s;
-  `;
-  showMoreBtn.parentNode.appendChild(showLessBtn);
+// --- Show More ---
+showMoreBtn.addEventListener('click', () => {
+  if (shown < entries.length) {
+    entries[shown].style.display = 'block';
+    entries[shown].style.animation = 'fadeIn 0.4s ease';
+    shown++;
+  }
+  // disable button when all are visible
+  if (shown >= entries.length) showMoreBtn.disabled = true;
+  // always enable "Show Less" when there's more than one visible
+  if (shown > 1) showLessBtn.disabled = false;
+});
 
-  // Show more entries
-  showMoreBtn.addEventListener('click', () => {
-    if (shown < entries.length) {
-      entries[shown].style.display = 'block';
-      entries[shown].style.animation = 'fadeIn 0.5s ease';
-      shown++;
-      showLessBtn.style.display = 'inline-block';
-    }
-    if (shown >= entries.length) showMoreBtn.disabled = true;
-  });
+// --- Show Less ---
+showLessBtn.addEventListener('click', () => {
+  if (shown > 1) {
+    shown--;
+    entries[shown].style.display = 'none';
+  }
+  // re-enable "Show More"
+  showMoreBtn.disabled = false;
+  // disable "Show Less" again when only one remains
+  if (shown <= 1) showLessBtn.disabled = true;
+});
 
-  // Show less entries
-  showLessBtn.addEventListener('click', () => {
-    if (shown > 1) {
-      shown--;
-      entries[shown].style.display = 'none';
-      showMoreBtn.disabled = false;
-    }
-    if (shown === 1) showLessBtn.style.display = 'none';
-  });
-
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(8px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
-    #show-more:hover { background:#0088cc; box-shadow:0 0 12px #00aaff; }
-    button:hover { filter: brightness(1.2); }
-  `;
-  document.head.appendChild(style);
+// optional: simple fade-in animation
+const style = document.createElement('style');
+style.innerHTML = `
+@keyframes fadeIn { from {opacity:0; transform:translateY(8px);} to {opacity:1; transform:translateY(0);} }
+`;
+document.head.appendChild(style);
 </script>
 
 <footer>
