@@ -1,59 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Flash Game Player (Ruffle)</title>
-    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+  <meta charset="UTF-8">
+  <title>Flash Game Player (Ruffle)</title>
 
-    <style>
-        body {
-            margin: 0;
-            background: #1c1c1c;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        #header {
-            padding: 10px;
-            background: #000000aa;
-            font-size: 18px;
-            text-align: center;
-        }
-        #player-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        embed {
-            width: 90vw;
-            height: 90vh;
-        }
-    </style>
+  <!-- Ruffle script -->
+  <script src="ruffle/ruffle.js"></script>
+
+  <style>
+    body {
+      background: #111;
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      font-family: Arial;
+    }
+    #flash-container {
+      width: 800px;
+      margin: auto;
+    }
+  </style>
 </head>
-
 <body>
 
-<div id="header">Flash Game Player (Ruffle)</div>
+  <h1>Flash Game Player (Ruffle)</h1>
 
-<!-- ⬇️ THIS MUST EXIST OR NOTHING WILL LOAD -->
-<div id="player-container">
-    <div id="player"></div>
-</div>
+  <div id="flash-container"></div>
 
-<script>
+  <script>
+    // Get ?file= parameter
     const params = new URLSearchParams(window.location.search);
-    const swf = params.get("file");
+    const swfFile = params.get("file");
 
-    if (!swf) {
-        document.getElementById("player").innerHTML = "<p>No SWF loaded.</p>";
+    if (!swfFile) {
+      document.body.innerHTML = "<h2>Error: No SWF file specified.</h2>";
     } else {
-        document.getElementById("player").innerHTML =
-            `<embed src="${swf}" width="100%" height="100%">`;
+      const ruffle = window.RufflePlayer.newest();
+      const player = ruffle.createPlayer();
+      document.getElementById("flash-container").appendChild(player);
+      player.load(swfFile);
     }
-</script>
+  </script>
 
 </body>
 </html>
