@@ -1,47 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Flash Game Player (Ruffle)</title>
-
-  <!-- Ruffle script -->
+  <title>Ruffle</title>
   <script src="ruffle/ruffle.js"></script>
-
-  <style>
-    body {
-      background: #111;
-      color: white;
-      text-align: center;
-      margin: 0;
-      padding: 20px;
-      font-family: Arial;
-    }
-    #flash-container {
-      width: 800px;
-      margin: auto;
-    }
-  </style>
 </head>
 <body>
-
-  <h1>Flash Game Player (Ruffle)</h1>
-
-  <div id="flash-container"></div>
-
-  <script>
-    // Get ?file= parameter
-    const params = new URLSearchParams(window.location.search);
-    const swfFile = params.get("file");
-
-    if (!swfFile) {
-      document.body.innerHTML = "<h2>Error: No SWF file specified.</h2>";
-    } else {
-      const ruffle = window.RufflePlayer.newest();
-      const player = ruffle.createPlayer();
-      document.getElementById("flash-container").appendChild(player);
-      player.load(swfFile);
-    }
-  </script>
+  <h1>Play SWF File</h1>
+  
+  <div id="flash-container">
+    <object type="application/x-shockwave-flash" data="./ruffle/files/breakingthebank.swf" width="800" height="600"></object>
+  </div>
 
 </body>
 </html>
