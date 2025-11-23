@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Infiltrating the Airship</title>
+  <script src="ruffle/ruffle.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background: black;
+      overflow: hidden;
+    }
+
+    #flash-container {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    #flash-container object {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="flash-container">
+    <object type="application/x-shockwave-flash" data="./ruffle/files/infiltratingtheairship.swf"></object>
+  </div>
+
+  <script>
+    // Initialize Ruffle
+    const ruffle = window.RufflePlayer.newest();
+    const container = document.getElementById("flash-container");
+    const player = ruffle.createPlayer();
+
+    // Replace object with Ruffle player
+    const swf = container.querySelector('object');
+    const swfUrl = swf.getAttribute('data');
+    container.innerHTML = '';
+    container.appendChild(player);
+
+    player.style.width = "100%";
+    player.style.height = "100%";
+    player.load(swfUrl);
+  </script>
+</body>
+</html>
