@@ -53,7 +53,6 @@
       100% { background-position: 0% 50%; }
     }
     #button-container {
-      <div id="random-text" style="margin-top: 10px; font-size: 12px; color: #666;"></div>
       display: flex;
       gap: 40px;
       z-index: 10;
@@ -170,24 +169,7 @@
   </div>
 </div>
 
-  <script>
-  const randomTexts = [
-    "Welcome back.",
-    "Have you voted yet?",
-    "Don't let the teachers catch ya.",
-    "Check out our YouTube!",
-    "Join our Discord!",
-  ];
-
-  function showRandomText() {
-    const chosen = randomTexts[Math.floor(Math.random() * randomTexts.length)];
-    document.getElementById("random-text").textContent = chosen;
-  }
-
-  window.addEventListener("load", () => {
-    showRandomText();
-  });
-</script>
+  <div id="random-text" style="margin-top: 10px; font-size: 12px; color: #666;"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
 <script>
@@ -336,19 +318,35 @@ newTab.opener = null;
     newTab.document.body.appendChild(script);
   });
 
-  function checkPassword() {
-    const input = document.getElementById("passwordInput").value;
-    if (input === "lebronjames") {
-      document.getElementById("passwordScreen").style.display = "none";
-      document.getElementById("realContent").style.display = "flex";
-    } else {
-      document.getElementById("error").style.display = "block";
-    }
-  }
-
   document.getElementById("passwordInput").addEventListener("keydown", function(e) {
     if (e.key === "Enter") checkPassword();
   });
+
+  // Text you can edit anytime:
+const randomTexts = [
+  "Welcome back!",
+  "Did you vote yet?",
+  "Don't let the teachers catch ya!",
+  "Check out our YouTube!",
+  "Join our Discord!"
+];
+
+function showRandomText() {
+  const chosen = randomTexts[Math.floor(Math.random() * randomTexts.length)];
+  document.getElementById("random-text").textContent = chosen;
+}
+
+// Show after unlocking:
+function checkPassword() {
+  const input = document.getElementById("passwordInput").value;
+  if (input === "lebronjames") {
+    document.getElementById("passwordScreen").style.display = "none";
+    document.getElementById("realContent").style.display = "flex";
+    showRandomText(); // ← ADD THIS
+  } else {
+    document.getElementById("error").style.display = "block";
+  }
+}
 </script>
 
 </body>
