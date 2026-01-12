@@ -239,7 +239,8 @@
 
   #proxy-home-btn {
   position: absolute;
-  left: calc(50% + 175px);
+  transform: translateX(175px);
+  will-change: transform;
   background: #00aaff;
   border: none;
   padding: 10px 20px;
@@ -249,13 +250,19 @@
   font-weight: bold;
   font-size: 1em;
   transition: 0.3s;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 
 #proxy-home-btn:hover {
   background: #0088cc;
   box-shadow: 0 0 12px #00aaff;
-}
+  transform: translateX(175px) translateY(-2px);
 
+}
+#proxy-home-btn:active {
+  transform: translateX(175px) translateY(0);
+}
   /* Smart Proxy button styles */
   #smart-proxy-btn {
     position: fixed;
