@@ -150,7 +150,24 @@
     position: relative;
     z-index: 10;
   }
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
 
+/* NEW: Force random button to fit properly */
+#random-game-card {
+  grid-column: span 1;
+}
+
+/* Ensure it flows naturally with other cards */
+@media (min-width: 768px) {
+  .games-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
   a.game-link {
     text-decoration: none;
     color: inherit;
@@ -163,6 +180,7 @@
     box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
     text-align: center;
     height: 300px;
+    width: auto;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -321,7 +339,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 0; /* behind everything else */
-  pointer-events: none; /* so it doesn't block clicks */
+  pointer-events: auto; /* so it doesn't block clicks */
 }
 
 body, main, header, footer, .changelog, .games-grid {
@@ -494,6 +512,47 @@ tsParticles.load("tsparticles", {
     <a href="./xtrenchrun/" class="game-link"><div class="game-card" data-name="x-trench run"><div class="game-image"><img src="./siteimages/gamelogos/xtrenchrun.png" alt="X-Trench Run" /></div><div class="game-name">X-Trench Run</div></div></a>
     <a href="./yohoho/" class="game-link"><div class="game-card" data-name="yohoho.io"><div class="game-image"><img src="./siteimages/gamelogos/yohoho.png" alt="Yohoho.io" /></div><div class="game-name">Yohoho.io</div></div></a>
     <a href="./youtube.html" class="game-link"><div class="game-card" data-name="youtube"><div class="game-image"><img src="./siteimages/gamelogos/youtube.png" alt="YouTube" /></div><div class="game-name">🌐 YouTube 🌐</div></div></a>
+    <!-- 🎲 Random Game Button - FIXED -->
+<a href="#" id="random-game-link" class="game-link">
+  <div class="game-card" id="random-game-card" data-name="random">
+    <div class="game-image">
+      <img src="./siteimages/gamelogos/random.png" alt="Random Game" />
+    </div>
+    <div class="game-name">🎲 Random Game 🎲</div>
+  </div>
+</a>
+  </div>
+  
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Random game script loaded'); // Debug log
+    
+    const randomLink = document.getElementById('random-game-link');
+    const randomCard = document.getElementById('random-game-card');
+    const allGames = document.querySelectorAll('.game-link:not(#random-game-link)');
+    
+    console.log('Found games:', allGames.length); // Debug log
+    
+    if (randomLink && allGames.length > 0) {
+        randomLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Random button clicked!'); // Debug log
+            
+            const randomGame = allGames[Math.floor(Math.random() * allGames.length)];
+            console.log('Redirecting to:', randomGame.href); // Debug log
+            
+            window.location.href = randomGame.href;
+        });
+        
+        // Visual feedback
+        randomLink.style.cursor = 'pointer';
+        randomCard.style.cursor = 'pointer';
+    } else {
+        console.error('Random game setup failed - missing elements');
+    }
+});
+</script>
   </div>
 </main>
 
