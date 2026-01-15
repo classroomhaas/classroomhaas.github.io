@@ -118,12 +118,12 @@
     margin: 0;
   }
   
-/* === CHANGELOG (RIGHT OF SMART PROXY) === */
+/* === CHANGELOG (LEFT OF TITLE, MIRRORS GOTW ENTRY) === */
 #changelog-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: calc(50% + 120px);
+  left: calc(50% - 325px);
   background:#00aaff;
   border:none;
   padding:10px 20px;
@@ -265,7 +265,6 @@
   box-shadow: 0 0 12px #00aaff;
 }
   
-/* === RANDOM GAME (RIGHT OF GOTW ENTRY) === */
 #random-game-btn {
   position: absolute;
   top: 50%;
@@ -273,12 +272,12 @@
   left: calc(50% + 360px);
   background:#00aaff;
   border:none;
-  padding:10px 20px;
+  padding:10px 20px; /* SAME as others */
   border-radius:12px;
   color:white;
   cursor:pointer;
   font-weight:bold;
-  font-size:1em;
+  font-size:0.95em; /* 👈 slightly smaller for emoji balance */
   transition:0.3s;
   z-index:101;
 }
@@ -748,28 +747,26 @@ document.addEventListener('DOMContentLoaded', () => {
 );
 });
 
-  // ========= RANDOM GAME BUTTON (NO HEADER HTML EDITS) =========
-const randomGameBtn = document.createElement('button');
-randomGameBtn.id = 'random-game-btn';
-randomGameBtn.textContent = '🎲 Random Game 🎲';
+  // ========= RANDOM GAME BUTTON =========
+  const randomGameBtn = document.createElement('button');
+  randomGameBtn.id = 'random-game-btn';
+  randomGameBtn.textContent = '🎲 Random Game 🎲';
 
-// Add it to the header
-document.querySelector('header').appendChild(randomGameBtn);
+  document.querySelector('header').appendChild(randomGameBtn);
 
-// Get all game links
-const gameLinks = document.querySelectorAll('.game-link');
+  const gameLinks = document.querySelectorAll('.game-link');
 
-randomGameBtn.addEventListener('click', () => {
-  const filteredGames = [...gameLinks].filter(link =>
-    !link.href.includes('youtube') &&
-    !link.href.includes('tiktok')
-  );
+  randomGameBtn.addEventListener('click', () => {
+    const filteredGames = [...gameLinks].filter(link =>
+      !link.href.includes('youtube') &&
+      !link.href.includes('tiktok')
+    );
 
-  if (!filteredGames.length) return;
+    if (!filteredGames.length) return;
 
-  const randomIndex = Math.floor(Math.random() * filteredGames.length);
-  window.location.href = filteredGames[randomIndex].href;
-});
+    const randomIndex = Math.floor(Math.random() * filteredGames.length);
+    window.location.href = filteredGames[randomIndex].href;
+  });
   
 </script>
 </body>
