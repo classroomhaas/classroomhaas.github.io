@@ -238,29 +238,61 @@
   box-shadow: 0 0 12px #00aaff;
 }
 
-  /* Smart Proxy button styles */
-  #smart-proxy-btn {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    background: #4da6ff;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 0 0 6px rgba(77, 166, 255, 0.7);
-    transition: background-color 0.3s ease;
-    white-space: nowrap;
-    z-index: 101;
-  }
+/* === MOVE SMART PROXY NEXT TO CHANGELOG (NO HTML CHANGES) === */
+#smart-proxy-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: calc(50% + 40px); /* sits next to Changelog */
+  background:#00aaff;
+  border:none;
+  padding:10px 18px;
+  border-radius:12px;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:0.95em;
+  transition:0.3s;
+  z-index:101;
+}
 
-  #smart-proxy-btn:hover {
-    background: #1e90ff;
+#smart-proxy-btn:hover {
+  background:#0088cc;
+  box-shadow: 0 0 12px #00aaff;
+}
+
+/* === RANDOM GAME BUTTON === */
+#random-game-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: calc(50% - 120px); /* to the right of Smart Proxy */
+  background:#00aaff;
+  border:none;
+  padding:10px 18px;
+  border-radius:12px;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:0.95em;
+  transition:0.3s;
+  z-index:101;
+}
+
+#random-game-btn:hover {
+  background:#0088cc;
+  box-shadow: 0 0 12px #00aaff;
+}
+
+/* === MOBILE FIX === */
+@media (max-width: 900px) {
+  #smart-proxy-btn,
+  #random-game-btn {
+    position: static;
+    transform: none;
+    margin-top: 10px;
   }
+}
 
   /* Updated games grid and responsive changelog layout */
 
@@ -409,8 +441,6 @@ tsParticles.load("tsparticles", {
   </div>
 </header>
 
-<button id="smart-proxy-btn" title="Smart Proxy">Smart Proxy</button>
-
 <main>
   <div class="games-grid" id="games-grid">
     <a href="./bitlife/" class="game-link"><div class="game-card" data-name="bitlife"><div class="game-image"><img src="./siteimages/gamelogos/bitlife.jpeg" alt="Bitlife" /></div><div class="game-name">Bitlife</div></div></a>
@@ -510,6 +540,11 @@ tsParticles.load("tsparticles", {
       <h3 style="color:#00aaff; font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
 
       <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
+        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.210 — January 14, 2026</h3> 
+        <p>Added 🎲 Random Game 🎲 button and moved Smart Proxy</p>
+      </div>
+
+      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
         <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.209 — January 9, 2026</h3> 
         <p>Added 2 games:</p>
         <p> - Champion Island</p>
@@ -520,34 +555,6 @@ tsParticles.load("tsparticles", {
         <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.208 — January 7, 2026</h3> 
         <p>Added 1 game:</p>
         <p> - YouTube</p>
-      </div>
-
-      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
-        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.207 — December 21-23, 2025</h3>
-        <p>Added 15 games:</p>
-        <p> - FNAF 2</p>
-        <p> - FNAF 3</p>
-        <p> - FNAF 4</p>
-        <p> - FNAF 5</p>
-        <p> - FNAF 6</p>
-        <p> - Ultimate Custom Night</p>
-        <p> - Mario</p>
-        <p> - Pixel Speedrun</p>
-        <br>
-        <p>Updated 1 game:</p>
-        <p> - FNAF 1</p>
-        <p>------------------------------</p>
-        <p> - Icy Purple Head 3</p>
-        <p> - The Final Earth 2</p>
-        <p> - Geometry Dash Remastered</p>
-        <br>
-        <p>Remove 1 game:</p>
-        <p> - 1v1.LOL<p>
-        <p>------------------------------</p>
-        <p> - Blumgi Slime</p>
-        <p> - Superhot</p>
-        <p> - Tiny Fishing</p>
-        <p> - X-Trench Run</p>
       </div>
 
       <div style="text-align:center; margin-top:10px;">
@@ -740,6 +747,30 @@ document.addEventListener('DOMContentLoaded', () => {
   if(proxyHomeBtn) proxyHomeBtn.addEventListener('click', () => 
     window.open("https://docs.google.com/forms/d/e/1FAIpQLSeEDxNxyOYUb0g0hH12EijhNAXDRmr0k0JrtdThVjpFIcbfyg/viewform?usp=dialog", "_blank")
 );
+});
+
+  // ========= RANDOM GAME BUTTON (NO HEADER HTML EDITS) =========
+const randomGameBtn = document.createElement('button');
+randomGameBtn.id = 'random-game-btn';
+randomGameBtn.textContent = '🎲 Random Game 🎲';
+
+// Add it to the header
+document.querySelector('header').appendChild(randomGameBtn);
+
+// Get all game links
+const gameLinks = document.querySelectorAll('.game-link');
+
+randomGameBtn.addEventListener('click', () => {
+  const filteredGames = [...gameLinks].filter(link =>
+    !link.href.includes('youtube') &&
+    !link.href.includes('tiktok')
+  );
+
+  if (!filteredGames.length) return;
+
+  const randomIndex = Math.floor(Math.random() * filteredGames.length);
+  window.location.href = filteredGames[randomIndex].href;
+;
 });
   
 </script>
