@@ -123,7 +123,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: calc(50% + 80px);
+  right: calc(50% + 120px);
   background:#00aaff;
   border:none;
   padding:10px 20px;
@@ -242,12 +242,12 @@
   box-shadow: 0 0 12px #00aaff;
 }
 
-/* === SMART PROXY (LEFT) === */
+/* === SMART PROXY (LEFTMOST) === */
 #smart-proxy-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: calc(50% + 220px);
+  right: calc(50% + 260px);
   background:#00aaff;
   border:none;
   padding:10px 20px;
@@ -265,12 +265,12 @@
   box-shadow: 0 0 12px #00aaff;
 }
   
-/* === RANDOM GAME (FAR RIGHT) === */
+/* === RANDOM GAME (RIGHT OF GOTW ENTRY) === */
 #random-game-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: 1.5rem;
+  left: calc(50% + 360px);
   background:#00aaff;
   border:none;
   padding:10px 20px;
@@ -288,17 +288,17 @@
   box-shadow: 0 0 12px #00aaff;
 }
 
-/* === MOBILE SAFETY === */
 @media (max-width: 900px) {
   #smart-proxy-btn,
   #changelog-btn,
+  #proxy-home-btn,
   #random-game-btn {
     position: static;
     transform: none;
     margin-top: 10px;
   }
 }
-
+  
   /* Updated games grid and responsive changelog layout */
 
 .games-grid {
