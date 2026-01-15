@@ -90,40 +90,44 @@
     white-space: nowrap;
   }
 
-  header {
-    background-color: #3a3a3a;
-    padding: 1.2rem 2rem;
-    position: relative;
-    z-index: 10;
-  }
+ header {
+  background-color: #3a3a3a;
+  padding: 1.2rem 2rem;
+  z-index: 10;
+}
 
-  header .header-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    width: 100%;
-  }
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
 
-  header h1 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    font-size: 2rem;
-    background: linear-gradient(90deg, #4da6ff, #1e90ff, #4da6ff);
-    background-size: 200% 200%;
-    animation: gradientShift 3s ease infinite;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 8px rgba(77, 166, 255, 0.6);
-    margin: 0;
-  }
+.header-container h1 {
+  margin: 0 10px;
+}
+
+.header-container button {
+  background: #00aaff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95em;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+.header-container button:hover {
+  background: #0088cc;
+  box-shadow: 0 0 12px #00aaff;
+}
   
 /* === CHANGELOG (LEFT OF TITLE, MIRRORS GOTW ENTRY) === */
 #changelog-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: calc(50% - 325px);
   background:#00aaff;
   border:none;
   padding:10px 20px;
@@ -133,7 +137,6 @@
   font-weight:bold;
   font-size:1em;
   transition:0.3s;
-  z-index:101;
 }
 
 #changelog-btn:hover {
@@ -224,8 +227,6 @@
 
 
   #proxy-home-btn {
-  position: absolute;
-  left: calc(50% + 175px);
   background: #00aaff;
   border: none;
   padding: 10px 20px;
@@ -244,10 +245,6 @@
 
 /* === SMART PROXY (LEFTMOST) === */
 #smart-proxy-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: calc(50% + 260px);
   background:#00aaff;
   border:none;
   padding:10px 20px;
@@ -257,7 +254,6 @@
   font-weight:bold;
   font-size:1em;
   transition:0.3s;
-  z-index:101;
 }
 
 #smart-proxy-btn:hover {
@@ -266,10 +262,6 @@
 }
   
 #random-game-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: calc(50% + 360px);
   background:#00aaff;
   border:none;
   padding:10px 20px; /* SAME as others */
@@ -279,7 +271,6 @@
   font-weight:bold;
   font-size:0.95em; /* 👈 slightly smaller for emoji balance */
   transition:0.3s;
-  z-index:101;
 }
 
 #random-game-btn:hover {
@@ -774,18 +765,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ========= RANDOM GAME BUTTON =========
   const gameLinks = document.querySelectorAll('.game-link');
+const randomGameBtn = document.getElementById('random-game-btn');
 
-  randomGameBtn.addEventListener('click', () => {
-    const filteredGames = [...gameLinks].filter(link =>
-      !link.href.includes('youtube') &&
-      !link.href.includes('tiktok')
-    );
+randomGameBtn.addEventListener('click', () => {
+  const filteredGames = [...gameLinks].filter(link =>
+    !link.href.includes('youtube') &&
+    !link.href.includes('tiktok')
+  );
 
-    if (!filteredGames.length) return;
+  if (!filteredGames.length) return;
 
-    const randomIndex = Math.floor(Math.random() * filteredGames.length);
-    window.location.href = filteredGames[randomIndex].href;
-  });
+  const randomIndex = Math.floor(Math.random() * filteredGames.length);
+  window.location.href = filteredGames[randomIndex].href;
+});
   
 </script>
 </body>
