@@ -90,52 +90,64 @@
     white-space: nowrap;
   }
 
-  header {
-    background-color: #3a3a3a;
-    padding: 1.2rem 2rem;
-    position: relative;
-    z-index: 10;
-  }
+ header {
+  background-color: #3a3a3a;
+  padding: 1.2rem 2rem;
+  z-index: 10;
+}
 
-  header .header-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    width: 100%;
-  }
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
 
-  header h1 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    font-size: 2rem;
-    background: linear-gradient(90deg, #4da6ff, #1e90ff, #4da6ff);
-    background-size: 200% 200%;
-    animation: gradientShift 3s ease infinite;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 8px rgba(77, 166, 255, 0.6);
-    margin: 0;
-  }
+.header-container h1 {
+  margin: 0 10px;
+  color: #00aaff;
+  font-size: 1.8em;
+  text-shadow:
+    0 0 6px #00aaff,
+    0 0 12px rgba(0,170,255,0.8);
+}
 
-  #changelog-btn {
-    position: absolute;
-    right: calc(50% + 175px);
-    background:#00aaff;
-    border:none;
-    padding:10px 20px;
-    border-radius:12px;
-    color:white;
-    cursor:pointer;
-    font-weight:bold;
-    font-size:1em;
-    transition:0.3s;
-  }
+.header-container button {
+  background: #00aaff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95em;
+  transition: 0.3s;
+  white-space: nowrap;
+}
 
-  #changelog-btn:hover {
-    background:#0088cc;
-    box-shadow: 0 0 12px #00aaff;
-  }
+.header-container button:hover {
+  background: #0088cc;
+  box-shadow: 0 0 12px #00aaff;
+}
+  
+/* === CHANGELOG (LEFT OF TITLE, MIRRORS GOTW ENTRY) === */
+#changelog-btn {
+  background:#00aaff;
+  border:none;
+  padding:10px 20px;
+  border-radius:12px;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:1em;
+  transition:0.3s;
+}
+
+#changelog-btn:hover {
+  background:#0088cc;
+  box-shadow: 0 0 12px #00aaff;
+}
 
   @keyframes gradientShift {
     0% { background-position: 0% 50%; }
@@ -220,8 +232,6 @@
 
 
   #proxy-home-btn {
-  position: absolute;
-  left: calc(50% + 175px);
   background: #00aaff;
   border: none;
   padding: 10px 20px;
@@ -238,30 +248,52 @@
   box-shadow: 0 0 12px #00aaff;
 }
 
-  /* Smart Proxy button styles */
-  #smart-proxy-btn {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    background: #4da6ff;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 0 0 6px rgba(77, 166, 255, 0.7);
-    transition: background-color 0.3s ease;
-    white-space: nowrap;
-    z-index: 101;
-  }
+/* === SMART PROXY (LEFTMOST) === */
+#smart-proxy-btn {
+  background:#00aaff;
+  border:none;
+  padding:10px 20px;
+  border-radius:12px;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:1em;
+  transition:0.3s;
+}
 
-  #smart-proxy-btn:hover {
-    background: #1e90ff;
-  }
+#smart-proxy-btn:hover {
+  background:#0088cc;
+  box-shadow: 0 0 12px #00aaff;
+}
+  
+#random-game-btn {
+  background:#00aaff;
+  border:none;
+  padding:10px 20px; /* SAME as others */
+  border-radius:12px;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:0.95em; /* 👈 slightly smaller for emoji balance */
+  transition:0.3s;
+}
 
+#random-game-btn:hover {
+  background:#0088cc;
+  box-shadow: 0 0 12px #00aaff;
+}
+
+@media (max-width: 900px) {
+  #smart-proxy-btn,
+  #changelog-btn,
+  #proxy-home-btn,
+  #random-game-btn {
+    position: static;
+    transform: none;
+    margin-top: 10px;
+  }
+}
+  
   /* Updated games grid and responsive changelog layout */
 
 .games-grid {
@@ -335,18 +367,35 @@ header, header * {
     z-index: 101;        /* higher than particle div */
 }
 
-/* Smart Proxy button */
-#smart-proxy-btn {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 102;        /* above everything */
-}
-
 /* Main content and changelog section */
 main, section#changelog, footer {
     position: relative;
     z-index: 100;
+}
+
+  .header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.header-container button {
+  background: #00aaff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95em;
+  transition: 0.3s;
+}
+
+.header-container button:hover {
+  background: #0088cc;
+  box-shadow: 0 0 12px #00aaff;
 }
 
 </style>
@@ -403,13 +452,13 @@ tsParticles.load("tsparticles", {
 
 <header>
   <div class="header-container">
-    <button id="changelog-btn" title="View Changelog">Changelog</button>
+    <button id="smart-proxy-btn">Smart Proxy</button>
+    <button id="changelog-btn">Changelog</button>
     <h1>billybobgames v2</h1>
-    <button id="proxy-home-btn" title="GotW Entry">GotW Entry</button>
+    <button id="proxy-home-btn">GotW Entry</button>
+    <button id="random-game-btn">🎲 Random Game 🎲</button>
   </div>
 </header>
-
-<button id="smart-proxy-btn" title="Smart Proxy">Smart Proxy</button>
 
 <main>
   <div class="games-grid" id="games-grid">
@@ -419,17 +468,18 @@ tsParticles.load("tsparticles", {
     <a href="./blockblast/" class="game-link"><div class="game-card" data-name="block blast"><div class="game-image"><img src="./siteimages/gamelogos/blockblast.jpeg" alt="Block Blast" /></div><div class="game-name">Block Blast</div></div></a>
     <a href="./blumgislime/" class="game-link"><div class="game-card" data-name="blumgi slime"><div class="game-image"><img src="./siteimages/gamelogos/blumgislime.png" alt="Blumgi Slime" /></div><div class="game-name">Blumgi Slime</div></div></a>
     <a href="./breakingthebank.html?file=ruffle/files/breakingthebank.swf" class="game-link"><div class="game-card" data-name="breaking the bank"><div class="game-image"><img src="./siteimages/gamelogos/breakingthebank.avif" alt="Breaking the Bank" /></div><div class="game-name">Breaking the Bank</div></div></a>
+    <a href="./championisland/champion-island/" class="game-link"><div class="game-card" data-name="champion island"><div class="game-image"><img src="./siteimages/gamelogos/championisland.png" alt="Champion Island" /></div><div class="game-name">Champion Island</div></div></a>
     <a href="./chromedino/" class="game-link"><div class="game-card" data-name="chrome dino"><div class="game-image"><img src="./siteimages/gamelogos/chromedino.png" alt="Chrome Dino" /></div><div class="game-name">Chrome Dino</div></div></a>
     <a href="./cluster-main/" class="game-link"><div class="game-card" data-name="cluster rush"><div class="game-image"><img src="./siteimages/gamelogos/clusterrush.jpeg" alt="Cluster Rush" /></div><div class="game-name">Cluster Rush</div></div></a>
     <a href="./cookieclicker/" class="game-link"><div class="game-card" data-name="cookie clicker"><div class="game-image"><img src="./siteimages/gamelogos/cookieclicker.png" alt="Cookie Clicker" /></div><div class="game-name">Cookie Clicker</div></div></a>
-    <a href="./crossyroad" class="game-link"><div class="game-card" data-name="cluster rush"><div class="game-image"><img src="./siteimages/gamelogos/crossyroad.jpg" /></div><div class="game-name">Crossy Road</div></div></a>
-    <a href="./driftboss/" class="game-link"><div class="game-card" data-name="drift boss"><div class="game-image"><img src="./siteimages/gamelogos/driftboss.png" alt="Drift Boss" /></div><div class="game-name">🏆 Drift Boss 🏆</div></div></a>
+    <a href="./crossyroad" class="game-link"><div class="game-card" data-name="crossy road"><div class="game-image"><img src="./siteimages/gamelogos/crossyroad.jpg" /></div><div class="game-name">Crossy Road</div></div></a>
+    <a href="./driftboss/" class="game-link"><div class="game-card" data-name="drift boss"><div class="game-image"><img src="./siteimages/gamelogos/driftboss.png" alt="Drift Boss" /></div><div class="game-name">Drift Boss</div></div></a>
     <a href="./drivemad/" class="game-link"><div class="game-card" data-name="drive mad"><div class="game-image"><img src="./siteimages/gamelogos/drivemad.png" alt="Drive Mad" /></div><div class="game-name">Drive Mad</div></div></a>
     <a href="./escapingtheprison.html?file=ruffle/files/escapingtheprison.swf" class="game-link"><div class="game-card" data-name="escaping the prison"><div class="game-image"><img src="./siteimages/gamelogos/escapingtheprison.png" alt="Escaping the Prison" /></div><div class="game-name">Escaping the Prison</div></div></a>
     <a href="./flappybird/" class="game-link"><div class="game-card" data-name="flappy bird"><div class="game-image"><img src="./siteimages/gamelogos/flappybird.jpeg" alt="Flappy Bird" /></div><div class="game-name">Flappy Bird</div></div></a>
     <a href="./fleeingthecomplex.html?file=ruffle/files/fleeingthecomplex.swf" class="game-link"><div class="game-card" data-name="fleeing the complex"><div class="game-image"><img src="./siteimages/gamelogos/fleeingthecomplex.avif" alt="Fleeing the Complex" /></div><div class="game-name">Fleeing the Complex</div></div></a>
     <a href="./fnaf1/" class="game-link"><div class="game-card" data-name="fnaf 1"><div class="game-image"><img src="./siteimages/gamelogos/fnaf.jpg" alt="FNAF 1" /></div><div class="game-name">FNAF 1</div></div></a>
-    <a href="./fnaf2/" class="game-link"><div class="game-card" data-name="fnaf 2"><div class="game-image"><img src="./siteimages/gamelogos/fnaf2.png" alt="FNAF 2" /></div><div class="game-name">FNAF 2</div></div></a>
+    <a href="./fnaf2/" class="game-link"><div class="game-card" data-name="fnaf 2"><div class="game-image"><img src="./siteimages/gamelogos/fnaf2.png" alt="FNAF 2" /></div><div class="game-name">🏆 FNAF 2 🏆</div></div></a>
     <a href="./fnaf3/" class="game-link"><div class="game-card" data-name="fnaf 3"><div class="game-image"><img src="./siteimages/gamelogos/fnaf3.png" alt="FNAF 3" /></div><div class="game-name">FNAF 3</div></div></a>
     <a href="./fnaf4/" class="game-link"><div class="game-card" data-name="fnaf 4"><div class="game-image"><img src="./siteimages/gamelogos/fnaf4.png" alt="FNAF 4" /></div><div class="game-name">FNAF 4</div></div></a>
     <a href="./fnaf5/" class="game-link"><div class="game-card" data-name="fnaf 5"><div class="game-image"><img src="./siteimages/gamelogos/fnaf5.png" alt="FNAF 5" /></div><div class="game-name">FNAF 5</div></div></a>
@@ -461,6 +511,7 @@ tsParticles.load("tsparticles", {
     <a href="./retro-bowl/" class="game-link"><div class="game-card" data-name="retro bowl"><div class="game-image"><img src="./siteimages/gamelogos/retrobowl.jpeg" alt="Retro Bowl" /></div><div class="game-name">Retro Bowl</div></div></a>
     <a href="./run3/" class="game-link"><div class="game-card" data-name="run 3"><div class="game-image"><img src="./siteimages/gamelogos/run3.png" alt="Run 3" /></div><div class="game-name">Run 3</div></div></a>
     <a href="./construct/shootoutreloaded.html" class="game-link"><div class="game-card" data-name="shoot out reloaded"><div class="game-image"><img src="./siteimages/gamelogos/shootoutreloaded.png" alt="Shoot Out Reloaded" /></div><div class="game-name">Shoot Out Reloaded</div></div></a>
+    <a href="./skibidistrike/skibidi-strike/" class="game-link"><div class="game-card" data-name="skibidistrike"><div class="game-image"><img src="./siteimages/gamelogos/skibidistrike.png" alt="Skibidi Strike" /></div><div class="game-name">Skibidi Strike</div></div></a>
     <a href="./slope/" class="game-link"><div class="game-card" data-name="slope"><div class="game-image"><img src="./siteimages/gamelogos/slope.jpeg" alt="Slope" /></div><div class="game-name">Slope</div></div></a>
     <a href="./snake/" class="game-link"><div class="game-card" data-name="snake"><div class="game-image"><img src="./siteimages/gamelogos/Snake.PNG" alt="Snake" /></div><div class="game-name">Snake</div></div></a>
     <a href="./solitaire/" class="game-link"><div class="game-card" data-name="solitare"><div class="game-image"><img src="./siteimages/gamelogos/solitaire.png" alt="Solitaire" /></div><div class="game-name">Solitaire</div></div></a>
@@ -489,9 +540,9 @@ tsParticles.load("tsparticles", {
     <a href="./vex7/" class="game-link"><div class="game-card" data-name="vex 7"><div class="game-image"><img src="./siteimages/gamelogos/vex7.jpeg" alt="Vex 7" /></div><div class="game-name">Vex 7</div></div></a>
     <a href="./vex8/" class="game-link"><div class="game-card" data-name="vex 8"><div class="game-image"><img src="./siteimages/gamelogos/vex8.png" alt="Vex 8" /></div><div class="game-name">Vex 8</div></div></a>
     <a href="./wbwwb/" class="game-link"><div class="game-card" data-name="we become what we behold"><div class="game-image"><img src="./siteimages/gamelogos/wbwwb.jpeg" alt="We Become What We Behold" /></div><div class="game-name">We Become What We Behold</div></div></a>
+    <a href="./xtrenchrun/" class="game-link"><div class="game-card" data-name="x-trench run"><div class="game-image"><img src="./siteimages/gamelogos/xtrenchrun.png" alt="X-Trench Run" /></div><div class="game-name">X-Trench Run</div></div></a>
     <a href="./yohoho/" class="game-link"><div class="game-card" data-name="yohoho.io"><div class="game-image"><img src="./siteimages/gamelogos/yohoho.png" alt="Yohoho.io" /></div><div class="game-name">Yohoho.io</div></div></a>
     <a href="./youtube.html" class="game-link"><div class="game-card" data-name="youtube"><div class="game-image"><img src="./siteimages/gamelogos/youtube.png" alt="YouTube" /></div><div class="game-name">🌐 YouTube 🌐</div></div></a>
-    <a href="./xtrenchrun/" class="game-link"><div class="game-card" data-name="x-trench run"><div class="game-image"><img src="./siteimages/gamelogos/xtrenchrun.png" alt="X-Trench Run" /></div><div class="game-name">X-Trench Run</div></div></a>
   </div>
 </main>
 
@@ -507,38 +558,22 @@ tsParticles.load("tsparticles", {
     <div id="changelog-container" style="flex:1 1 350px; max-width:700px; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:left; font-size:0.95em; line-height:1.4;">
       <h3 style="color:#00aaff; font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
 
+      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
+        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.210 — January 14, 2026</h3> 
+        <p>Added 🎲 Random Game 🎲 button and moved Smart Proxy button</p>
+      </div>
+
+      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
+        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.209 — January 9, 2026</h3> 
+        <p>Added 2 games:</p>
+        <p> - Champion Island</p>
+        <p> - Skibidi Strike</p>
+      </div>
+
        <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
         <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.208 — January 7, 2026</h3> 
         <p>Added 1 game:</p>
         <p> - YouTube</p>
-      </div>
-
-      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
-        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.207 — December 21-23, 2025</h3>
-        <p>Added 15 games:</p>
-        <p> - FNAF 2</p>
-        <p> - FNAF 3</p>
-        <p> - FNAF 4</p>
-        <p> - FNAF 5</p>
-        <p> - FNAF 6</p>
-        <p> - Ultimate Custom Night</p>
-        <p> - Mario</p>
-        <p> - Pixel Speedrun</p>
-        <br>
-        <p>Updated 1 game:</p>
-        <p> - FNAF 1</p>
-        <p>------------------------------</p>
-        <p> - Icy Purple Head 3</p>
-        <p> - The Final Earth 2</p>
-        <p> - Geometry Dash Remastered</p>
-        <br>
-        <p>Remove 1 game:</p>
-        <p> - 1v1.LOL<p>
-        <p>------------------------------</p>
-        <p> - Blumgi Slime</p>
-        <p> - Superhot</p>
-        <p> - Tiny Fishing</p>
-        <p> - X-Trench Run</p>
       </div>
 
       <div style="text-align:center; margin-top:10px;">
@@ -564,10 +599,17 @@ tsParticles.load("tsparticles", {
         </a>
       </div>
 
-      <div class="link-slot">
-        <a href="https://zearnhaas.github.io" 
+      <div class="link-slot" style="margin-bottom:15px;">
+        <a href="https://boilafiles.netlify.app/" target="_blank"
            style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">
           Backup 2
+        </a>
+      </div>
+
+      <div class="link-slot">
+        <a href="https://zearnhaas.github.io" target="_blank"
+           style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">
+          Backup 3 (OLD)
         </a>
       </div>
     </div>
@@ -632,7 +674,7 @@ document.head.appendChild(style);
 </script>
 
 <footer>
-  "NKC" is now mostly maintaining this site with some help from "averageperson4." The new request issue form is down below. Any issues and game suggestions will be highly appreciated. New games will (or try to) be added every weekend.
+  "NKC" is now mostly maintaining this site with some help from "averageperson4" and "PA" The new request issue form is down below. Any issues and game suggestions will be highly appreciated. New games will (or try to) be added every weekend.
   <br /><br />
   <a href="https://docs.google.com/forms/d/e/1FAIpQLSehIZWpUlPu8cv4Ew4hIhjYopDhIsQwGViUc1NYf9YrvBGecA/viewform?usp=dialog" target="_blank" style="color: #4da6ff; text-decoration: underline;">
     Request a Game/Feedback
@@ -731,6 +773,22 @@ document.addEventListener('DOMContentLoaded', () => {
   if(proxyHomeBtn) proxyHomeBtn.addEventListener('click', () => 
     window.open("https://docs.google.com/forms/d/e/1FAIpQLSeEDxNxyOYUb0g0hH12EijhNAXDRmr0k0JrtdThVjpFIcbfyg/viewform?usp=dialog", "_blank")
 );
+});
+
+  // ========= RANDOM GAME BUTTON =========
+  const gameLinks = document.querySelectorAll('.game-link');
+const randomGameBtn = document.getElementById('random-game-btn');
+
+randomGameBtn.addEventListener('click', () => {
+  const filteredGames = [...gameLinks].filter(link =>
+    !link.href.includes('youtube') &&
+    !link.href.includes('tiktok')
+  );
+
+  if (!filteredGames.length) return;
+
+  const randomIndex = Math.floor(Math.random() * filteredGames.length);
+  window.location.href = filteredGames[randomIndex].href;
 });
   
 </script>
