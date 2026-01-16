@@ -4,6 +4,17 @@
   <meta charset="UTF-8">
   <title>Stealing the Diamond</title>
   <script src="ruffle/ruffle.js"></script>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const ruffle = window.RufflePlayer.newest();
+  const player = ruffle.createPlayer();
+  document.body.appendChild(player);
+  const swfUrl = new URL(location.href).searchParams.get("file");
+  if (swfUrl) {
+    player.load(swfUrl);
+  }
+});
+</script>
   <style>
     html, body {
       margin: 0;
