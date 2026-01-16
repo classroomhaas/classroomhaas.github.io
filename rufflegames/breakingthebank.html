@@ -26,25 +26,26 @@
   </style>
 </head>
 <body>
-  <div id="flash-container">
-    <object type="application/x-shockwave-flash" data="./rufflegames/breakingthebank.swf"></object>
-  </div>
+  <div id="flash-container"></div>
 
   <script>
-    // Initialize Ruffle
-    const ruffle = window.RufflePlayer.newest();
-    const container = document.getElementById("flash-container");
-    const player = ruffle.createPlayer();
+  window.addEventListener("DOMContentLoaded", () => {
+    if (!window.RufflePlayer) {
+      console.error("Ruffle did not load");
+      return;
+    }
 
-    // Replace object with Ruffle player
-    const swf = container.querySelector('object');
-    const swfUrl = swf.getAttribute('data');
-    container.innerHTML = '';
-    container.appendChild(player);
+    const ruffle = window.RufflePlayer.newest();
+    const player = ruffle.createPlayer();
+    const container = document.getElementById("flash-container");
 
     player.style.width = "100%";
     player.style.height = "100%";
-    player.load(swfUrl);
-  </script>
+
+    container.appendChild(player);
+
+    player.load("rufflegames/breakingthebank.swf");
+  });
+</script>
 </body>
 </html>
