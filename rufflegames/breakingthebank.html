@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Breaking the Bank</title>
-  <script src="./ruffle/ruffle.js"></script>
+  <script src="ruffle/ruffle.js"></script>
   <style>
     html, body {
       margin: 0;
@@ -26,26 +26,25 @@
   </style>
 </head>
 <body>
-  <div id="flash-container"></div>
+  <div id="flash-container">
+    <object type="application/x-shockwave-flash" data="./rufflegames/breakingthebank.swf"></object>
+  </div>
 
   <script>
-  window.addEventListener("DOMContentLoaded", () => {
-    if (!window.RufflePlayer) {
-      console.error("Ruffle did not load");
-      return;
-    }
-
+    // Initialize Ruffle
     const ruffle = window.RufflePlayer.newest();
-    const player = ruffle.createPlayer();
     const container = document.getElementById("flash-container");
+    const player = ruffle.createPlayer();
+
+    // Replace object with Ruffle player
+    const swf = container.querySelector('object');
+    const swfUrl = swf.getAttribute('data');
+    container.innerHTML = '';
+    container.appendChild(player);
 
     player.style.width = "100%";
     player.style.height = "100%";
-
-    container.appendChild(player);
-
-    player.load("rufflegames/breakingthebank.swf");
-  });
-</script>
+    player.load(swfUrl);
+  </script>
 </body>
 </html>
