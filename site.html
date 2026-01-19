@@ -18,8 +18,7 @@
   
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Home</title>
-<link rel="icon" type="image/png" href="./siteimages/apple-touch-icon.png/">
+<title>Zearn</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,7 +27,6 @@
     background: #2b2b2b;
     color: #e0e0e0;
     position: relative;
-    padding-top: 80px;
   }
   
   #search-container {
@@ -39,14 +37,6 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 2000; /* higher than header */
-    position: fixed;
-    top: 34px;        /* 12px top gap + 80px header height + 12px spacing */
-    left: 20px;
-    z-index: 2000;
   }
 
   #search-input {
@@ -58,7 +48,6 @@
     color: white;
     box-shadow: 0 0 6px rgba(77,166,255,0.3);
     width: 200px;
-
   }
 
   #search-pane {
@@ -101,20 +90,10 @@
     white-space: nowrap;
   }
 
-header {
-  position: fixed;
-  top: 0px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 24px);
-  height: 90px;
-  background: #3a3a3a;
-  border-radius: 16px;
-  z-index: 1000;
-
-  display: flex;
-  align-items: center;      /* 👈 THIS fixes it */
-  justify-content: center;
+ header {
+  background-color: #3a3a3a;
+  padding: 1.2rem 2rem;
+  z-index: 10;
 }
 
 .header-container {
@@ -123,9 +102,6 @@ header {
   justify-content: center;
   gap: 14px;
   flex-wrap: wrap;
-  position: relative;
-  z-index: 2001;
-  padding: 0 20px;   /* horizontal spacing only */
 }
 
 .header-container h1 {
@@ -186,15 +162,6 @@ header {
     position: relative;
     z-index: 10;
   }
-  main {
-  max-width: 1200px;
-  margin: 7rem auto 2rem; /* ⬅ increased top margin */
-  padding: 0 1rem;
-  position: relative;
-  z-index: 10;
-   margin-top: 120px; /* slightly bigger than header height */
-}
-
 
   a.game-link {
     text-decoration: none;
@@ -218,10 +185,7 @@ header {
     transform: translateY(-4px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   }
-  .game-card:active {
-    transform: scale(1.00);
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-  }
+
   .game-image {
     flex-grow: 1;
     overflow: hidden;
@@ -277,9 +241,6 @@ header {
   font-weight: bold;
   font-size: 1em;
   transition: 0.3s;
-  position: relative;
-  z-index: 2001;
-  
 }
 
 #proxy-home-btn:hover {
@@ -327,7 +288,7 @@ header {
   #changelog-btn,
   #proxy-home-btn,
   #random-game-btn {
-    position: fixed;
+    position: static;
     transform: none;
     margin-top: 10px;
   }
@@ -395,14 +356,14 @@ header {
   pointer-events: none; /* so it doesn't block clicks */
 }
 
-body, main, footer, .changelog, .games-grid {
+body, main, header, footer, .changelog, .games-grid {
   position: relative;
   z-index: 1; /* make sure content is above the particles */
 }
 
   /* Ensure header buttons and title are above particles */
-* {
-      /* ensures z-index works */
+header, header * {
+    position: relative;  /* ensures z-index works */
     z-index: 101;        /* higher than particle div */
 }
 
@@ -496,7 +457,6 @@ tsParticles.load("tsparticles", {
     <h1>billybobgames v2</h1>
     <button id="proxy-home-btn">GotW Entry</button>
     <button id="random-game-btn">🎲 Random Game 🎲</button>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd7XpL2KscOPtX5EPQVoOL5wnkFDsV8bkpXJoSBnJkFd_g25Q/viewform?usp=header" target="_blank"><button id="poll-btn">Poll</button></a>
   </div>
 </header>
 
@@ -515,7 +475,6 @@ tsParticles.load("tsparticles", {
     <a href="./games/crossyroad" class="game-link"><div class="game-card" data-name="crossy road"><div class="game-image"><img src="./siteimages/gamelogos/crossyroad.jpg" /></div><div class="game-name">Crossy Road</div></div></a>
     <a href="./games/driftboss/" class="game-link"><div class="game-card" data-name="drift boss"><div class="game-image"><img src="./siteimages/gamelogos/driftboss.png" alt="Drift Boss" /></div><div class="game-name">Drift Boss</div></div></a>
     <a href="./games/drivemad/" class="game-link"><div class="game-card" data-name="drive mad"><div class="game-image"><img src="./siteimages/gamelogos/drivemad.png" alt="Drive Mad" /></div><div class="game-name">Drive Mad</div></div></a>
-    <a href="./construct/executor.html" class="game-link"><div class="game-card" data-name="executor"><div class="game-image"><img src="./siteimages/gamelogos/Executor.png" alt="Executor" /></div><div class="game-name">Executor</div></div></a>
     <a href="./rufflegames/escapingtheprison.html?file=escapingtheprison.swf" class="game-link"><div class="game-card" data-name="escaping the prison"><div class="game-image"><img src="./siteimages/gamelogos/escapingtheprison.png" alt="Escaping the Prison" /></div><div class="game-name">Escaping the Prison</div></div></a>
     <a href="./games/flappybird/" class="game-link"><div class="game-card" data-name="flappy bird"><div class="game-image"><img src="./siteimages/gamelogos/flappybird.jpeg" alt="Flappy Bird" /></div><div class="game-name">Flappy Bird</div></div></a>
     <a href="./rufflegames/fleeingthecomplex.html?file=fleeingthecomplex.swf" class="game-link"><div class="game-card" data-name="fleeing the complex"><div class="game-image"><img src="./siteimages/gamelogos/fleeingthecomplex.avif" alt="Fleeing the Complex" /></div><div class="game-name">Fleeing the Complex</div></div></a>
@@ -599,14 +558,6 @@ tsParticles.load("tsparticles", {
     <div id="changelog-container" style="flex:1 1 350px; max-width:700px; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:left; font-size:0.95em; line-height:1.4;">
       <h3 style="color:#00aaff; font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
 
-<div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
-        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.211 — January 17, 2026</h3> 
-        <p>Added 2 features:</p>
-        <p> - Executor game</p>
-        <p> - Top bar</p>
-        
-      </div>
-      
       <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
         <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.210 — January 14, 2026</h3> 
         <p>Added 🎲 Random Game 🎲 button and moved Smart Proxy button</p>
@@ -724,7 +675,7 @@ document.head.appendChild(style);
 </script>
 
 <footer>
-  NKC is now mostly maintaining this site with some help from "averageperson4" and "APAP." The new request issue form is down below. Any issues and game suggestions will be highly appreciated. New games will (or try to) be added every weekend.
+  NKC is now mostly maintaining this site with some help from averageperson4 and APAP. The new request issue form is down below. Any issues and game suggestions will be highly appreciated. New games will (or try to) be added every weekend.
   <br /><br />
   <a href="https://docs.google.com/forms/d/e/1FAIpQLSehIZWpUlPu8cv4Ew4hIhjYopDhIsQwGViUc1NYf9YrvBGecA/viewform?usp=dialog" target="_blank" style="color: #4da6ff; text-decoration: underline;">
     Request a Game/Feedback
