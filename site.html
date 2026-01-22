@@ -27,7 +27,6 @@
     background: #2b2b2b;
     color: #e0e0e0;
     position: relative;
-    padding-top: 80px;
   }
   
   #search-container {
@@ -38,14 +37,6 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 2000; /* higher than header */
-    position: fixed;
-    top: 34px;        /* 12px top gap + 80px header height + 12px spacing */
-    left: 20px;
-    z-index: 2000;
   }
 
   #search-input {
@@ -56,13 +47,12 @@
     background: #2b2b2b;
     color: white;
     box-shadow: 0 0 6px rgba(77,166,255,0.3);
-    width: 10vw;
-
+    width: 200px;
   }
 
   #search-pane {
     margin-top: 0.5rem;
-    width: 10vw;
+    width: 200px;
     background: rgba(30,30,30,0.95);
     border: 1px solid #4da6ff;
     border-radius: 10px;
@@ -100,20 +90,10 @@
     white-space: nowrap;
   }
 
-header {
-  position: fixed;
-  top: 0px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 24px);
-  height: 90px;
-  background: #3a3a3a;
-  border-radius: 16px;
-  z-index: 1000;
-
-  display: flex;
-  align-items: center;      /* 👈 THIS fixes it */
-  justify-content: center;
+ header {
+  background-color: #3a3a3a;
+  padding: 1.2rem 2rem;
+  z-index: 10;
 }
 
 .header-container {
@@ -122,9 +102,6 @@ header {
   justify-content: center;
   gap: 14px;
   flex-wrap: wrap;
-  position: relative;
-  z-index: 2001;
-  padding: 0 20px;   /* horizontal spacing only */
 }
 
 .header-container h1 {
@@ -185,15 +162,6 @@ header {
     position: relative;
     z-index: 10;
   }
-  main {
-  max-width: 1200px;
-  margin: 7rem auto 2rem; /* ⬅ increased top margin */
-  padding: 0 1rem;
-  position: relative;
-  z-index: 10;
-   margin-top: 120px; /* slightly bigger than header height */
-}
-
 
   a.game-link {
     text-decoration: none;
@@ -273,9 +241,6 @@ header {
   font-weight: bold;
   font-size: 1em;
   transition: 0.3s;
-  position: relative;
-  z-index: 2001;
-  
 }
 
 #proxy-home-btn:hover {
@@ -323,7 +288,7 @@ header {
   #changelog-btn,
   #proxy-home-btn,
   #random-game-btn {
-    position: fixed;
+    position: static;
     transform: none;
     margin-top: 10px;
   }
@@ -391,14 +356,14 @@ header {
   pointer-events: none; /* so it doesn't block clicks */
 }
 
-body, main, footer, .changelog, .games-grid {
+body, main, header, footer, .changelog, .games-grid {
   position: relative;
   z-index: 1; /* make sure content is above the particles */
 }
 
   /* Ensure header buttons and title are above particles */
-* {
-      /* ensures z-index works */
+header, header * {
+    position: relative;  /* ensures z-index works */
     z-index: 101;        /* higher than particle div */
 }
 
@@ -492,15 +457,10 @@ tsParticles.load("tsparticles", {
     <h1>billybobgames v2</h1>
     <button id="proxy-home-btn">GotW Entry</button>
     <button id="random-game-btn">🎲 Random Game 🎲</button>
-    
-    <a href="https://forms.gle/1fx7sEMA7Na5EXLH6" target="_blank" id="Poll-link"><button id="poll-btn">PotW</button></a>
   </div>
 </header>
 
-
-
 <main>
-<!--<p>Srry, no game for today. Averageperson said no more. Go vote in the PotW!</p>-->
   <div class="games-grid" id="games-grid">
     <a href="./games/bitlife/" class="game-link"><div class="game-card" data-name="bitlife"><div class="game-image"><img src="./siteimages/gamelogos/bitlife.jpeg" alt="Bitlife" /></div><div class="game-name">Bitlife</div></div></a>
     <a href="./games/2048/" class="game-link"><div class="game-card" data-name="2048"><div class="game-image"><img src="./siteimages/gamelogos/2048.png" alt="2048" /></div><div class="game-name">2048</div></div></a>
@@ -511,7 +471,7 @@ tsParticles.load("tsparticles", {
     <a href="./games/basketrandom/" class="game-link"><div class="game-card" data-name="basket random"><div class="game-image"><img src="./siteimages/gamelogos/basketrandom.png" alt="Basket Random" /></div><div class="game-name">Basket Random</div></div></a>
     <a href="./games/blockblast/" class="game-link"><div class="game-card" data-name="block blast"><div class="game-image"><img src="./siteimages/gamelogos/blockblast.jpeg" alt="Block Blast" /></div><div class="game-name">Block Blast</div></div></a>
     <a href="./games/blumgislime/" class="game-link"><div class="game-card" data-name="blumgi slime"><div class="game-image"><img src="./siteimages/gamelogos/blumgislime.png" alt="Blumgi Slime" /></div><div class="game-name">Blumgi Slime</div></div></a>
-    <a href="./rufflegames/breakingthebank.html?file=breakingthebank.swf" class="game-link"><div class="game-card" data-name=""><div class="game-image"><img src="./siteimages/gamelogos/breakingthebank.avif" alt="Breaking the Bank" /></div><div class="game-name">Breaking the Bank (NA) </div></div></a>
+    <a href="./rufflegames/breakingthebank.html?file=breakingthebank.swf" class="game-link"><div class="game-card" data-name="breaking the bank"><div class="game-image"><img src="./siteimages/gamelogos/breakingthebank.avif" alt="Breaking the Bank" /></div><div class="game-name">Breaking the Bank (NA) </div></div></a>
     <a href="./games/championisland/champion-island/" class="game-link"><div class="game-card" data-name="champion island"><div class="game-image"><img src="./siteimages/gamelogos/championisland.png" alt="Champion Island" /></div><div class="game-name">Champion Island</div></div></a>
     <a href="./games/chromedino/" class="game-link"><div class="game-card" data-name="chrome dino"><div class="game-image"><img src="./siteimages/gamelogos/chromedino.png" alt="Chrome Dino" /></div><div class="game-name">Chrome Dino</div></div></a>
     <a href="./games/cluster-main/" class="game-link"><div class="game-card" data-name="cluster rush"><div class="game-image"><img src="./siteimages/gamelogos/clusterrush.jpeg" alt="Cluster Rush" /></div><div class="game-name">Cluster Rush</div></div></a>
@@ -521,15 +481,15 @@ tsParticles.load("tsparticles", {
     <a href="./games/driftboss/" class="game-link"><div class="game-card" data-name="drift boss"><div class="game-image"><img src="./siteimages/gamelogos/driftboss.png" alt="Drift Boss" /></div><div class="game-name">Drift Boss</div></div></a>
     <a href="./games/drivemad/" class="game-link"><div class="game-card" data-name="drive mad"><div class="game-image"><img src="./siteimages/gamelogos/drivemad.png" alt="Drive Mad" /></div><div class="game-name">Drive Mad</div></div></a>
     <a href="./games/eggycar/" class="game-link"><div class="game-card" data-name="eggy car"><div class="game-image"><img src="./siteimages/gamelogos/eggycar.png" alt="Eggy Car" /></div><div class="game-name">Eggy Car</div></div></a>
-    <a href="./rufflegames/escapingtheprison.html?file=escapingtheprison.swf" class="game-link"><div class="game-card" data-name=""><div class="game-image"><img src="./siteimages/gamelogos/escapingtheprison.png" alt="Escaping the Prison" /></div><div class="game-name">Escaping the Prison (NA)</div></div></a>
+    <a href="./rufflegames/escapingtheprison.html?file=escapingtheprison.swf" class="game-link"><div class="game-card" data-name="escaping the prison"><div class="game-image"><img src="./siteimages/gamelogos/escapingtheprison.png" alt="Escaping the Prison" /></div><div class="game-name">Escaping the Prison (NA)</div></div></a>
     <a href="./games/fireboyandwatergirl/" class="game-link"><div class="game-card" data-name="fireboy and watergirl"><div class="game-image"><img src="./siteimages/gamelogos/fireboyandwatergirl.png" alt="Fireboy and Watergirl" /></div><div class="game-name">Fireboy and Watergirl</div></div></a>
     <a href="./games/fireboyandwatergirl2/" class="game-link"><div class="game-card" data-name="fireboy and watergirl 2"><div class="game-image"><img src="./siteimages/gamelogos/fireboyandwatergirl2.png" alt="Fireboy and Watergirl 2" /></div><div class="game-name">Fireboy and Watergirl 2</div></div></a>
     <a href="./games/flappybird/" class="game-link"><div class="game-card" data-name="flappy bird"><div class="game-image"><img src="./siteimages/gamelogos/flappybird.jpeg" alt="Flappy Bird" /></div><div class="game-name">Flappy Bird</div></div></a>
-    <a href="./rufflegames/fleeingthecomplex.html?file=fleeingthecomplex.swf" class="game-link"><div class="game-card" data-name=""><div class="game-image"><img src="./siteimages/gamelogos/fleeingthecomplex.avif" alt="Fleeing the Complex" /></div><div class="game-name">Fleeing the Complex (NA)</div></div></a>
+    <a href="./rufflegames/fleeingthecomplex.html?file=fleeingthecomplex.swf" class="game-link"><div class="game-card" data-name="fleeing the complex"><div class="game-image"><img src="./siteimages/gamelogos/fleeingthecomplex.avif" alt="Fleeing the Complex" /></div><div class="game-name">Fleeing the Complex (NA)</div></div></a>
     <a href="./games/fnaf1/" class="game-link"><div class="game-card" data-name="fnaf 1"><div class="game-image"><img src="./siteimages/gamelogos/fnaf.jpg" alt="FNAF 1" /></div><div class="game-name">FNAF 1</div></div></a>
     <a href="./games/fnaf2/" class="game-link"><div class="game-card" data-name="fnaf 2"><div class="game-image"><img src="./siteimages/gamelogos/fnaf2.png" alt="FNAF 2" /></div><div class="game-name">FNAF 2</div></div></a>
     <a href="./games/fnaf3/" class="game-link"><div class="game-card" data-name="fnaf 3"><div class="game-image"><img src="./siteimages/gamelogos/fnaf3.png" alt="FNAF 3" /></div><div class="game-name">FNAF 3</div></div></a>
-    <a href="./games/fnaf4/" class="game-link"><div class="game-card" data-name="fnaf 4"><div class="game-image"><img src="./siteimages/gamelogos/fnaf4.png" alt="FNAF 4" /></div><div class="game-name">FNAF 4</div></div></a> 
+    <a href="./games/fnaf4/" class="game-link"><div class="game-card" data-name="fnaf 4"><div class="game-image"><img src="./siteimages/gamelogos/fnaf4.png" alt="FNAF 4" /></div><div class="game-name">FNAF 4</div></div></a>
     <a href="./games/fnaf5/" class="game-link"><div class="game-card" data-name="fnaf 5"><div class="game-image"><img src="./siteimages/gamelogos/fnaf5.png" alt="FNAF 5" /></div><div class="game-name">FNAF 5</div></div></a>
     <a href="./games/fnaf6/" class="game-link"><div class="game-card" data-name="fnaf 6"><div class="game-image"><img src="./siteimages/gamelogos/fnaf6.png" alt="FNAF 6" /></div><div class="game-name">FNAF 6</div></div></a>
     <a href="./games/ucn/" class="game-link"><div class="game-card" data-name="ultimate custom night"><div class="game-image"><img src="./siteimages/gamelogos/ucn.png" alt="Ultimate Custom Night" /></div><div class="game-name">Ultimate Custom Night</div></div></a>
@@ -539,8 +499,8 @@ tsParticles.load("tsparticles", {
     <a href="./games/gunmayhem/" class="game-link"><div class="game-card" data-name="gun mayhem"><div class="game-image"><img src="./siteimages/gamelogos/gunmayhem.png" alt="Gun Mayhem" /></div><div class="game-name">Gun Mayhem</div></div></a>
     <a href="./gunmayhem2.html?file=gunmayhem2.swf" class="game-link"><div class="game-card" data-name="gun mayhem 2"><div class="game-image"><img src="./siteimages/gamelogos/gunmayhem2.png" alt="Gun Mayhem 2" /></div><div class="game-name">Gun Mayhem 2 (NA)</div></div></a>
     <a href="./games/icypurplehead2/" class="game-link"><div class="game-card" data-name="icy purple head 2"><div class="game-image"><img src="./siteimages/gamelogos/icypurplehead2.jpg" alt="Icy Purple Head 2" /></div><div class="game-name">Icy Purple Head 2</div></div></a>
-    <a href="./games/icypurplehead3/" class="game-link"><div class="game-card" data-name="icy purple head 3"><div class="game-image"><img src="./siteimages/gamelogos/icypurplehead3.png" alt="Icy Purple Head 3" /></div><div class="game-name">Icy Purple Head 3</div></div></a> 
-   <!-- <a href="./rufflegames/infiltratingtheairship.html?file=infiltratingtheairship.swf" class="game-link"><div class="game-card" data-name=""><div class="game-image"><img src="./siteimages/gamelogos/infiltratingtheairship.avif" alt="Infiltrating the Airship" /></div><div class="game-name">Infiltrating the Airship (NA)</div></div></a>-->
+    <a href="./games/icypurplehead3/" class="game-link"><div class="game-card" data-name="icy purple head 3"><div class="game-image"><img src="./siteimages/gamelogos/icypurplehead3.png" alt="Icy Purple Head 3" /></div><div class="game-name">Icy Purple Head 3</div></div></a>
+    <a href="./rufflegames/infiltratingtheairship.html?file=infiltratingtheairship.swf" class="game-link"><div class="game-card" data-name="infiltrating the airship"><div class="game-image"><img src="./siteimages/gamelogos/infiltratingtheairship.avif" alt="Infiltrating the Airship" /></div><div class="game-name">Infiltrating the Airship (NA)</div></div></a>
     <a href="./games/ironsnout/" class="game-link"><div class="game-card" data-name="iron snout"><div class="game-image"><img src="./siteimages/gamelogos/ironsnout.png" alt="Iron Snout" /></div><div class="game-name">Iron Snout</div></div></a>
     <a href="./games/leveldevil/" class="game-link"><div class="game-card" data-name="level devil"><div class="game-image"><img src="./siteimages/gamelogos/leveldevil.png" alt="Level Devil" /></div><div class="game-name">Level Devil</div></div></a>
     <a href="./games/mariobrosbeta/" class="game-link"><div class="game-card" data-name="mario"><div class="game-image"><img src="./siteimages/gamelogos/mario.png" alt="Mario" /></div><div class="game-name">Mario</div></div></a>
@@ -565,7 +525,7 @@ tsParticles.load("tsparticles", {
     <a href="./games/snake/" class="game-link"><div class="game-card" data-name="snake"><div class="game-image"><img src="./siteimages/gamelogos/Snake.PNG" alt="Snake" /></div><div class="game-name">Snake</div></div></a>
     <a href="./games/solitaire/" class="game-link"><div class="game-card" data-name="solitare"><div class="game-image"><img src="./siteimages/gamelogos/solitaire.png" alt="Solitaire" /></div><div class="game-name">Solitaire</div></div></a>
     <a href="./construct/spaceisolation.html" class="game-link"><div class="game-card" data-name="space isolation"><div class="game-image"><img src="./siteimages/gamelogos/spaceisolation.png" alt="Space Isolation" /></div><div class="game-name">Space Isolation</div></div></a>
-   <!-- <a href="./rufflegames/stealingthediamond.html?file=stealingthediamond.swf" class="game-link"><div class="game-card" data-name="stealing the diamond"><div class="game-image"><img src="./siteimages/gamelogos/stealingthediamond.avif" alt="Stealing the Diamond" /></div><div class="game-name">Stealing the Diamond (NA)</div></div></a> -->
+    <a href="./rufflegames/stealingthediamond.html?file=stealingthediamond.swf" class="game-link"><div class="game-card" data-name="stealing the diamond"><div class="game-image"><img src="./siteimages/gamelogos/stealingthediamond.avif" alt="Stealing the Diamond" /></div><div class="game-name">Stealing the Diamond (NA)</div></div></a>
     <a href="./games/stickmanhook/" class="game-link"><div class="game-card" data-name="stickman hook"><div class="game-image"><img src="./siteimages/gamelogos/stickmanhook.png" alt="Stickman Hook" /></div><div class="game-name">Stickman Hook</div></div></a>
     <a href="./games/subway-surfers/" class="game-link"><div class="game-card" data-name="subway surfers"><div class="game-image"><img src="./siteimages/gamelogos/subwaysurfers.png" alt="Subway Surfers" /></div><div class="game-name">Subway Surfers</div></div></a>
     <a href="./games/superhot/" class="game-link"><div class="game-card" data-name="superhot"><div class="game-image"><img src="./siteimages/gamelogos/superhot.png" alt="Superhot" /></div><div class="game-name">Superhot</div></div></a>
@@ -576,26 +536,24 @@ tsParticles.load("tsparticles", {
     <a href="./games/thefinalearth2/" class="game-link"><div class="game-card" data-name="the final earth 2"><div class="game-image"><img src="./siteimages/gamelogos/thefinalearth2.png" alt="The Final Earth 2" /></div><div class="game-name">The Final Earth 2</div></div></a>
     <a href="./games/theimpossiblequiz/" class="game-link"><div class="game-card" data-name="the impossible quiz"><div class="game-image"><img src="./siteimages/gamelogos/theimpossiblequiz.png" alt="The Impossible Quiz" /></div><div class="game-name">The Impossible Quiz</div></div></a>
     <a href="./construct/throwapotato.html" class="game-link"><div class="game-card" data-name="throw a potato"><div class="game-image"><img src="./siteimages/gamelogos/throwapotato.png" alt="Throw a Potato" /></div><div class="game-name">Throw a Potato</div></div></a>
-  <!--  <a href="./construct/throwapotatoagain.html" class="game-link"><div class="game-card" data-name="throw a potato again"><div class="game-image"><img src="./siteimages/gamelogos/throwapotatoagain.png" alt="Throw a Potato Again" /></div><div class="game-name">Throw a Potato Again</div></div></a>
-    <a href="./construct/throwapotatoinspace.html" class="game-link"><div class="game-card" data-name="throw a potato in space"><div class="game-image"><img src="./siteimages/gamelogos/throwapotatoinspace.png" alt="Throw a Potato in Space" /></div><div class="game-name">Throw a Potato in Space</div></div></a> -->
+    <a href="./construct/throwapotatoagain.html" class="game-link"><div class="game-card" data-name="throw a potato again"><div class="game-image"><img src="./siteimages/gamelogos/throwapotatoagain.png" alt="Throw a Potato Again" /></div><div class="game-name">Throw a Potato Again</div></div></a>
+    <a href="./construct/throwapotatoinspace.html" class="game-link"><div class="game-card" data-name="throw a potato in space"><div class="game-image"><img src="./siteimages/gamelogos/throwapotatoinspace.png" alt="Throw a Potato in Space" /></div><div class="game-name">Throw a Potato in Space</div></div></a>
     <a href="./games/tinyfishing/" class="game-link"><div class="game-card" data-name="tiny fishing"><div class="game-image"><img src="./siteimages/gamelogos/tinyfishing.png" alt="Tiny Fishing" /></div><div class="game-name">Tiny Fishing</div></div></a>
-    <!--<a href="./tiktok.html" class="game-link"><div class="game-card" data-name="Tiktok"><div class="game-image"><img src="./siteimages/gamelogos/tiktok.png" alt="Tiktok" /></div><div class="game-name">🌐 Tiktok 🌐</div></div></a> -->
+    <a href="./tiktok.html" class="game-link"><div class="game-card" data-name="Tiktok"><div class="game-image"><img src="./siteimages/gamelogos/tiktok.png" alt="Tiktok" /></div><div class="game-name">🌐 Tiktok 🌐</div></div></a>
     <a href="./games/tunnel-rush/" class="game-link"><div class="game-card" data-name="tunnel rush"><div class="game-image"><img src="./siteimages/gamelogos/tunnelrush.jpeg" alt="Tunnel Rush" /></div><div class="game-name">Tunnel Rush</div></div></a>
     <a href="./games/twoball3d/" class="game-link"><div class="game-card" data-name="twoball3d"><div class="game-image"><img src="./siteimages/gamelogos/twoball3d.png" alt="Two Ball 3D" /></div><div class="game-name">Two Ball 3D</div></div></a>
     <a href="./rufflegames/ultimateflashsonic.html?file=rufflegames/ultimateflashsonic.swf" class="game-link"><div class="game-card" data-name="ultimate flash sonic"><div class="game-image"><img src="./siteimages/gamelogos/ultimateflashsonic.png" alt="Ultimate Flash Sonic" /></div><div class="game-name">Ultimate Flash Sonic (NA)</div></div></a>
-  <!--  <a href="./games/vex3/" class="game-link"><div class="game-card" data-name="vex 3"><div class="game-image"><img src="./siteimages/gamelogos/vex3.png" alt="Vex 3" /></div><div class="game-name">Vex 3</div></div></a>
+    <a href="./games/vex3/" class="game-link"><div class="game-card" data-name="vex 3"><div class="game-image"><img src="./siteimages/gamelogos/vex3.png" alt="Vex 3" /></div><div class="game-name">Vex 3</div></div></a>
     <a href="./games/vex4/" class="game-link"><div class="game-card" data-name="vex 4"><div class="game-image"><img src="./siteimages/gamelogos/vex4.png" alt="Vex 4" /></div><div class="game-name">Vex 4</div></div></a>
     <a href="./games/vex5/" class="game-link"><div class="game-card" data-name="vex 5"><div class="game-image"><img src="./siteimages/gamelogos/vex5.png" alt="Vex 5" /></div><div class="game-name">Vex 5</div></div></a>
     <a href="./games/vex-6/" class="game-link"><div class="game-card" data-name="vex-6"><div class="game-image"><img src="./siteimages/gamelogos/vex-6.png" alt="Vex 6" /></div><div class="game-name">Vex 6</div></div></a>
-   --> <a href="./games/vex7/" class="game-link"><div class="game-card" data-name="vex 7"><div class="game-image"><img src="./siteimages/gamelogos/vex7.jpeg" alt="Vex 7" /></div><div class="game-name">Vex 7</div></div></a>
+    <a href="./games/vex7/" class="game-link"><div class="game-card" data-name="vex 7"><div class="game-image"><img src="./siteimages/gamelogos/vex7.jpeg" alt="Vex 7" /></div><div class="game-name">Vex 7</div></div></a>
     <a href="./games/vex8/" class="game-link"><div class="game-card" data-name="vex 8"><div class="game-image"><img src="./siteimages/gamelogos/vex8.png" alt="Vex 8" /></div><div class="game-name">Vex 8</div></div></a>
     <a href="./games/wbwwb/" class="game-link"><div class="game-card" data-name="we become what we behold"><div class="game-image"><img src="./siteimages/gamelogos/wbwwb.jpeg" alt="We Become What We Behold" /></div><div class="game-name">We Become What We Behold</div></div></a>
     <a href="./games/xtrenchrun/" class="game-link"><div class="game-card" data-name="x-trench run"><div class="game-image"><img src="./siteimages/gamelogos/xtrenchrun.png" alt="X-Trench Run" /></div><div class="game-name">X-Trench Run</div></div></a>
     <a href="./games/yohoho/" class="game-link"><div class="game-card" data-name="yohoho.io"><div class="game-image"><img src="./siteimages/gamelogos/yohoho.png" alt="Yohoho.io" /></div><div class="game-name">Yohoho.io</div></div></a>
-   <!-- <a href="./youtube.html" class="game-link"><div class="game-card" data-name="youtube"><div class="game-image"><img src="./siteimages/gamelogos/youtube.png" alt="YouTube" /></div><div class="game-name">🌐 YouTube 🌐</div></div></a> -->
-     <a href="./construct/thereisnogame.html" class="game-link"><div class="game-card" data-name="There's No Game"><div class="game-image"><img src="./siteimages/gamelogos/Thereisnogame.png" alt="There's No Game" /></div><div class="game-name">There is No Game</div></div></a>
+    <a href="./youtube.html" class="game-link"><div class="game-card" data-name="youtube"><div class="game-image"><img src="./siteimages/gamelogos/youtube.png" alt="YouTube" /></div><div class="game-name">🌐 YouTube 🌐</div></div></a>
   </div>
-  
 </main>
 
 <!-- Changelog & Other Links Section -->
