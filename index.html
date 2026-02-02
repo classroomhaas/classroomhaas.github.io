@@ -217,100 +217,82 @@ newTab.opener = null;
     window.location.href = 'https://classroom.google.com';
 
     const code = `
-      document.title = "Home";
+  document.title = "Home";
 
-      const favicon = document.createElement('link');
-      favicon.rel = 'icon';
-      favicon.href = './siteimages/apple-touch-icon.png';
-      document.head.appendChild(favicon);
+  const favicon = document.createElement('link');
+  favicon.rel = 'icon';
+  favicon.href = './siteimages/apple-touch-icon.png';
+  document.head.appendChild(favicon);
 
-      const style = document.createElement('style');
-      style.textContent = \`
-        body {
-          display: flex; justify-content: center; align-items: center;
-          height: 100vh; font-size: 48px; font-family: sans-serif;
-          color: white; background: #121212; margin: 0;
-        }
-        #countdown {
-          user-select: none;
-        }
-        iframe {
-          width: 100vw;
-          height: 100vh;
-          border: none;
-        }
-        #go-home-btn {
-          position: fixed; top: 15px; right: 15px; font-size: 32px;
-          padding: 10px; background: #4da6ff; border: none; border-radius: 50%;
-          color: #fff; cursor: pointer;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-          transition: width 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
-          overflow: hidden; white-space: nowrap;
-          user-select: none; width: 48px; height: 48px;
-          display: flex; align-items: center; justify-content: center;
-        }
-        #go-home-btn.expanded {
-          width: auto; border-radius: 8px; padding: 0 14px; font-weight: 600;
-        }
-        #go-home-btn span {
-          margin-left: 8px; font-size: 1rem; display: none;
-        }
-        #go-home-btn.expanded span {
-          display: inline;
-        }
-      \`;
-      document.head.appendChild(style);
+  const style = document.createElement('style');
+  style.textContent = \`
+    body {
+      margin: 0;
+      background: #121212;
+    }
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+    #go-home-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      font-size: 32px;
+      padding: 10px;
+      background: #4da6ff;
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: width 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #go-home-btn.expanded {
+      width: auto;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-weight: 600;
+    }
+    #go-home-btn span {
+      margin-left: 8px;
+      font-size: 1rem;
+      display: none;
+    }
+    #go-home-btn.expanded span {
+      display: inline;
+    }
+  \`;
+  document.head.appendChild(style);
 
-      let countdown = 5;
+  const iframe = document.createElement('iframe');
+  iframe.src = 'site';
+  document.body.appendChild(iframe);
 
-      const msg = document.createElement('div');
-      msg.textContent = "please wait for google classroom to finish loading before the main site ❤️.       .";
-      msg.style.fontSize = '20px';
-      msg.style.marginBottom = '20px';
-      msg.style.textAlign = 'center';
-      msg.style.maxWidth = '90%';
-      msg.style.lineHeight = '1.4';
-      msg.style.color = '#ccc';
-      msg.style.fontFamily = 'Poppins, sans-serif';
-      document.body.appendChild(msg);
+  const goHomeBtn = document.createElement('button');
+  goHomeBtn.id = 'go-home-btn';
+  goHomeBtn.innerHTML = '🏠<span>Go Home</span>';
 
-      const div = document.createElement('div');
-      div.id = 'countdown';
-      div.textContent = countdown;
-      document.body.appendChild(div);
+  goHomeBtn.addEventListener('mouseenter', () => {
+    goHomeBtn.classList.add('expanded');
+  });
+  goHomeBtn.addEventListener('mouseleave', () => {
+    goHomeBtn.classList.remove('expanded');
+  });
+  goHomeBtn.addEventListener('click', () => {
+    iframe.src = iframe.src;
+  });
 
-      const interval = setInterval(() => {
-        countdown--;
-        if (countdown <= 0) {
-          clearInterval(interval);
-          div.textContent = 'Loading...';
-
-          const iframe = document.createElement('iframe');
-          iframe.src = 'site';
-          document.body.innerHTML = '';
-          document.body.appendChild(iframe);
-
-          const goHomeBtn = document.createElement('button');
-          goHomeBtn.id = 'go-home-btn';
-          goHomeBtn.title = 'Go Home';
-          goHomeBtn.innerHTML = '🏠<span>Go Home</span>';
-
-          goHomeBtn.addEventListener('mouseenter', () => {
-            goHomeBtn.classList.add('expanded');
-          });
-          goHomeBtn.addEventListener('mouseleave', () => {
-            goHomeBtn.classList.remove('expanded');
-          });
-          goHomeBtn.addEventListener('click', () => {
-            iframe.src = iframe.src;
-          });
-
-          document.body.appendChild(goHomeBtn);
-        } else {
-          div.textContent = countdown;
-        }
-      }, 1000);
-    `;
+  document.body.appendChild(goHomeBtn);
+`;
 
     const script = newTab.document.createElement('script');
     script.textContent = code;
