@@ -29,23 +29,25 @@
     position: relative;
   }
   
- #search-container {
-  position: relative;     
-  display: flex;          /* keep input and dropdown stacked */
+#search-container {
+  position: relative;      /* anchors dropdown */
+  display: flex;
   flex-direction: column;
-  max-width: 200px;       /* compact width */
+  align-items: center;
 }
 
-  #search-input {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    background: #2b2b2b;
-    color: white;
-    box-shadow: 0 0 6px rgba(77,166,255,0.3);
-    width: 200px;
-  }
+
+
+ #search-input {
+  width: 170px;            /* thinner */
+  padding: 6px 10px;
+  font-size: 0.88rem;
+  border: none;
+  border-radius: 8px;
+  background: #2b2b2b;
+  color: white;
+  box-shadow: 0 0 6px rgba(77,166,255,0.3);
+}
 
   #search-pane {
   position: absolute;
@@ -113,26 +115,26 @@
     white-space: nowrap;
   }
 
- header {
+header {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #3a3a3a;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 24px);
+  background: #3a3a3a;
   z-index: 200;
-  padding: 0.3rem 1rem;  /* minimal vertical padding */
+  padding: 3px 0;         /* thinner */
+  border-radius: 14px;
   box-sizing: border-box;
 }
-
-
-
 .header-container {
   display: flex;
   align-items: center;
-  gap: 10px;            /* space between buttons/title/search */
-  flex-wrap: wrap;       /* allows wrapping on very small screens */
-  padding: 10px;            /* remove extra padding that increases height */
-  margin: 10px;
+  justify-content: center;
+  gap: 8px;               /* tighter */
+  flex-wrap: wrap;
+  padding: 6px 6px;       /* thinner */
+  margin: 0;
 }
 .header-container h1 {
   margin: 0 10px;
@@ -155,6 +157,8 @@
   font-size: 0.95em;
   transition: 0.3s;
   white-space: nowrap;
+  padding: 7px 14px;
+  font-size: 0.85em;
 }
 
 .header-container button:hover {
@@ -397,25 +401,8 @@ main, section#changelog, footer {
     z-index: 100;
 }
 
-  .header-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-}
 
-.header-container button {
-  background: #00aaff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 0.95em;
-  transition: 0.3s;
-}
+
 
 .header-container button:hover {
   background: #0088cc;
@@ -463,17 +450,22 @@ tsParticles.load("tsparticles", {
 
 
 <header>
-  <div id="search-container">
-  <input type="text" id="search-input" placeholder="Search games..." />
-  <div id="search-pane"></div>
-</div>
   <div class="header-container">
+
+    <div id="search-container">
+      <input type="text" id="search-input" placeholder="Search games..." />
+      <div id="search-pane"></div>
+    </div>
+
     <button id="smart-proxy-btn">Smart Proxy</button>
     <button id="changelog-btn">Changelog</button>
     <h1>billybobgames v2</h1>
     <button id="proxy-home-btn">GotW Entry</button>
     <button id="random-game-btn">🎲 Random Game 🎲</button>
-    <a href="https://forms.gle/jXD1fXDfZcMzRwZe7" target="_blank"> <button> PotW </button> </a>
+    <a href="https://forms.gle/jXD1fXDfZcMzRwZe7" target="_blank">
+      <button>PotW</button>
+    </a>
+
   </div>
 </header>
 
