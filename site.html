@@ -31,7 +31,7 @@
       left: 50%;
       transform: translateX(-50%);
       width: calc(100% - 22px);
-      background: rgba(58, 58, 58, 0.95); /* Increased opacity for readability */
+      background: rgba(58, 58, 58, 0.95); 
       backdrop-filter: blur(10px); 
       -webkit-backdrop-filter: blur(10px);
       z-index: 200;
@@ -132,22 +132,27 @@
     #search-pane .search-img img { width: 100%; height: 100%; object-fit: cover; }
     #search-pane .search-name { font-size: 0.9rem; white-space: nowrap; }
 
-    /* --- NEW FILTER BAR STYLES (Fixed inside Header) --- */
+    /* --- FILTER BAR STYLES --- */
     #filter-container {
-      display: flex;
+      display: none; /* CHANGED: Hidden by default */
       justify-content: center;
       gap: 10px;
       padding-top: 12px;
       margin-top: 5px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
-      
-      /* Mobile scrolling support */
       overflow-x: auto;
       white-space: nowrap;
       padding-bottom: 5px; 
-      scrollbar-width: none; /* Firefox */
+      scrollbar-width: none; 
     }
-    #filter-container::-webkit-scrollbar { display: none; } /* Chrome */
+    
+    /* Class to show the filters via JavaScript */
+    #filter-container.active-filter-bar {
+      display: flex;
+      animation: fadeIn 0.4s ease;
+    }
+
+    #filter-container::-webkit-scrollbar { display: none; } 
 
     .filter-btn {
       background: rgba(0, 0, 0, 0.3);
@@ -181,7 +186,6 @@
       padding: 0 1rem;
       position: relative;
       z-index: 10;
-      /* INCREASED MARGIN TO ACCOUNT FOR TALLER HEADER */
       margin-top: 180px; 
     }
 
@@ -230,14 +234,13 @@
       background: rgba(255, 255, 255, 0.05);
       border-radius: 1rem;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-
     }
     #changelog {
-  position: relative; /* Add this */
-  z-index: 10;        /* Add this */
-  background: rgba(43, 43, 43, 0.9); /* Ensure it's not transparent */
-  padding: 40px 20px;
-}
+      position: relative; 
+      z-index: 10;        
+      background: rgba(43, 43, 43, 0.9); 
+      padding: 40px 20px;
+    }
     
     footer {
       text-align: center;
@@ -262,8 +265,7 @@
 
     /* --- RESPONSIVE --- */
     @media (max-width: 900px) {
-      main { margin-top: 220px; } /* More space for wrapped buttons on mobile */
-      .header-container { justify-content: center; }
+      main { margin-top: 220px; } 
     }
   </style>
 </head>
@@ -302,6 +304,7 @@ tsParticles.load("tsparticles", {
     <button id="smart-proxy-btn">Smart Proxy</button>
     <button id="changelog-btn">Changelog</button>
     <h1>billybobgames v2</h1>
+    <button id="toggle-filter-btn">Filters</button>
     <button id="proxy-home-btn">GotW Entry</button>
     <button id="random-game-btn">🎲 Random Game 🎲</button>
     <a href="https://forms.gle/jXD1fXDfZcMzRwZe7" target="_blank">
@@ -384,10 +387,10 @@ tsParticles.load("tsparticles", {
     <a href="./games/ovo2" class="game-link"><div class="game-card" data-name="ovo 2" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/ovo2.jpg" alt="OvO 2" /></div><div class="game-name">OvO 2</div></div></a>
     <a href="./games/papasfreezeria" class="game-link"><div class="game-card" data-name="papas freezeria" data-category="simulation strategy"><div class="game-image"><img src="./siteimages/gamelogos/papasfreezeria.png" alt="Papa's Freezeria" /></div><div class="game-name">Papa's Freezeria</div></div></a>
     <a href="./games/parkourblock3d/" class="game-link"><div class="game-card" data-name="parkour block 3d" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock3d.png" alt="Parkour Block 3D" /></div><div class="game-name">Parkour Block 3D</div></div></a>
-  <a href="./games/parkourblock2/" class="game-link"><div class="game-card" data-name="parkour block 2" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock2.png" alt="Parkour Block 2" /></div><div class="game-name">Parkour Block 2</div></div></a>
+    <!--<a href="./games/parkourblock2/" class="game-link"><div class="game-card" data-name="parkour block 2" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock2.png" alt="Parkour Block 2" /></div><div class="game-name">Parkour Block 2</div></div></a>
     <a href="./games/parkourblock3/" class="game-link"><div class="game-card" data-name="parkour block 3" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock3.png" alt="Parkour Block 3" /></div><div class="game-name">Parkour Block 3</div></div></a>
-    <a href="./games/parkourblock4/" class="game-link"><div class="game-card" data-name="parkour block 4" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock4.png" alt="Parkour Block 4" /></div><div class="game-name">Parkour Block 4</div></div></a>  
-  <a href="./games/pedro/pedro.html" class="game-link"><div class="game-card" data-name="my friend pedro" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/pedro.jpg" alt="Pedro" /></div><div class="game-name">My Friend Pedro</div></div></a>
+    <a href="./games/parkourblock4/" class="game-link"><div class="game-card" data-name="parkour block 4" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock4.png" alt="Parkour Block 4" /></div><div class="game-name">Parkour Block 4</div></div></a>  -->
+    <a href="./games/pedro/pedro.html" class="game-link"><div class="game-card" data-name="my friend pedro" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/pedro.jpg" alt="Pedro" /></div><div class="game-name">My Friend Pedro</div></div></a>
     <a href="./construct/pixelspeedrun.html" class="game-link"><div class="game-card" data-name="pixel speedrun" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/pixelspeedrun.png" alt="Pixel Speedrun" /></div><div class="game-name">Pixel Speedrun</div></div></a>
     <a href="./games/polytrack/" class="game-link"><div class="game-card" data-name="polytrack" data-category="driving"><div class="game-image"><img src="./siteimages/gamelogos/polytrack.jpeg" alt="Polytrack" /></div><div class="game-name">Polytrack</div></div></a>
     <a href="./games/pokemonemerald/" class="game-link"><div class="game-card" data-name="pokemon emerald" data-category="strategy"><div class="game-image"><img src="./siteimages/gamelogos/pokemonemerald.png" alt="Pokemon Emerald" /></div><div class="game-name">Pokemon Emerald</div></div></a>
@@ -434,7 +437,7 @@ tsParticles.load("tsparticles", {
     <a href="./games/xtrenchrun/" class="game-link"><div class="game-card" data-name="x-trench run" data-category="driving action"><div class="game-image"><img src="./siteimages/gamelogos/xtrenchrun.png" alt="X-Trench Run" /></div><div class="game-name">X-Trench Run</div></div></a>
     <a href="./games/yohoho/" class="game-link"><div class="game-card" data-name="yohoho.io" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/yohoho.png" alt="Yohoho.io" /></div><div class="game-name">Yohoho.io</div></div></a>
     <a href="./youtube.html" class="game-link"><div class="game-card" data-name="youtube"><div class="game-image"><img src="./siteimages/gamelogos/youtube.png" alt="YouTube" /></div><div class="game-name">🌐 YouTube 🌐</div></div></a>
-</div>
+  </div>
 </main>
 
 <section id="changelog" style="color:white; margin-top:60px; font-family:'Poppins', sans-serif;">
@@ -446,10 +449,17 @@ tsParticles.load("tsparticles", {
       <h3 style="color:#00aaff; font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
       <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
         <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.215 — February 3, 2026</h3>
-        <p>Added 3 games:</p>
-        <p> - Parkour Block 2</p>
-        <p> - Parkour Block 3</p>
-        <p> - Parkour Block 4</p>
+        <p>Added Filters:</p>
+        <p> - Action</p>
+        <p> - Platformer</p>
+        <p> - Shooter</p>
+        <p> - Driving</p>
+        <p> - Sports</p>
+        <p> - Puzzle</p>
+        <p> - Strategy</p>
+        <p> - Simulation</p>
+        <p> - Horror</p>
+      </div>
 
       <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
         <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.214 — January 31-February 1, 2026</h3>
@@ -459,7 +469,7 @@ tsParticles.load("tsparticles", {
         <p> - Rocket League 2D</p>
         <p> - Volley Random</p>
         <p> - Parkour Block 3D</p>
-        <p>------------------------------<p>
+        <p>------------------------------</p>
         <p>Updated 6 games to available status:</p>
         <p> - Breaking the Bank</p>
         <p> - Escaping the Prison</p>
@@ -468,25 +478,12 @@ tsParticles.load("tsparticles", {
         <p> - Stealing the Diamond</p>
         <p> - Ultimate Flash Sonic</p>
       </div>
-      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
-        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.213 — January 25, 2026</h3> 
-        <p>Added 10 games:</p>
-        <p> - Crazy Cattle 3D</p>
-        <p> - Doge Miner</p>
-        <p> - Doodle Jump</p>
-        <p> - Fireboy and Watergirl 3</p>
-        <p> - Fireboy and Watergirl 4</p>
-        <p> - Gun Mayhem Redux</p>
-        <p> - Pokemon Emerald</p>
-        <p> - There is No Game</p>
-        <p> - World's Hardest Game</p>
-        <p> - World's Hardest Game 2</p>
-      </div>
-
+      
       <div style="text-align:center; margin-top:10px;">
         <button id="show-more" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s;">Show More</button>
       </div>
     </div>
+    
     <div id="other-links-container" style="flex:0 1 300px; max-width:350px; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:center;">
       <h3 style="color:#00aaff; font-size:1.4em; margin-bottom:15px;">Other Links</h3>
       <div class="link-slot" style="margin-bottom:15px;">
@@ -495,28 +492,37 @@ tsParticles.load("tsparticles", {
       <div class="link-slot" style="margin-bottom:15px;">
         <a href="https://zearnhaas.netlify.app/" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 1</a>
       </div>
-      <div class="link-slot" style="margin-bottom:15px;">
-        <a href="https://boilafiles.netlify.app/" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 2</a>
-      </div>
-      <div class="link-slot">
-        <a href="https://zearnhaas.github.io" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 3 (OLD)</a>
-      </div>
     </div>
   </div>
 </section>
 
 <footer>
-  NKC is now mostly maintaining this site with some help from averageperson4 and APAP. The new request issue form is down below. Any issues and game suggestions will be highly appreciated. New games will (or try to) be added every weekend.
+  NKC is now mostly maintaining this site...
   <br /><br />
   <a href="https://docs.google.com/forms/d/e/1FAIpQLSehIZWpUlPu8cv4Ew4hIhjYopDhIsQwGViUc1NYf9YrvBGecA/viewform?usp=dialog" target="_blank" style="color: #4da6ff; text-decoration: underline;">Request a Game/Feedback</a>
-  <br />
-  <a href="https://www.youtube.com/@billybobgamesv2" target="_blank" style="color: #4da6ff; text-decoration: underline;">Check out our YouTube!</a>
-  <br />
-  <a href="https://discord.gg/qG7x2QWEXA" target="_blank" style="color: #4da6ff; text-decoration: underline;">Join our Discord!</a>
 </footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+
+  // ========= FILTER TOGGLE LOGIC =========
+  const toggleFilterBtn = document.getElementById('toggle-filter-btn');
+  const filterContainer = document.getElementById('filter-container');
+
+  toggleFilterBtn.addEventListener('click', () => {
+    // Toggles the visibility class
+    filterContainer.classList.toggle('active-filter-bar');
+    
+    // Optional: Changes button color when bar is open
+    if(filterContainer.classList.contains('active-filter-bar')){
+      toggleFilterBtn.style.background = "#0088cc";
+      toggleFilterBtn.style.boxShadow = "0 0 12px #00aaff";
+    } else {
+      toggleFilterBtn.style.background = "#00aaff";
+      toggleFilterBtn.style.boxShadow = "none";
+    }
+  });
+
   // ========= SEARCH BAR =========
   const searchInput = document.getElementById("search-input");
   const gameCards = document.querySelectorAll(".game-card");
@@ -539,13 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const entry = document.createElement("a");
         entry.href = link;
         entry.className = "result";
-        entry.style.display = "flex";
-        entry.style.alignItems = "center";
-        entry.style.gap = "0.5rem";
-        entry.style.padding = "4px 0";
-        entry.style.color = "#fff";
-        entry.style.textDecoration = "none";
-        entry.innerHTML = `<div class="search-img"><img src="${imgSrc}" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:6px;"></div><div class="search-name">${displayName}</div>`;
+        entry.innerHTML = `<div class="search-img"><img src="${imgSrc}"></div><div class="search-name">${displayName}</div>`;
         results.push(entry);
       }
     });
@@ -572,13 +572,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const showMoreBtn = document.getElementById('show-more');
   const entries = document.querySelectorAll('.changelog-entry');
   let shown = 1;
-
-  // Create Show Less button
   const showLessBtn = document.createElement('button');
   showLessBtn.textContent = 'Show Less';
   showLessBtn.style.cssText = `background:#444; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s; display:none; margin-left:10px;`;
-  showLessBtn.addEventListener('mouseenter', () => { showLessBtn.style.background = "#666"; showLessBtn.style.boxShadow="0 0 12px #00aaff"; });
-  showLessBtn.addEventListener('mouseleave', () => { showLessBtn.style.background = "#444"; showLessBtn.style.boxShadow="none"; });
   
   if(showMoreBtn) {
     showMoreBtn.parentNode.appendChild(showLessBtn);
@@ -608,7 +604,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const proxyUrl = './proxy.html'; 
   const smartProxyBtn = document.getElementById('smart-proxy-btn');
   const proxyHomeBtn = document.getElementById('proxy-home-btn');
-
   if(smartProxyBtn) smartProxyBtn.addEventListener('click', () => window.location.href = proxyUrl);
   if(proxyHomeBtn) proxyHomeBtn.addEventListener('click', () => 
     window.open("https://docs.google.com/forms/d/e/1FAIpQLSeEDxNxyOYUb0g0hH12EijhNAXDRmr0k0JrtdThVjpFIcbfyg/viewform?usp=dialog", "_blank")
@@ -626,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ========= NEW GAME FILTERS =========
+  // ========= GAME FILTERS LOGIC =========
   const filterBtns = document.querySelectorAll('.filter-btn');
   const gameCardsForFilter = document.querySelectorAll('.game-card');
 
@@ -634,13 +629,11 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-
       const category = btn.getAttribute('data-filter');
 
       gameCardsForFilter.forEach(card => {
         const link = card.closest('.game-link'); 
         const cardCategory = card.getAttribute('data-category') || 'other';
-
         if (category === 'all' || cardCategory.includes(category)) {
           link.style.display = 'block';
           link.style.animation = 'fadeIn 0.5s ease'; 
