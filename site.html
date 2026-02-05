@@ -1,435 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G4MQ8PHH7T"></script>
-
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4MQ8PHH7T"></script>
   <script src="/ruffle/ruffle.js"></script>
   
-<script>
-
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-G4MQ8PHH7T');
-</script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-G4MQ8PHH7T');
+  </script>
   
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Zearn</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #2b2b2b;
-    color: #e0e0e0;
-    position: relative;
-  }
-  
-#search-container {
-  position: relative;      /* anchors dropdown */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zearn</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #2b2b2b;
+      color: #e0e0e0;
+      position: relative;
+    }
+    
+    /* --- HEADER STYLES --- */
+    header {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 22px);
+      background: rgba(58, 58, 58, 0.95); /* Increased opacity for readability */
+      backdrop-filter: blur(10px); 
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 200;
+      padding: 15px 20px;   
+      border-radius: 14px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
 
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 6px 6px;
+      margin: 0;
+    }
 
+    .header-container h1 {
+      margin: 0 10px;
+      color: #00aaff;
+      font-size: 1.8em;
+      text-shadow: 0 0 6px #00aaff, 0 0 12px rgba(0,170,255,0.8);
+    }
 
- #search-input {
-  width: 170px;            /* thinner */
-  padding: 6px 10px;
-  font-size: 0.88rem;
-  border: none;
-  border-radius: 8px;
-  background: #2b2b2b;
-  color: white;
-  box-shadow: 0 0 6px rgba(77,166,255,0.3);
-}
+    .header-container button {
+      background: #00aaff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 12px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.85em;
+      transition: 0.3s;
+      white-space: nowrap;
+    }
 
-  #search-pane {
-  position: absolute;
-  top: calc(100% + 6px);     /* 👈 BELOW the input */
-  left: 0;
-  max-width: 90vw;
-  width: 260px;              /* compact */
-  max-height: 300px;         /* prevents screen takeover */
-  overflow-y: auto;
-  background: rgba(30,30,30,0.95);
-  border: 1px solid #4da6ff;
-  border-radius: 10px;
-  padding: 0.5rem;
-  display: none;
-  flex-direction: column;
-  z-index: 300;
-}
-@media (max-width: 700px) {
-  #search-pane {
-    left: 0;
-    top: calc(100% + 8px);
-    width: 100%;
-    max-height: 240px;
-  }
-}
-@media (max-width: 700px) {
-  #search-container {
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+    .header-container button:hover {
+      background: #0088cc;
+      box-shadow: 0 0 12px #00aaff;
+    }
 
-  #search-pane {
-    left: 0;
-    top: calc(100% + 8px);
-    transform: none;
-    width: 100%;
-  }
-}
+    /* --- SEARCH BAR --- */
+    #search-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-  #search-pane a {
-    text-decoration: none;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0.4rem 0;
-  }
+    #search-input {
+      width: 170px;
+      padding: 6px 10px;
+      font-size: 0.88rem;
+      border: none;
+      border-radius: 8px;
+      background: #2b2b2b;
+      color: white;
+      box-shadow: 0 0 6px rgba(77,166,255,0.3);
+    }
 
-  #search-pane .search-img {
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
+    #search-pane {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      max-width: 90vw;
+      width: 260px;
+      max-height: 300px;
+      overflow-y: auto;
+      background: rgba(30,30,30,0.95);
+      border: 1px solid #4da6ff;
+      border-radius: 10px;
+      padding: 0.5rem;
+      display: none;
+      flex-direction: column;
+      z-index: 300;
+    }
+    
+    #search-pane a {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0.4rem 0;
+    }
 
-  #search-pane .search-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+    #search-pane .search-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
 
-  #search-pane .search-name {
-    font-size: 0.9rem;
-    white-space: nowrap;
-  }
+    #search-pane .search-img img { width: 100%; height: 100%; object-fit: cover; }
+    #search-pane .search-name { font-size: 0.9rem; white-space: nowrap; }
 
-header {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 22px);
-  background: rgba(58, 58, 58, 0.87);
-  backdrop-filter: blur(10px); 
-  -webkit-backdrop-filter: blur(10px);
-  z-index: 200;
-  padding: 20px 20px;   
-  border-radius: 14px;
-  box-sizing: border-box;
-}
-.header-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;               /* tighter */
-  flex-wrap: wrap;
-  padding: 6px 6px;       /* thinner */
-  margin: 0;
-}
-.header-container h1 {
-  margin: 0 10px;
-  color: #00aaff;
-  font-size: 1.8em;
-  text-shadow:
-    0 0 6px #00aaff,
-    0 0 12px rgba(0,170,255,0.8);
+    /* --- NEW FILTER BAR STYLES (Fixed inside Header) --- */
+    #filter-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding-top: 12px;
+      margin-top: 5px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      
+      /* Mobile scrolling support */
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 5px; 
+      scrollbar-width: none; /* Firefox */
+    }
+    #filter-container::-webkit-scrollbar { display: none; } /* Chrome */
 
-}
+    .filter-btn {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid #00aaff;
+      padding: 6px 14px;
+      border-radius: 15px;
+      color: #00aaff;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.85rem;
+      transition: 0.3s;
+      flex-shrink: 0;
+    }
 
-.header-container button {
-  background: #00aaff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 0.95em;
-  transition: 0.3s;
-  white-space: nowrap;
-  padding: 7px 14px;
-  font-size: 0.85em;
-}
+    .filter-btn:hover {
+      background: #00aaff;
+      color: white;
+      box-shadow: 0 0 10px #00aaff;
+    }
 
-.header-container button:hover {
-  background: #0088cc;
-  box-shadow: 0 0 12px #00aaff;
-}
-  
-/* === CHANGELOG (LEFT OF TITLE, MIRRORS GOTW ENTRY) === */
-#changelog-btn {
-  background:#00aaff;
-  border:none;
-  padding:10px 20px;
-  border-radius:12px;
-  color:white;
-  cursor:pointer;
-  font-weight:bold;
-  font-size:1em;
-  transition:0.3s;
-}
+    .filter-btn.active {
+      background: #00aaff;
+      color: white;
+      box-shadow: 0 0 15px #00aaff;
+    }
 
-#changelog-btn:hover {
-  background:#0088cc;
-  box-shadow: 0 0 12px #00aaff;
-}
+    /* --- MAIN & GRID --- */
+    main {
+      max-width: 1200px;
+      margin: 0 auto 2rem;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 10;
+      /* INCREASED MARGIN TO ACCOUNT FOR TALLER HEADER */
+      margin-top: 180px; 
+    }
 
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  main {
-    max-width: 1200px;
-    margin: 3rem auto 2rem;
-    padding: 0 1rem;
-    position: relative;
-    z-index: 10;
-    margin-top: 120px;
-
-  }
-
-  a.game-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-  }
-
-  .game-card {
-    background: #404040;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-    text-align: center;
-    height: 300px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .game-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  .game-image {
-    flex-grow: 1;
-    overflow: hidden;
-  }
-
-  .game-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-  }
-
-  .game-name {
-    font-weight: 600;
-    color: #ffffff;
-    background: #333;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-  }
-
-  footer {
-    text-align: center;
-    padding: 2rem 1rem;
-    color: #ccc;
-    font-size: 0.9rem;
-    position: relative;
-    z-index: 10;
-  }
-
-  @media (max-width: 600px) {
     .games-grid {
-      grid-template-columns: repeat(1, 1fr);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
     }
 
-    #changelog-btn {
-      position: static;
-      margin-left: 0;
-      margin-top: 1rem;
+    a.game-link { text-decoration: none; color: inherit; display: block; }
+
+    .game-card {
+      background: #404040;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+      text-align: center;
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-  }
 
+    .game-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
 
-  #proxy-home-btn {
-  background: #00aaff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 12px;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1em;
-  transition: 0.3s;
-}
+    .game-image { flex-grow: 1; overflow: hidden; }
+    .game-image img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .game-name {
+      font-weight: 600;
+      color: #ffffff;
+      background: #333;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
 
-#proxy-home-btn:hover {
-  background: #0088cc;
-  box-shadow: 0 0 12px #00aaff;
-}
+    /* --- CHANGELOG & FOOTER --- */
+    .changelog {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: #ccc;
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 10;
+    }
 
-/* === SMART PROXY (LEFTMOST) === */
-#smart-proxy-btn {
-  background:#00aaff;
-  border:none;
-  padding:10px 20px;
-  border-radius:12px;
-  color:white;
-  cursor:pointer;
-  font-weight:bold;
-  font-size:1em;
-  transition:0.3s;
-}
+    /* --- PARTICLES & ANIMATION --- */
+    #tsparticles {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 0; pointer-events: none; background: #2b2b2b;
+    }
 
-#smart-proxy-btn:hover {
-  background:#0088cc;
-  box-shadow: 0 0 12px #00aaff;
-}
-  
-#random-game-btn {
-  background:#00aaff;
-  border:none;
-  padding:10px 20px; /* SAME as others */
-  border-radius:12px;
-  color:white;
-  cursor:pointer;
-  font-weight:bold;
-  font-size:0.95em; /* 👈 slightly smaller for emoji balance */
-  transition:0.3s;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-#random-game-btn:hover {
-  background:#0088cc;
-  box-shadow: 0 0 12px #00aaff;
-}
-
-@media (max-width: 900px) {
-  #smart-proxy-btn,
-  #changelog-btn,
-  #proxy-home-btn,
-  #random-game-btn {
-    position: static;
-    transform: none;
-    margin-top: 10px;
-  }
-}
-  
-  /* Updated games grid and responsive changelog layout */
-
-.games-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
-
-/* Changelog layout */
-.changelog {
-  max-width: 900px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-}
-
-.changelog h2 {
-  text-align: center;
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-}
-
-.changelog-entry {
-  background: rgba(255, 255, 255, 0.07);
-  padding: 1rem;
-  border-radius: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-/* Responsive scaling */
-@media (max-width: 900px) {
-  .changelog {
-    max-width: 90%;
-    padding: 1.5rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .changelog {
-    max-width: 95%;
-    padding: 1rem;
-  }
-
-  .changelog h2 {
-    font-size: 1.5rem;
-  }
-}
-
- #tsparticles {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0;
-  pointer-events: none;
-  background: #2b2b2b;
-}
-
-
-/* Main content and changelog section */
-main, section#changelog, footer {
-    position: relative;
-    z-index: 100;
-}
-
-
-
-
-.header-container button:hover {
-  background: #0088cc;
-  box-shadow: 0 0 12px #00aaff;
-}
-
-</style>
+    /* --- RESPONSIVE --- */
+    @media (max-width: 900px) {
+      main { margin-top: 220px; } /* More space for wrapped buttons on mobile */
+      .header-container { justify-content: center; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Include this in your <body> where you want the background -->
 <div id="tsparticles"></div>
-
-<!-- Include the tsParticles library -->
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
-
 <script>
 tsParticles.load("tsparticles", {
-    fullScreen: { enable: false }, // keeps it inside the div
+    fullScreen: { enable: false },
     fpsLimit: 60,
     interactivity: {
-        events: {
-            onHover: { enable: true, mode: "repulse" },
-            resize: true
-        },
+        events: { onHover: { enable: true, mode: "repulse" }, resize: true },
         modes: { repulse: { distance: 100, duration: 0.4 } }
     },
     particles: {
@@ -445,15 +285,8 @@ tsParticles.load("tsparticles", {
 });
 </script>
 
-<style>
-
-</style>
-
-
-
 <header>
   <div class="header-container">
-
     <div id="search-container">
       <input type="text" id="search-input" placeholder="Search games..." />
       <div id="search-pane"></div>
@@ -467,133 +300,140 @@ tsParticles.load("tsparticles", {
     <a href="https://forms.gle/jXD1fXDfZcMzRwZe7" target="_blank">
       <button>PotW</button>
     </a>
-
+  </div>
+  
+  <div id="filter-container">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="action">Action</button>
+    <button class="filter-btn" data-filter="platformer">Platformer</button>
+    <button class="filter-btn" data-filter="shooter">Shooter</button>
+    <button class="filter-btn" data-filter="driving">Driving</button>
+    <button class="filter-btn" data-filter="sports">Sports</button>
+    <button class="filter-btn" data-filter="puzzle">Puzzle</button>
+    <button class="filter-btn" data-filter="strategy">Strategy</button>
+    <button class="filter-btn" data-filter="simulation">Simulation</button>
+    <button class="filter-btn" data-filter="horror">Horror</button>
   </div>
 </header>
 
 <main>
   <div class="games-grid" id="games-grid">
-    <a href="./games/bitlife/" class="game-link"><div class="game-card" data-name="bitlife"><div class="game-image"><img src="./siteimages/gamelogos/bitlife.jpeg" alt="Bitlife" /></div><div class="game-name">Bitlife</div></div></a>
-    <a href="./games/2048/" class="game-link"><div class="game-card" data-name="2048"><div class="game-image"><img src="./siteimages/gamelogos/2048.png" alt="2048" /></div><div class="game-name">2048</div></div></a>
-    <a href="./games/amongus/" class="game-link"><div class="game-card" data-name="amongus"><div class="game-image"><img src="./siteimages/gamelogos/amongus.png" alt="Among Us" /></div><div class="game-name">Among Us</div></div></a>
-    <a href="./games/awesometanks/" class="game-link"><div class="game-card" data-name="awesome tanks"><div class="game-image"><img src="./siteimages/gamelogos/awesometanks.png" alt="Awesome Tanks" /></div><div class="game-name">Awesome Tanks</div></div></a>
-    <a href="./games/awesometanks2/" class="game-link"><div class="game-card" data-name="awesome tanks 2"><div class="game-image"><img src="./siteimages/gamelogos/awesometanks2.png" alt="Awesome Tanks 2" /></div><div class="game-name">Awesome Tanks 2</div></div></a>
-    <a href="./games/basketballstars/" class="game-link"><div class="game-card" data-name="basketball stars"><div class="game-image"><img src="./siteimages/gamelogos/basketballstars.png" alt="Basketball Stars" /></div><div class="game-name">Basketball Stars</div></div></a>
-    <a href="./games/basketrandom/" class="game-link"><div class="game-card" data-name="basket random"><div class="game-image"><img src="./siteimages/gamelogos/basketrandom.png" alt="Basket Random" /></div><div class="game-name">Basket Random</div></div></a>
-    <a href="./games/blockblast/" class="game-link"><div class="game-card" data-name="block blast"><div class="game-image"><img src="./siteimages/gamelogos/blockblast.jpeg" alt="Block Blast" /></div><div class="game-name">Block Blast</div></div></a>
-    <a href="./games/blumgislime/" class="game-link"><div class="game-card" data-name="blumgi slime"><div class="game-image"><img src="./siteimages/gamelogos/blumgislime.png" alt="Blumgi Slime" /></div><div class="game-name">Blumgi Slime</div></div></a>
-    <a href="./games/boxingrandom/" class="game-link"><div class="game-card" data-name="boxing random"><div class="game-image"><img src="./siteimages/gamelogos/boxingrandom.png" alt="Boxing Random" /></div><div class="game-name">Boxing Random</div></div></a>
-    <a href="./games/breakingthebank/" class="game-link"><div class="game-card" data-name="breaking the bank"><div class="game-image"><img src="./siteimages/gamelogos/breakingthebank.avif" alt="Breaking the Bank" /></div><div class="game-name">Breaking the Bank</div></div></a>
-    <a href="./games/championisland/champion-island/" class="game-link"><div class="game-card" data-name="champion island"><div class="game-image"><img src="./siteimages/gamelogos/championisland.png" alt="Champion Island" /></div><div class="game-name">Champion Island</div></div></a>
-    <a href="./games/chromedino/" class="game-link"><div class="game-card" data-name="chrome dino"><div class="game-image"><img src="./siteimages/gamelogos/chromedino.png" alt="Chrome Dino" /></div><div class="game-name">Chrome Dino</div></div></a>
-    <a href="./games/cluster-main/" class="game-link"><div class="game-card" data-name="cluster rush"><div class="game-image"><img src="./siteimages/gamelogos/clusterrush.jpeg" alt="Cluster Rush" /></div><div class="game-name">Cluster Rush</div></div></a>
-    <a href="./games/cookieclicker/" class="game-link"><div class="game-card" data-name="cookie clicker"><div class="game-image"><img src="./siteimages/gamelogos/cookieclicker.png" alt="Cookie Clicker" /></div><div class="game-name">Cookie Clicker</div></div></a>
-    <a href="./games/crazycattle3d/" class="game-link"><div class="game-card" data-name="crazy cattle 3d"><div class="game-image"><img src="./siteimages/gamelogos/crazycattle3d.png" alt="Crazy Cattle 3D" /></div><div class="game-name">🏆 Crazy Cattle 3D 🏆</div></div></a>
-    <a href="./games/crossyroad" class="game-link"><div class="game-card" data-name="crossy road"><div class="game-image"><img src="./siteimages/gamelogos/crossyroad.jpg" alt="Crossy Road" /></div><div class="game-name">Crossy Road</div></div></a>
-    <a href="./games/cuttherope/" class="game-link"><div class="game-card" data-name="cut the rope"><div class="game-image"><img src="./siteimages/gamelogos/cuttherope.png" alt="Cut the Rope" /></div><div class="game-name">Cut the Rope</div></div></a>
-    <a href="./games/dogeminer/" class="game-link"><div class="game-card" data-name="doge miner"><div class="game-image"><img src="./siteimages/gamelogos/dogeminer.png" alt="Doge Miner" /></div><div class="game-name">Doge Miner</div></div></a>
-    <a href="./games/doodlejump/" class="game-link"><div class="game-card" data-name="doodle jump"><div class="game-image"><img src="./siteimages/gamelogos/doodlejump.png" alt="Doodle Jump" /></div><div class="game-name">Doodle Jump</div></div></a>
-    <a href="./games/driftboss/" class="game-link"><div class="game-card" data-name="drift boss"><div class="game-image"><img src="./siteimages/gamelogos/driftboss.png" alt="Drift Boss" /></div><div class="game-name">Drift Boss</div></div></a>
-    <a href="./games/drivemad/" class="game-link"><div class="game-card" data-name="drive mad"><div class="game-image"><img src="./siteimages/gamelogos/drivemad.png" alt="Drive Mad" /></div><div class="game-name">Drive Mad</div></div></a>
-    <a href="./games/eggycar/" class="game-link"><div class="game-card" data-name="eggy car"><div class="game-image"><img src="./siteimages/gamelogos/eggycar.png" alt="Eggy Car" /></div><div class="game-name">Eggy Car</div></div></a>
-    <a href="./games/escapingtheprison/" class="game-link"><div class="game-card" data-name="escaping the prison"><div class="game-image"><img src="./siteimages/gamelogos/escapingtheprison.png" alt="Escaping the Prison" /></div><div class="game-name">Escaping the Prison</div></div></a>
-    <a href="./games/fireboyandwatergirl/" class="game-link"><div class="game-card" data-name="fireboy and watergirl"><div class="game-image"><img src="./siteimages/gamelogos/fireboyandwatergirl.png" alt="Fireboy and Watergirl" /></div><div class="game-name">Fireboy and Watergirl</div></div></a>
-    <a href="./games/fireboyandwatergirl2/" class="game-link"><div class="game-card" data-name="fireboy and watergirl 2"><div class="game-image"><img src="./siteimages/gamelogos/fireboyandwatergirl2.png" alt="Fireboy and Watergirl 2" /></div><div class="game-name">Fireboy and Watergirl 2</div></div></a>
-    <a href="./games/fireboyandwatergirl3/" class="game-link"><div class="game-card" data-name="fireboy and watergirl 3"><div class="game-image"><img src="./siteimages/gamelogos/fireboyandwatergirl3.png" alt="Fireboy and Watergirl 3" /></div><div class="game-name">Fireboy and Watergirl 3</div></div></a>
-    <a href="./games/fireboyandwatergirl4/" class="game-link"><div class="game-card" data-name="fireboy and watergirl 4"><div class="game-image"><img src="./siteimages/gamelogos/fireboyandwatergirl4.png" alt="Fireboy and Watergirl 4" /></div><div class="game-name">Fireboy and Watergirl 4</div></div></a>
-    <a href="./games/flappybird/" class="game-link"><div class="game-card" data-name="flappy bird"><div class="game-image"><img src="./siteimages/gamelogos/flappybird.jpeg" alt="Flappy Bird" /></div><div class="game-name">Flappy Bird</div></div></a>
-    <a href="./games/fleeingthecomplex/" class="game-link"><div class="game-card" data-name="fleeing the complex"><div class="game-image"><img src="./siteimages/gamelogos/fleeingthecomplex.avif" alt="Fleeing the Complex" /></div><div class="game-name">Fleeing the Complex</div></div></a>
-    <a href="./games/fnaf1/" class="game-link"><div class="game-card" data-name="fnaf 1"><div class="game-image"><img src="./siteimages/gamelogos/fnaf.jpg" alt="FNAF 1" /></div><div class="game-name">FNAF 1</div></div></a>
-    <a href="./games/fnaf2/" class="game-link"><div class="game-card" data-name="fnaf 2"><div class="game-image"><img src="./siteimages/gamelogos/fnaf2.png" alt="FNAF 2" /></div><div class="game-name">FNAF 2</div></div></a>
-    <a href="./games/fnaf3/" class="game-link"><div class="game-card" data-name="fnaf 3"><div class="game-image"><img src="./siteimages/gamelogos/fnaf3.png" alt="FNAF 3" /></div><div class="game-name">FNAF 3</div></div></a>
-    <a href="./games/fnaf4/" class="game-link"><div class="game-card" data-name="fnaf 4"><div class="game-image"><img src="./siteimages/gamelogos/fnaf4.png" alt="FNAF 4" /></div><div class="game-name">FNAF 4</div></div></a>
-    <a href="./games/fnaf5/" class="game-link"><div class="game-card" data-name="fnaf 5"><div class="game-image"><img src="./siteimages/gamelogos/fnaf5.png" alt="FNAF 5" /></div><div class="game-name">FNAF 5</div></div></a>
-    <a href="./games/fnaf6/" class="game-link"><div class="game-card" data-name="fnaf 6"><div class="game-image"><img src="./siteimages/gamelogos/fnaf6.png" alt="FNAF 6" /></div><div class="game-name">FNAF 6</div></div></a>
-    <a href="./games/ucn/" class="game-link"><div class="game-card" data-name="ultimate custom night"><div class="game-image"><img src="./siteimages/gamelogos/ucn.png" alt="Ultimate Custom Night" /></div><div class="game-name">Ultimate Custom Night</div></div></a>
-    <a href="./games/fridaynightfunkin/" class="game-link"><div class="game-card" data-name="friday night funkin"><div class="game-image"><img src="./siteimages/gamelogos/fridaynightfunkin.png" alt="Friday Night Funkin'" /></div><div class="game-name">Friday Night Funkin'</div></div></a>
-    <a href="./games/geometrydashlite/" class="game-link"><div class="game-card" data-name="geometry dash lite"><div class="game-image"><img src="./siteimages/gamelogos/geometrydashlite.png" alt="Geometry Dash Lite" /></div><div class="game-name">Geometry Dash Lite</div></div></a>
-    <a href="./games/geometrydashremastered/" class="game-link"><div class="game-card" data-name="geometry dash remastered"><div class="game-image"><img src="./siteimages/gamelogos/geometrydashremastered.png" alt="Geometry Dash Remastered" /></div><div class="game-name">Geometry Dash Remastered</div></div></a>
-    <a href="./games/gladihoppers/" class="game-link"><div class="game-card" data-name="gladihoppers"><div class="game-image"><img src="./siteimages/gamelogos/gladihoppers.png" alt="Gladihoppers" /></div><div class="game-name">Gladihoppers</div></div></a>
-    <a href="./games/gunmayhem/" class="game-link"><div class="game-card" data-name="gun mayhem"><div class="game-image"><img src="./siteimages/gamelogos/gunmayhem.png" alt="Gun Mayhem" /></div><div class="game-name">Gun Mayhem</div></div></a>
-    <a href="./games/gunmayhem2/" class="game-link"><div class="game-card" data-name="gun mayhem 2"><div class="game-image"><img src="./siteimages/gamelogos/gunmayhem2.png" alt="Gun Mayhem 2" /></div><div class="game-name">Gun Mayhem 2</div></div></a>
-    <a href="./games/gunmayhemredux/" class="game-link"><div class="game-card" data-name="gun mayhem redux"><div class="game-image"><img src="./siteimages/gamelogos/gunmayhemredux.png" alt="Gun Mayhem Redux" /></div><div class="game-name">Gun Mayhem Redux</div></div></a>
-    <a href="./games/icypurplehead2/" class="game-link"><div class="game-card" data-name="icy purple head 2"><div class="game-image"><img src="./siteimages/gamelogos/icypurplehead2.jpg" alt="Icy Purple Head 2" /></div><div class="game-name">Icy Purple Head 2</div></div></a>
-    <a href="./games/icypurplehead3/" class="game-link"><div class="game-card" data-name="icy purple head 3"><div class="game-image"><img src="./siteimages/gamelogos/icypurplehead3.png" alt="Icy Purple Head 3" /></div><div class="game-name">Icy Purple Head 3</div></div></a>
-    <a href="./games/infiltratingtheairship/" class="game-link"><div class="game-card" data-name="infiltrating the airship"><div class="game-image"><img src="./siteimages/gamelogos/infiltratingtheairship.avif" alt="Infiltrating the Airship" /></div><div class="game-name">Infiltrating the Airship</div></div></a>
-    <a href="./games/ironsnout/" class="game-link"><div class="game-card" data-name="iron snout"><div class="game-image"><img src="./siteimages/gamelogos/ironsnout.png" alt="Iron Snout" /></div><div class="game-name">Iron Snout</div></div></a>
-    <a href="./games/leveldevil/" class="game-link"><div class="game-card" data-name="level devil"><div class="game-image"><img src="./siteimages/gamelogos/leveldevil.png" alt="Level Devil" /></div><div class="game-name">Level Devil</div></div></a>
-    <a href="./games/mariobrosbeta/" class="game-link"><div class="game-card" data-name="mario"><div class="game-image"><img src="./siteimages/gamelogos/mario.png" alt="Mario" /></div><div class="game-name">Mario</div></div></a>
-    <a href="./games/mariobrosupdated/" class="game-link"><div class="game-card" data-name="mario bros"><div class="game-image"><img src="./siteimages/gamelogos/mariobros.png" alt="Mario Bros" /></div><div class="game-name">Mario Bros</div></div></a>
-    <a href="./games/minecraft" class="game-link"><div class="game-card" data-name="minecraft"><div class="game-image"><img src="./siteimages/gamelogos/minecraft.png" alt="Minecraft" /></div><div class="game-name">Minecraft</div></div></a>
-    <a href="./games/monkeymart" class="game-link"><div class="game-card" data-name="monkeymart"><div class="game-image"><img src="./siteimages/gamelogos/monkeymart.png" alt="Monkey Mart" /></div><div class="game-name">Monkey Mart</div></div></a>
-    <a href="./games/motox3m" class="game-link"><div class="game-card" data-name="motox3m"><div class="game-image"><img src="./siteimages/gamelogos/motox3m.png" alt="Moto X3M" /></div><div class="game-name">Moto X3M</div></div></a>
-    <a href="./games/ngon" class="game-link"><div class="game-card" data-name="n-gon"><div class="game-image"><img src="./siteimages/gamelogos/ngon.png" alt="N-Gon" /></div><div class="game-name">N-Gon</div></div></a>
-    <a href="./games/ovo" class="game-link"><div class="game-card" data-name="ovo"><div class="game-image"><img src="./siteimages/gamelogos/ovo.png" alt="OvO" /></div><div class="game-name">OvO</div></div></a>
-    <a href="./games/ovo2" class="game-link"><div class="game-card" data-name="ovo 2"><div class="game-image"><img src="./siteimages/gamelogos/ovo2.jpg" alt="OvO 2" /></div><div class="game-name">OvO 2</div></div></a>
-    <a href="./games/parkourblock3d/" class="game-link"><div class="game-card" data-name="parkour block 3d"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock3d.png" alt="Parkour Block 3D" /></div><div class="game-name">Parkour Block 3D</div></div></a>
-    <a href="./games/papasfreezeria" class="game-link"><div class="game-card" data-name="papas freezeria"><div class="game-image"><img src="./siteimages/gamelogos/papasfreezeria.png" alt="Papa's Freezeria" /></div><div class="game-name">Papa's Freezeria</div></div></a>
-    <a href="./games/pedro/pedro.html" class="game-link"><div class="game-card" data-name="my friend pedro"><div class="game-image"><img src="./siteimages/gamelogos/pedro.jpg" alt="Pedro" /></div><div class="game-name">My Friend Pedro</div></div></a>
-    <a href="./construct/pixelspeedrun.html" class="game-link"><div class="game-card" data-name="pixel speedrun"><div class="game-image"><img src="./siteimages/gamelogos/pixelspeedrun.png" alt="Pixel Speedrun" /></div><div class="game-name">Pixel Speedrun</div></div></a>
-    <a href="./games/polytrack/" class="game-link"><div class="game-card" data-name="polytrack"><div class="game-image"><img src="./siteimages/gamelogos/polytrack.jpeg" alt="Polytrack" /></div><div class="game-name">Polytrack</div></div></a>
-    <a href="./games/pokemonemerald/" class="game-link"><div class="game-card" data-name="pokemon emerald"><div class="game-image"><img src="./siteimages/gamelogos/pokemonemerald.png" alt="Pokemon Emerald" /></div><div class="game-name">Pokemon Emerald</div></div></a>
-    <a href="./games/racesurvival/" class="game-link"><div class="game-card" data-name="race survival"><div class="game-image"><img src="./siteimages/gamelogos/racesurvival.jpeg" alt="Race Survival" /></div><div class="game-name">Race Survival</div></div></a>
-    <a href="./games/retro-bowl/" class="game-link"><div class="game-card" data-name="retro bowl"><div class="game-image"><img src="./siteimages/gamelogos/retrobowl.jpeg" alt="Retro Bowl" /></div><div class="game-name">Retro Bowl</div></div></a>
-    <a href="./games/rooftopsnipers/" class="game-link"><div class="game-card" data-name="rooftop snipers"><div class="game-image"><img src="./siteimages/gamelogos/rooftopsnipers.png" alt="Rooftop Snipers" /></div><div class="game-name">Rooftop Snipers</div></div></a>
-    <a href="./games/rocketleague2d/" class="game-link"><div class="game-card" data-name="rocket league 2d"><div class="game-image"><img src="./siteimages/gamelogos/rocketleague2d.png" alt="Rocket League 2D" /></div><div class="game-name">Rocket League 2D</div></div></a>
-    <a href="./games/run3/" class="game-link"><div class="game-card" data-name="run 3"><div class="game-image"><img src="./siteimages/gamelogos/run3.png" alt="Run 3" /></div><div class="game-name">Run 3</div></div></a>
-    <a href="./construct/shootoutreloaded.html" class="game-link"><div class="game-card" data-name="shoot out reloaded"><div class="game-image"><img src="./siteimages/gamelogos/shootoutreloaded.png" alt="Shoot Out Reloaded" /></div><div class="game-name">Shoot Out Reloaded</div></div></a>
-    <a href="./games/skibidistrike/skibidi-strike/" class="game-link"><div class="game-card" data-name="skibidistrike"><div class="game-image"><img src="./siteimages/gamelogos/skibidistrike.png" alt="Skibidi Strike" /></div><div class="game-name">Skibidi Strike</div></div></a>
-    <a href="./games/slope/" class="game-link"><div class="game-card" data-name="slope"><div class="game-image"><img src="./siteimages/gamelogos/slope.jpeg" alt="Slope" /></div><div class="game-name">Slope</div></div></a>
-    <a href="./games/snake/" class="game-link"><div class="game-card" data-name="snake"><div class="game-image"><img src="./siteimages/gamelogos/Snake.PNG" alt="Snake" /></div><div class="game-name">Snake</div></div></a>
-    <a href="./games/solitaire/" class="game-link"><div class="game-card" data-name="solitare"><div class="game-image"><img src="./siteimages/gamelogos/solitaire.png" alt="Solitaire" /></div><div class="game-name">Solitaire</div></div></a>
-    <a href="./construct/spaceisolation.html" class="game-link"><div class="game-card" data-name="space isolation"><div class="game-image"><img src="./siteimages/gamelogos/spaceisolation.png" alt="Space Isolation" /></div><div class="game-name">Space Isolation</div></div></a>
-    <a href="./games/stealingthediamond/" class="game-link"><div class="game-card" data-name="stealing the diamond"><div class="game-image"><img src="./siteimages/gamelogos/stealingthediamond.avif" alt="Stealing the Diamond" /></div><div class="game-name">Stealing the Diamond</div></div></a>
-    <a href="./games/stickmanhook/" class="game-link"><div class="game-card" data-name="stickman hook"><div class="game-image"><img src="./siteimages/gamelogos/stickmanhook.png" alt="Stickman Hook" /></div><div class="game-name">Stickman Hook</div></div></a>
-    <a href="./games/subway-surfers/" class="game-link"><div class="game-card" data-name="subway surfers"><div class="game-image"><img src="./siteimages/gamelogos/subwaysurfers.png" alt="Subway Surfers" /></div><div class="game-name">Subway Surfers</div></div></a>
-    <a href="./games/superhot/" class="game-link"><div class="game-card" data-name="superhot"><div class="game-image"><img src="./siteimages/gamelogos/superhot.png" alt="Superhot" /></div><div class="game-name">Superhot</div></div></a>
-    <a href="./games/tag/" class="game-link"><div class="game-card" data-name="tag"><div class="game-image"><img src="./siteimages/gamelogos/tag.png" alt="Tag" /></div><div class="game-name">Tag</div></div></a>
-    <a href="./games/templerun2/" class="game-link"><div class="game-card" data-name="temple run 2"><div class="game-image"><img src="./siteimages/gamelogos/templerun2.png" alt="Temple Run 2" /></div><div class="game-name">Temple Run 2</div></div></a>
-    <a href="./construct/theexecutor.html" class="game-link"><div class="game-card" data-name="the executor"><div class="game-image"><img src="./siteimages/gamelogos/theexecutor.png" alt="The Executor" /></div><div class="game-name">The Executor</div></div></a>
-    <a href="./games/thefinalearth/" class="game-link"><div class="game-card" data-name="the final earth"><div class="game-image"><img src="./siteimages/gamelogos/thefinalearth.png" alt="The Final Earth" /></div><div class="game-name">The Final Earth</div></div></a>
-    <a href="./games/thefinalearth2/" class="game-link"><div class="game-card" data-name="the final earth 2"><div class="game-image"><img src="./siteimages/gamelogos/thefinalearth2.png" alt="The Final Earth 2" /></div><div class="game-name">The Final Earth 2</div></div></a>
-    <a href="./games/theimpossiblequiz/" class="game-link"><div class="game-card" data-name="the impossible quiz"><div class="game-image"><img src="./siteimages/gamelogos/theimpossiblequiz.png" alt="The Impossible Quiz" /></div><div class="game-name">The Impossible Quiz</div></div></a>
-    <a href="./games/thereisnogame/" class="game-link"><div class="game-card" data-name="there is no game"><div class="game-image"><img src="./siteimages/gamelogos/thereisnogame.png" alt="There is No Game" /></div><div class="game-name">There is No Game</div></div></a>
-    <a href="./construct/throwapotato.html" class="game-link"><div class="game-card" data-name="throw a potato"><div class="game-image"><img src="./siteimages/gamelogos/throwapotato.png" alt="Throw a Potato" /></div><div class="game-name">Throw a Potato</div></div></a>
-    <a href="./construct/throwapotatoagain.html" class="game-link"><div class="game-card" data-name="throw a potato again"><div class="game-image"><img src="./siteimages/gamelogos/throwapotatoagain.png" alt="Throw a Potato Again" /></div><div class="game-name">Throw a Potato Again</div></div></a>
-    <a href="./construct/throwapotatoinspace.html" class="game-link"><div class="game-card" data-name="throw a potato in space"><div class="game-image"><img src="./siteimages/gamelogos/throwapotatoinspace.png" alt="Throw a Potato in Space" /></div><div class="game-name">Throw a Potato in Space</div></div></a>
-    <a href="./games/tinyfishing/" class="game-link"><div class="game-card" data-name="tiny fishing"><div class="game-image"><img src="./siteimages/gamelogos/tinyfishing.png" alt="Tiny Fishing" /></div><div class="game-name">Tiny Fishing</div></div></a>
+    <a href="./games/bitlife/" class="game-link"><div class="game-card" data-name="bitlife" data-category="simulation strategy"><div class="game-image"><img src="./siteimages/gamelogos/bitlife.jpeg" alt="Bitlife" /></div><div class="game-name">Bitlife</div></div></a>
+    <a href="./games/2048/" class="game-link"><div class="game-card" data-name="2048" data-category="puzzle strategy"><div class="game-image"><img src="./siteimages/gamelogos/2048.png" alt="2048" /></div><div class="game-name">2048</div></div></a>
+    <a href="./games/amongus/" class="game-link"><div class="game-card" data-name="amongus" data-category="action strategy"><div class="game-image"><img src="./siteimages/gamelogos/amongus.png" alt="Among Us" /></div><div class="game-name">Among Us</div></div></a>
+    <a href="./games/awesometanks/" class="game-link"><div class="game-card" data-name="awesome tanks" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/awesometanks.png" alt="Awesome Tanks" /></div><div class="game-name">Awesome Tanks</div></div></a>
+    <a href="./games/awesometanks2/" class="game-link"><div class="game-card" data-name="awesome tanks 2" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/awesometanks2.png" alt="Awesome Tanks 2" /></div><div class="game-name">Awesome Tanks 2</div></div></a>
+    <a href="./games/basketballstars/" class="game-link"><div class="game-card" data-name="basketball stars" data-category="sports"><div class="game-image"><img src="./siteimages/gamelogos/basketballstars.png" alt="Basketball Stars" /></div><div class="game-name">Basketball Stars</div></div></a>
+    <a href="./games/basketrandom/" class="game-link"><div class="game-card" data-name="basket random" data-category="sports"><div class="game-image"><img src="./siteimages/gamelogos/basketrandom.png" alt="Basket Random" /></div><div class="game-name">Basket Random</div></div></a>
+    <a href="./games/blockblast/" class="game-link"><div class="game-card" data-name="block blast" data-category="puzzle strategy"><div class="game-image"><img src="./siteimages/gamelogos/blockblast.jpeg" alt="Block Blast" /></div><div class="game-name">Block Blast</div></div></a>
+    <a href="./games/blumgislime/" class="game-link"><div class="game-card" data-name="blumgi slime" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/blumgislime.png" alt="Blumgi Slime" /></div><div class="game-name">Blumgi Slime</div></div></a>
+    <a href="./games/boxingrandom/" class="game-link"><div class="game-card" data-name="boxing random" data-category="sports action"><div class="game-image"><img src="./siteimages/gamelogos/boxingrandom.png" alt="Boxing Random" /></div><div class="game-name">Boxing Random</div></div></a>
+    <a href="./games/breakingthebank/" class="game-link"><div class="game-card" data-name="breaking the bank" data-category="puzzle action"><div class="game-image"><img src="./siteimages/gamelogos/breakingthebank.avif" alt="Breaking the Bank" /></div><div class="game-name">Breaking the Bank</div></div></a>
+    <a href="./games/championisland/champion-island/" class="game-link"><div class="game-card" data-name="champion island" data-category="sports action"><div class="game-image"><img src="./siteimages/gamelogos/championisland.png" alt="Champion Island" /></div><div class="game-name">Champion Island</div></div></a>
+    <a href="./games/chromedino/" class="game-link"><div class="game-card" data-name="chrome dino" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/chromedino.png" alt="Chrome Dino" /></div><div class="game-name">Chrome Dino</div></div></a>
+    <a href="./games/cluster-main/" class="game-link"><div class="game-card" data-name="cluster rush" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/clusterrush.jpeg" alt="Cluster Rush" /></div><div class="game-name">Cluster Rush</div></div></a>
+    <a href="./games/cookieclicker/" class="game-link"><div class="game-card" data-name="cookie clicker" data-category="simulation strategy"><div class="game-image"><img src="./siteimages/gamelogos/cookieclicker.png" alt="Cookie Clicker" /></div><div class="game-name">Cookie Clicker</div></div></a>
+    <a href="./games/crazycattle3d/" class="game-link"><div class="game-card" data-name="crazy cattle 3d" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/crazycattle3d.png" alt="Crazy Cattle 3D" /></div><div class="game-name">🏆 Crazy Cattle 3D 🏆</div></div></a>
+    <a href="./games/crossyroad" class="game-link"><div class="game-card" data-name="crossy road" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/crossyroad.jpg" alt="Crossy Road" /></div><div class="game-name">Crossy Road</div></div></a>
+    <a href="./games/cuttherope/" class="game-link"><div class="game-card" data-name="cut the rope" data-category="puzzle"><div class="game-image"><img src="./siteimages/gamelogos/cuttherope.png" alt="Cut the Rope" /></div><div class="game-name">Cut the Rope</div></div></a>
+    <a href="./games/dogeminer/" class="game-link"><div class="game-card" data-name="doge miner" data-category="simulation strategy"><div class="game-image"><img src="./siteimages/gamelogos/dogeminer.png" alt="Doge Miner" /></div><div class="game-name">Doge Miner</div></div></a>
+    <a href="./games/doodlejump/" class="game-link"><div class="game-card" data-name="doodle jump" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/doodlejump.png" alt="Doodle Jump" /></div><div class="game-name">Doodle Jump</div></div></a>
+    <a href="./games/driftboss/" class="game-link"><div class="game-card" data-name="drift boss" data-category="driving"><div class="game-image"><img src="./siteimages/gamelogos/driftboss.png" alt="Drift Boss" /></div><div class="game-name">Drift Boss</div></div></a>
+    <a href="./games/drivemad/" class="game-link"><div class="game-card" data-name="drive mad" data-category="driving puzzle"><div class="game-image"><img src="./siteimages/gamelogos/drivemad.png" alt="Drive Mad" /></div><div class="game-name">Drive Mad</div></div></a>
+    <a href="./games/eggycar/" class="game-link"><div class="game-card" data-name="eggy car" data-category="driving"><div class="game-image"><img src="./siteimages/gamelogos/eggycar.png" alt="Eggy Car" /></div><div class="game-name">Eggy Car</div></div></a>
+    <a href="./games/escapingtheprison/" class="game-link"><div class="game-card" data-name="escaping the prison" data-category="puzzle action"><div class="game-image"><img src="./siteimages/gamelogos/escapingtheprison.png" alt="Escaping the Prison" /></div><div class="game-name">Escaping the Prison</div></div></a>
+    <a href="./games/fireboyandwatergirl/" class="game-link"><div class="game-card" data-name="fireboy and watergirl" data-category="platformer puzzle"><div class="game-image"><img src="./siteimages/gamelogos/fireboyandwatergirl.png" alt="Fireboy and Watergirl" /></div><div class="game-name">Fireboy and Watergirl</div></div></a>
+    <a href="./games/fireboyandwatergirl2/" class="game-link"><div class="game-card" data-name="fireboy and watergirl 2" data-category="platformer puzzle"><div class="game-image"><img src="./siteimages/gamelogos/fireboyandwatergirl2.png" alt="Fireboy and Watergirl 2" /></div><div class="game-name">Fireboy and Watergirl 2</div></div></a>
+    <a href="./games/fireboyandwatergirl3/" class="game-link"><div class="game-card" data-name="fireboy and watergirl 3" data-category="platformer puzzle"><div class="game-image"><img src="./siteimages/gamelogos/fireboyandwatergirl3.png" alt="Fireboy and Watergirl 3" /></div><div class="game-name">Fireboy and Watergirl 3</div></div></a>
+    <a href="./games/fireboyandwatergirl4/" class="game-link"><div class="game-card" data-name="fireboy and watergirl 4" data-category="platformer puzzle"><div class="game-image"><img src="./siteimages/gamelogos/fireboyandwatergirl4.png" alt="Fireboy and Watergirl 4" /></div><div class="game-name">Fireboy and Watergirl 4</div></div></a>
+    <a href="./games/flappybird/" class="game-link"><div class="game-card" data-name="flappy bird" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/flappybird.jpeg" alt="Flappy Bird" /></div><div class="game-name">Flappy Bird</div></div></a>
+    <a href="./games/fleeingthecomplex/" class="game-link"><div class="game-card" data-name="fleeing the complex" data-category="puzzle action"><div class="game-image"><img src="./siteimages/gamelogos/fleeingthecomplex.avif" alt="Fleeing the Complex" /></div><div class="game-name">Fleeing the Complex</div></div></a>
+    <a href="./games/fnaf1/" class="game-link"><div class="game-card" data-name="fnaf 1" data-category="horror strategy"><div class="game-image"><img src="./siteimages/gamelogos/fnaf.jpg" alt="FNAF 1" /></div><div class="game-name">FNAF 1</div></div></a>
+    <a href="./games/fnaf2/" class="game-link"><div class="game-card" data-name="fnaf 2" data-category="horror strategy"><div class="game-image"><img src="./siteimages/gamelogos/fnaf2.png" alt="FNAF 2" /></div><div class="game-name">FNAF 2</div></div></a>
+    <a href="./games/fnaf3/" class="game-link"><div class="game-card" data-name="fnaf 3" data-category="horror strategy"><div class="game-image"><img src="./siteimages/gamelogos/fnaf3.png" alt="FNAF 3" /></div><div class="game-name">FNAF 3</div></div></a>
+    <a href="./games/fnaf4/" class="game-link"><div class="game-card" data-name="fnaf 4" data-category="horror strategy"><div class="game-image"><img src="./siteimages/gamelogos/fnaf4.png" alt="FNAF 4" /></div><div class="game-name">FNAF 4</div></div></a>
+    <a href="./games/fnaf5/" class="game-link"><div class="game-card" data-name="fnaf 5" data-category="horror strategy"><div class="game-image"><img src="./siteimages/gamelogos/fnaf5.png" alt="FNAF 5" /></div><div class="game-name">FNAF 5</div></div></a>
+    <a href="./games/fnaf6/" class="game-link"><div class="game-card" data-name="fnaf 6" data-category="horror strategy"><div class="game-image"><img src="./siteimages/gamelogos/fnaf6.png" alt="FNAF 6" /></div><div class="game-name">FNAF 6</div></div></a>
+    <a href="./games/ucn/" class="game-link"><div class="game-card" data-name="ultimate custom night" data-category="horror strategy"><div class="game-image"><img src="./siteimages/gamelogos/ucn.png" alt="Ultimate Custom Night" /></div><div class="game-name">Ultimate Custom Night</div></div></a>
+    <a href="./games/fridaynightfunkin/" class="game-link"><div class="game-card" data-name="friday night funkin" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/fridaynightfunkin.png" alt="Friday Night Funkin'" /></div><div class="game-name">Friday Night Funkin'</div></div></a>
+    <a href="./games/geometrydashlite/" class="game-link"><div class="game-card" data-name="geometry dash lite" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/geometrydashlite.png" alt="Geometry Dash Lite" /></div><div class="game-name">Geometry Dash Lite</div></div></a>
+    <a href="./games/geometrydashremastered/" class="game-link"><div class="game-card" data-name="geometry dash remastered" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/geometrydashremastered.png" alt="Geometry Dash Remastered" /></div><div class="game-name">Geometry Dash Remastered</div></div></a>
+    <a href="./games/gladihoppers/" class="game-link"><div class="game-card" data-name="gladihoppers" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/gladihoppers.png" alt="Gladihoppers" /></div><div class="game-name">Gladihoppers</div></div></a>
+    <a href="./games/gunmayhem/" class="game-link"><div class="game-card" data-name="gun mayhem" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/gunmayhem.png" alt="Gun Mayhem" /></div><div class="game-name">Gun Mayhem</div></div></a>
+    <a href="./games/gunmayhem2/" class="game-link"><div class="game-card" data-name="gun mayhem 2" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/gunmayhem2.png" alt="Gun Mayhem 2" /></div><div class="game-name">Gun Mayhem 2</div></div></a>
+    <a href="./games/gunmayhemredux/" class="game-link"><div class="game-card" data-name="gun mayhem redux" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/gunmayhemredux.png" alt="Gun Mayhem Redux" /></div><div class="game-name">Gun Mayhem Redux</div></div></a>
+    <a href="./games/icypurplehead2/" class="game-link"><div class="game-card" data-name="icy purple head 2" data-category="platformer puzzle"><div class="game-image"><img src="./siteimages/gamelogos/icypurplehead2.jpg" alt="Icy Purple Head 2" /></div><div class="game-name">Icy Purple Head 2</div></div></a>
+    <a href="./games/icypurplehead3/" class="game-link"><div class="game-card" data-name="icy purple head 3" data-category="platformer puzzle"><div class="game-image"><img src="./siteimages/gamelogos/icypurplehead3.png" alt="Icy Purple Head 3" /></div><div class="game-name">Icy Purple Head 3</div></div></a>
+    <a href="./games/infiltratingtheairship/" class="game-link"><div class="game-card" data-name="infiltrating the airship" data-category="puzzle action"><div class="game-image"><img src="./siteimages/gamelogos/infiltratingtheairship.avif" alt="Infiltrating the Airship" /></div><div class="game-name">Infiltrating the Airship</div></div></a>
+    <a href="./games/ironsnout/" class="game-link"><div class="game-card" data-name="iron snout" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/ironsnout.png" alt="Iron Snout" /></div><div class="game-name">Iron Snout</div></div></a>
+    <a href="./games/leveldevil/" class="game-link"><div class="game-card" data-name="level devil" data-category="platformer puzzle"><div class="game-image"><img src="./siteimages/gamelogos/leveldevil.png" alt="Level Devil" /></div><div class="game-name">Level Devil</div></div></a>
+    <a href="./games/mariobrosbeta/" class="game-link"><div class="game-card" data-name="mario" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/mario.png" alt="Mario" /></div><div class="game-name">Mario</div></div></a>
+    <a href="./games/mariobrosupdated/" class="game-link"><div class="game-card" data-name="mario bros" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/mariobros.png" alt="Mario Bros" /></div><div class="game-name">Mario Bros</div></div></a>
+    <a href="./games/minecraft" class="game-link"><div class="game-card" data-name="minecraft" data-category="simulation action"><div class="game-image"><img src="./siteimages/gamelogos/minecraft.png" alt="Minecraft" /></div><div class="game-name">Minecraft</div></div></a>
+    <a href="./games/monkeymart" class="game-link"><div class="game-card" data-name="monkeymart" data-category="simulation strategy"><div class="game-image"><img src="./siteimages/gamelogos/monkeymart.png" alt="Monkey Mart" /></div><div class="game-name">Monkey Mart</div></div></a>
+    <a href="./games/motox3m" class="game-link"><div class="game-card" data-name="motox3m" data-category="driving"><div class="game-image"><img src="./siteimages/gamelogos/motox3m.png" alt="Moto X3M" /></div><div class="game-name">Moto X3M</div></div></a>
+    <a href="./games/ngon" class="game-link"><div class="game-card" data-name="n-gon" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/ngon.png" alt="N-Gon" /></div><div class="game-name">N-Gon</div></div></a>
+    <a href="./games/ovo" class="game-link"><div class="game-card" data-name="ovo" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/ovo.png" alt="OvO" /></div><div class="game-name">OvO</div></div></a>
+    <a href="./games/ovo2" class="game-link"><div class="game-card" data-name="ovo 2" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/ovo2.jpg" alt="OvO 2" /></div><div class="game-name">OvO 2</div></div></a>
+    <a href="./games/parkourblock3d/" class="game-link"><div class="game-card" data-name="parkour block 3d" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock3d.png" alt="Parkour Block 3D" /></div><div class="game-name">Parkour Block 3D</div></div></a>
+    <a href="./games/papasfreezeria" class="game-link"><div class="game-card" data-name="papas freezeria" data-category="simulation strategy"><div class="game-image"><img src="./siteimages/gamelogos/papasfreezeria.png" alt="Papa's Freezeria" /></div><div class="game-name">Papa's Freezeria</div></div></a>
+    <a href="./games/pedro/pedro.html" class="game-link"><div class="game-card" data-name="my friend pedro" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/pedro.jpg" alt="Pedro" /></div><div class="game-name">My Friend Pedro</div></div></a>
+    <a href="./construct/pixelspeedrun.html" class="game-link"><div class="game-card" data-name="pixel speedrun" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/pixelspeedrun.png" alt="Pixel Speedrun" /></div><div class="game-name">Pixel Speedrun</div></div></a>
+    <a href="./games/polytrack/" class="game-link"><div class="game-card" data-name="polytrack" data-category="driving"><div class="game-image"><img src="./siteimages/gamelogos/polytrack.jpeg" alt="Polytrack" /></div><div class="game-name">Polytrack</div></div></a>
+    <a href="./games/pokemonemerald/" class="game-link"><div class="game-card" data-name="pokemon emerald" data-category="strategy"><div class="game-image"><img src="./siteimages/gamelogos/pokemonemerald.png" alt="Pokemon Emerald" /></div><div class="game-name">Pokemon Emerald</div></div></a>
+    <a href="./games/racesurvival/" class="game-link"><div class="game-card" data-name="race survival" data-category="driving"><div class="game-image"><img src="./siteimages/gamelogos/racesurvival.jpeg" alt="Race Survival" /></div><div class="game-name">Race Survival</div></div></a>
+    <a href="./games/retro-bowl/" class="game-link"><div class="game-card" data-name="retro bowl" data-category="sports strategy"><div class="game-image"><img src="./siteimages/gamelogos/retrobowl.jpeg" alt="Retro Bowl" /></div><div class="game-name">Retro Bowl</div></div></a>
+    <a href="./games/rooftopsnipers/" class="game-link"><div class="game-card" data-name="rooftop snipers" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/rooftopsnipers.png" alt="Rooftop Snipers" /></div><div class="game-name">Rooftop Snipers</div></div></a>
+    <a href="./games/rocketleague2d/" class="game-link"><div class="game-card" data-name="rocket league 2d" data-category="sports driving"><div class="game-image"><img src="./siteimages/gamelogos/rocketleague2d.png" alt="Rocket League 2D" /></div><div class="game-name">Rocket League 2D</div></div></a>
+    <a href="./games/run3/" class="game-link"><div class="game-card" data-name="run 3" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/run3.png" alt="Run 3" /></div><div class="game-name">Run 3</div></div></a>
+    <a href="./construct/shootoutreloaded.html" class="game-link"><div class="game-card" data-name="shoot out reloaded" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/shootoutreloaded.png" alt="Shoot Out Reloaded" /></div><div class="game-name">Shoot Out Reloaded</div></div></a>
+    <a href="./games/skibidistrike/skibidi-strike/" class="game-link"><div class="game-card" data-name="skibidistrike" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/skibidistrike.png" alt="Skibidi Strike" /></div><div class="game-name">Skibidi Strike</div></div></a>
+    <a href="./games/slope/" class="game-link"><div class="game-card" data-name="slope" data-category="driving"><div class="game-image"><img src="./siteimages/gamelogos/slope.jpeg" alt="Slope" /></div><div class="game-name">Slope</div></div></a>
+    <a href="./games/snake/" class="game-link"><div class="game-card" data-name="snake" data-category="puzzle action"><div class="game-image"><img src="./siteimages/gamelogos/Snake.PNG" alt="Snake" /></div><div class="game-name">Snake</div></div></a>
+    <a href="./games/solitaire/" class="game-link"><div class="game-card" data-name="solitare" data-category="puzzle strategy"><div class="game-image"><img src="./siteimages/gamelogos/solitaire.png" alt="Solitaire" /></div><div class="game-name">Solitaire</div></div></a>
+    <a href="./construct/spaceisolation.html" class="game-link"><div class="game-card" data-name="space isolation" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/spaceisolation.png" alt="Space Isolation" /></div><div class="game-name">Space Isolation</div></div></a>
+    <a href="./games/stealingthediamond/" class="game-link"><div class="game-card" data-name="stealing the diamond" data-category="puzzle action"><div class="game-image"><img src="./siteimages/gamelogos/stealingthediamond.avif" alt="Stealing the Diamond" /></div><div class="game-name">Stealing the Diamond</div></div></a>
+    <a href="./games/stickmanhook/" class="game-link"><div class="game-card" data-name="stickman hook" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/stickmanhook.png" alt="Stickman Hook" /></div><div class="game-name">Stickman Hook</div></div></a>
+    <a href="./games/subway-surfers/" class="game-link"><div class="game-card" data-name="subway surfers" data-category="action platformer"><div class="game-image"><img src="./siteimages/gamelogos/subwaysurfers.png" alt="Subway Surfers" /></div><div class="game-name">Subway Surfers</div></div></a>
+    <a href="./games/superhot/" class="game-link"><div class="game-card" data-name="superhot" data-category="action shooter"><div class="game-image"><img src="./siteimages/gamelogos/superhot.png" alt="Superhot" /></div><div class="game-name">Superhot</div></div></a>
+    <a href="./games/tag/" class="game-link"><div class="game-card" data-name="tag" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/tag.png" alt="Tag" /></div><div class="game-name">Tag</div></div></a>
+    <a href="./games/templerun2/" class="game-link"><div class="game-card" data-name="temple run 2" data-category="action platformer"><div class="game-image"><img src="./siteimages/gamelogos/templerun2.png" alt="Temple Run 2" /></div><div class="game-name">Temple Run 2</div></div></a>
+    <a href="./construct/theexecutor.html" class="game-link"><div class="game-card" data-name="the executor" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/theexecutor.png" alt="The Executor" /></div><div class="game-name">The Executor</div></div></a>
+    <a href="./games/thefinalearth/" class="game-link"><div class="game-card" data-name="the final earth" data-category="simulation strategy"><div class="game-image"><img src="./siteimages/gamelogos/thefinalearth.png" alt="The Final Earth" /></div><div class="game-name">The Final Earth</div></div></a>
+    <a href="./games/thefinalearth2/" class="game-link"><div class="game-card" data-name="the final earth 2" data-category="simulation strategy"><div class="game-image"><img src="./siteimages/gamelogos/thefinalearth2.png" alt="The Final Earth 2" /></div><div class="game-name">The Final Earth 2</div></div></a>
+    <a href="./games/theimpossiblequiz/" class="game-link"><div class="game-card" data-name="the impossible quiz" data-category="puzzle"><div class="game-image"><img src="./siteimages/gamelogos/theimpossiblequiz.png" alt="The Impossible Quiz" /></div><div class="game-name">The Impossible Quiz</div></div></a>
+    <a href="./games/thereisnogame/" class="game-link"><div class="game-card" data-name="there is no game" data-category="puzzle"><div class="game-image"><img src="./siteimages/gamelogos/thereisnogame.png" alt="There is No Game" /></div><div class="game-name">There is No Game</div></div></a>
+    <a href="./construct/throwapotato.html" class="game-link"><div class="game-card" data-name="throw a potato" data-category="puzzle"><div class="game-image"><img src="./siteimages/gamelogos/throwapotato.png" alt="Throw a Potato" /></div><div class="game-name">Throw a Potato</div></div></a>
+    <a href="./construct/throwapotatoagain.html" class="game-link"><div class="game-card" data-name="throw a potato again" data-category="puzzle"><div class="game-image"><img src="./siteimages/gamelogos/throwapotatoagain.png" alt="Throw a Potato Again" /></div><div class="game-name">Throw a Potato Again</div></div></a>
+    <a href="./construct/throwapotatoinspace.html" class="game-link"><div class="game-card" data-name="throw a potato in space" data-category="puzzle"><div class="game-image"><img src="./siteimages/gamelogos/throwapotatoinspace.png" alt="Throw a Potato in Space" /></div><div class="game-name">Throw a Potato in Space</div></div></a>
+    <a href="./games/tinyfishing/" class="game-link"><div class="game-card" data-name="tiny fishing" data-category="sports simulation"><div class="game-image"><img src="./siteimages/gamelogos/tinyfishing.png" alt="Tiny Fishing" /></div><div class="game-name">Tiny Fishing</div></div></a>
     <a href="./tiktok.html" class="game-link"><div class="game-card" data-name="Tiktok"><div class="game-image"><img src="./siteimages/gamelogos/tiktok.png" alt="Tiktok" /></div><div class="game-name">🌐 Tiktok 🌐</div></div></a>
-    <a href="./games/tunnel-rush/" class="game-link"><div class="game-card" data-name="tunnel rush"><div class="game-image"><img src="./siteimages/gamelogos/tunnelrush.jpeg" alt="Tunnel Rush" /></div><div class="game-name">Tunnel Rush</div></div></a>
-    <a href="./games/twoball3d/" class="game-link"><div class="game-card" data-name="twoball3d"><div class="game-image"><img src="./siteimages/gamelogos/twoball3d.png" alt="Two Ball 3D" /></div><div class="game-name">Two Ball 3D</div></div></a>
-    <a href="./games/ultimateflashsonic/" class="game-link"><div class="game-card" data-name="ultimate flash sonic"><div class="game-image"><img src="./siteimages/gamelogos/ultimateflashsonic.png" alt="Ultimate Flash Sonic" /></div><div class="game-name">Ultimate Flash Sonic</div></div></a>
-    <a href="./games/vex3/" class="game-link"><div class="game-card" data-name="vex 3"><div class="game-image"><img src="./siteimages/gamelogos/vex3.png" alt="Vex 3" /></div><div class="game-name">Vex 3</div></div></a>
-    <a href="./games/vex4/" class="game-link"><div class="game-card" data-name="vex 4"><div class="game-image"><img src="./siteimages/gamelogos/vex4.png" alt="Vex 4" /></div><div class="game-name">Vex 4</div></div></a>
-    <a href="./games/vex5/" class="game-link"><div class="game-card" data-name="vex 5"><div class="game-image"><img src="./siteimages/gamelogos/vex5.png" alt="Vex 5" /></div><div class="game-name">Vex 5</div></div></a>
-    <a href="./games/vex-6/" class="game-link"><div class="game-card" data-name="vex-6"><div class="game-image"><img src="./siteimages/gamelogos/vex-6.png" alt="Vex 6" /></div><div class="game-name">Vex 6</div></div></a>
-    <a href="./games/vex7/" class="game-link"><div class="game-card" data-name="vex 7"><div class="game-image"><img src="./siteimages/gamelogos/vex7.jpeg" alt="Vex 7" /></div><div class="game-name">Vex 7</div></div></a>
-    <a href="./games/vex8/" class="game-link"><div class="game-card" data-name="vex 8"><div class="game-image"><img src="./siteimages/gamelogos/vex8.png" alt="Vex 8" /></div><div class="game-name">Vex 8</div></div></a>
-    <a href="./games/volleyrandom/" class="game-link"><div class="game-card" data-name="volley random"><div class="game-image"><img src="./siteimages/gamelogos/volleyrandom.png" alt="Volley Random" /></div><div class="game-name">Volley Random</div></div></a>
-    <a href="./games/wbwwb/" class="game-link"><div class="game-card" data-name="we become what we behold"><div class="game-image"><img src="./siteimages/gamelogos/wbwwb.jpeg" alt="We Become What We Behold" /></div><div class="game-name">We Become What We Behold</div></div></a>
-    <a href="./games/worldshardestgame/" class="game-link"><div class="game-card" data-name="worlds hardest game"><div class="game-image"><img src="./siteimages/gamelogos/worldshardestgame.png" alt="World's Hardest Game" /></div><div class="game-name">World's Hardest Game</div></div></a>
-    <a href="./games/worldshardestgame2/" class="game-link"><div class="game-card" data-name="worlds hardest game 2"><div class="game-image"><img src="./siteimages/gamelogos/worldshardestgame2.png" alt="World's Hardest Game 2" /></div><div class="game-name">World's Hardest Game 2</div></div></a>
-    <a href="./games/xtrenchrun/" class="game-link"><div class="game-card" data-name="x-trench run"><div class="game-image"><img src="./siteimages/gamelogos/xtrenchrun.png" alt="X-Trench Run" /></div><div class="game-name">X-Trench Run</div></div></a>
-    <a href="./games/yohoho/" class="game-link"><div class="game-card" data-name="yohoho.io"><div class="game-image"><img src="./siteimages/gamelogos/yohoho.png" alt="Yohoho.io" /></div><div class="game-name">Yohoho.io</div></div></a>
+    <a href="./games/tunnel-rush/" class="game-link"><div class="game-card" data-name="tunnel rush" data-category="driving action"><div class="game-image"><img src="./siteimages/gamelogos/tunnelrush.jpeg" alt="Tunnel Rush" /></div><div class="game-name">Tunnel Rush</div></div></a>
+    <a href="./games/twoball3d/" class="game-link"><div class="game-card" data-name="twoball3d" data-category="driving puzzle"><div class="game-image"><img src="./siteimages/gamelogos/twoball3d.png" alt="Two Ball 3D" /></div><div class="game-name">Two Ball 3D</div></div></a>
+    <a href="./games/ultimateflashsonic/" class="game-link"><div class="game-card" data-name="ultimate flash sonic" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/ultimateflashsonic.png" alt="Ultimate Flash Sonic" /></div><div class="game-name">Ultimate Flash Sonic</div></div></a>
+    <a href="./games/vex3/" class="game-link"><div class="game-card" data-name="vex 3" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/vex3.png" alt="Vex 3" /></div><div class="game-name">Vex 3</div></div></a>
+    <a href="./games/vex4/" class="game-link"><div class="game-card" data-name="vex 4" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/vex4.png" alt="Vex 4" /></div><div class="game-name">Vex 4</div></div></a>
+    <a href="./games/vex5/" class="game-link"><div class="game-card" data-name="vex 5" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/vex5.png" alt="Vex 5" /></div><div class="game-name">Vex 5</div></div></a>
+    <a href="./games/vex-6/" class="game-link"><div class="game-card" data-name="vex-6" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/vex-6.png" alt="Vex 6" /></div><div class="game-name">Vex 6</div></div></a>
+    <a href="./games/vex7/" class="game-link"><div class="game-card" data-name="vex 7" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/vex7.jpeg" alt="Vex 7" /></div><div class="game-name">Vex 7</div></div></a>
+    <a href="./games/vex8/" class="game-link"><div class="game-card" data-name="vex 8" data-category="platformer action"><div class="game-image"><img src="./siteimages/gamelogos/vex8.png" alt="Vex 8" /></div><div class="game-name">Vex 8</div></div></a>
+    <a href="./games/volleyrandom/" class="game-link"><div class="game-card" data-name="volley random" data-category="sports action"><div class="game-image"><img src="./siteimages/gamelogos/volleyrandom.png" alt="Volley Random" /></div><div class="game-name">Volley Random</div></div></a>
+    <a href="./games/wbwwb/" class="game-link"><div class="game-card" data-name="we become what we behold" data-category="puzzle"><div class="game-image"><img src="./siteimages/gamelogos/wbwwb.jpeg" alt="We Become What We Behold" /></div><div class="game-name">We Become What We Behold</div></div></a>
+    <a href="./games/worldshardestgame/" class="game-link"><div class="game-card" data-name="worlds hardest game" data-category="puzzle action"><div class="game-image"><img src="./siteimages/gamelogos/worldshardestgame.png" alt="World's Hardest Game" /></div><div class="game-name">World's Hardest Game</div></div></a>
+    <a href="./games/worldshardestgame2/" class="game-link"><div class="game-card" data-name="worlds hardest game 2" data-category="puzzle action"><div class="game-image"><img src="./siteimages/gamelogos/worldshardestgame2.png" alt="World's Hardest Game 2" /></div><div class="game-name">World's Hardest Game 2</div></div></a>
+    <a href="./games/xtrenchrun/" class="game-link"><div class="game-card" data-name="x-trench run" data-category="driving action"><div class="game-image"><img src="./siteimages/gamelogos/xtrenchrun.png" alt="X-Trench Run" /></div><div class="game-name">X-Trench Run</div></div></a>
+    <a href="./games/yohoho/" class="game-link"><div class="game-card" data-name="yohoho.io" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/yohoho.png" alt="Yohoho.io" /></div><div class="game-name">Yohoho.io</div></div></a>
     <a href="./youtube.html" class="game-link"><div class="game-card" data-name="youtube"><div class="game-image"><img src="./siteimages/gamelogos/youtube.png" alt="YouTube" /></div><div class="game-name">🌐 YouTube 🌐</div></div></a>
-  </div>
+</div>
 </main>
 
-<!-- Changelog & Other Links Section -->
 <section id="changelog" style="color:white; margin-top:60px; font-family:'Poppins', sans-serif;">
   <h2 style="font-size:2em; font-weight:700; color:#00aaff; text-shadow:0 0 8px #00aaff; text-align:center; margin-bottom:30px;">
     Changelog & Other Links
   </h2>
-
   <div style="display:flex; justify-content:center; gap:40px; flex-wrap:wrap;">
-
-    <!-- Left: Changelog -->
     <div id="changelog-container" style="flex:1 1 350px; max-width:700px; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:left; font-size:0.95em; line-height:1.4;">
       <h3 style="color:#00aaff; font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
-
       <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
         <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.214 — January 31-February 1, 2026</h3>
         <p>Added 5 games:</p>
@@ -611,7 +451,6 @@ tsParticles.load("tsparticles", {
         <p> - Stealing the Diamond</p>
         <p> - Ultimate Flash Sonic</p>
       </div>
-      
       <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
         <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.213 — January 25, 2026</h3> 
         <p>Added 10 games:</p>
@@ -626,125 +465,42 @@ tsParticles.load("tsparticles", {
         <p> - World's Hardest Game</p>
         <p> - World's Hardest Game 2</p>
       </div>
-
       <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
         <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.212 — January 22, 2026</h3> 
         <p>Updated 2 games to available status:</p>
         <p> - Gun Mayhem 2</p>
         <p> - Icy Purple Head 3</p>
       </div>
-
       <div style="text-align:center; margin-top:10px;">
         <button id="show-more" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s;">Show More</button>
       </div>
     </div>
-
-    <!-- Right: Other Links -->
     <div id="other-links-container" style="flex:0 1 300px; max-width:350px; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:center;">
       <h3 style="color:#00aaff; font-size:1.4em; margin-bottom:15px;">Other Links</h3>
-
       <div class="link-slot" style="margin-bottom:15px;">
-        <a href="https://classroomhaas.github.io" target="_blank" 
-           style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">
-          Link 1
-        </a>
+        <a href="https://classroomhaas.github.io" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Link 1</a>
       </div>
-
       <div class="link-slot" style="margin-bottom:15px;">
-        <a href="https://zearnhaas.netlify.app/" target="_blank"
-           style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">
-          Backup 1
-        </a>
+        <a href="https://zearnhaas.netlify.app/" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 1</a>
       </div>
-
       <div class="link-slot" style="margin-bottom:15px;">
-        <a href="https://boilafiles.netlify.app/" target="_blank"
-           style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">
-          Backup 2
-        </a>
+        <a href="https://boilafiles.netlify.app/" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 2</a>
       </div>
-
       <div class="link-slot">
-        <a href="https://zearnhaas.github.io" target="_blank"
-           style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">
-          Backup 3 (OLD)
-        </a>
+        <a href="https://zearnhaas.github.io" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 3 (OLD)</a>
       </div>
     </div>
-
   </div>
 </section>
-
-<script>
-const entries = document.querySelectorAll('.changelog-entry');
-const showMoreBtn = document.getElementById('show-more');
-
-// Hide all changelog entries except the first one
-let shown = 1;
-entries.forEach((entry, index) => {
-  if (index > 0) entry.style.display = 'none';
-});
-
-// Create and insert the "Show Less" button
-const showLessBtn = document.createElement('button');
-showLessBtn.textContent = 'Show Less';
-showLessBtn.style.cssText = `
-  background:#444; border:none; padding:10px 20px; border-radius:12px;
-  color:white; cursor:pointer; font-weight:bold; font-size:0.95em;
-  transition:0.3s; display:none; margin-left:10px;
-`;
-showMoreBtn.parentNode.appendChild(showLessBtn);
-
-// Handle "Show More" clicks
-showMoreBtn.addEventListener('click', () => {
-  if (shown < entries.length) {
-    entries[shown].style.display = 'block';
-    entries[shown].style.animation = 'fadeIn 0.4s ease';
-    shown++;
-    showLessBtn.style.display = 'inline-block';
-  }
-  if (shown === entries.length) {
-    showMoreBtn.disabled = true;
-  }
-});
-
-// Handle "Show Less" clicks
-showLessBtn.addEventListener('click', () => {
-  if (shown > 1) {
-    entries[shown - 1].style.display = 'none';
-    shown--;
-    showMoreBtn.disabled = false;
-    if (shown === 1) showLessBtn.style.display = 'none';
-  }
-});
-
-// Add the fade-in animation
-const style = document.createElement('style');
-style.innerHTML = `
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  #show-more:hover { background:#0088cc; box-shadow:0 0 12px #00aaff; }
-  button#show-less:hover { background:#666; box-shadow:0 0 12px #00aaff; }
-`;
-document.head.appendChild(style);
-</script>
 
 <footer>
   NKC is now mostly maintaining this site with some help from averageperson4 and APAP. The new request issue form is down below. Any issues and game suggestions will be highly appreciated. New games will (or try to) be added every weekend.
   <br /><br />
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSehIZWpUlPu8cv4Ew4hIhjYopDhIsQwGViUc1NYf9YrvBGecA/viewform?usp=dialog" target="_blank" style="color: #4da6ff; text-decoration: underline;">
-    Request a Game/Feedback
-  </a>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSehIZWpUlPu8cv4Ew4hIhjYopDhIsQwGViUc1NYf9YrvBGecA/viewform?usp=dialog" target="_blank" style="color: #4da6ff; text-decoration: underline;">Request a Game/Feedback</a>
   <br />
-  <a href="https://www.youtube.com/@billybobgamesv2" target="_blank" style="color: #4da6ff; text-decoration: underline;">
-    Check out our YouTube!
-  </a>
+  <a href="https://www.youtube.com/@billybobgamesv2" target="_blank" style="color: #4da6ff; text-decoration: underline;">Check out our YouTube!</a>
   <br />
-  <a href="https://discord.gg/qG7x2QWEXA" target="_blank" style="color: #4da6ff; text-decoration: underline;">
-    Join our Discord!
-  </a>
+  <a href="https://discord.gg/qG7x2QWEXA" target="_blank" style="color: #4da6ff; text-decoration: underline;">Join our Discord!</a>
 </footer>
 
 <script>
@@ -792,63 +548,98 @@ document.addEventListener('DOMContentLoaded', () => {
   // ========= CHANGELOG BUTTON =========
   const changelogBtn = document.getElementById('changelog-btn');
   const changelogSection = document.getElementById('changelog');
-
-  changelogBtn.addEventListener('click', () => {
-    if(changelogSection){
+  if(changelogBtn && changelogSection){
+    changelogBtn.addEventListener('click', () => {
       const yOffset = -20;
       const y = changelogSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-  });
+    });
+  }
 
   // ========= SHOW MORE / SHOW LESS =========
   const showMoreBtn = document.getElementById('show-more');
   const entries = document.querySelectorAll('.changelog-entry');
   let shown = 1;
 
-  entries.forEach((entry,index) => { if(index > 0) entry.style.display='none'; });
+  // Create Show Less button
+  const showLessBtn = document.createElement('button');
+  showLessBtn.textContent = 'Show Less';
+  showLessBtn.style.cssText = `background:#444; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s; display:none; margin-left:10px;`;
+  showLessBtn.addEventListener('mouseenter', () => { showLessBtn.style.background = "#666"; showLessBtn.style.boxShadow="0 0 12px #00aaff"; });
+  showLessBtn.addEventListener('mouseleave', () => { showLessBtn.style.background = "#444"; showLessBtn.style.boxShadow="none"; });
+  
+  if(showMoreBtn) {
+    showMoreBtn.parentNode.appendChild(showLessBtn);
+    entries.forEach((entry,index) => { if(index > 0) entry.style.display='none'; });
 
-  showMoreBtn.addEventListener('click', () => {
-    if(shown < entries.length){
-      entries[shown].style.display='block';
-      entries[shown].style.animation='fadeIn 0.5s ease';
-      shown++;
-      if(shown === entries.length) showMoreBtn.textContent='Show Less';
-    } else {
-      for(let i=1; i<entries.length; i++) entries[i].style.display='none';
-      shown = 1;
-      showMoreBtn.textContent='Show More';
-    }
-  });
+    showMoreBtn.addEventListener('click', () => {
+      if(shown < entries.length){
+        entries[shown].style.display='block';
+        entries[shown].style.animation='fadeIn 0.5s ease';
+        shown++;
+        showLessBtn.style.display = 'inline-block';
+      }
+      if(shown === entries.length) showMoreBtn.disabled = true;
+    });
+
+    showLessBtn.addEventListener('click', () => {
+      if(shown > 1){
+        entries[shown-1].style.display='none';
+        shown--;
+        showMoreBtn.disabled = false;
+        if(shown === 1) showLessBtn.style.display = 'none';
+      }
+    });
+  }
 
   // ========= PROXY BUTTONS =========
-  const proxyUrl = './proxy.html'; // change to the actual path of your proxy page
-
+  const proxyUrl = './proxy.html'; 
   const smartProxyBtn = document.getElementById('smart-proxy-btn');
   const proxyHomeBtn = document.getElementById('proxy-home-btn');
 
   if(smartProxyBtn) smartProxyBtn.addEventListener('click', () => window.location.href = proxyUrl);
   if(proxyHomeBtn) proxyHomeBtn.addEventListener('click', () => 
     window.open("https://docs.google.com/forms/d/e/1FAIpQLSeEDxNxyOYUb0g0hH12EijhNAXDRmr0k0JrtdThVjpFIcbfyg/viewform?usp=dialog", "_blank")
-);
-});
+  );
 
   // ========= RANDOM GAME BUTTON =========
   const gameLinks = document.querySelectorAll('.game-link');
-const randomGameBtn = document.getElementById('random-game-btn');
+  const randomGameBtn = document.getElementById('random-game-btn');
+  if(randomGameBtn) {
+    randomGameBtn.addEventListener('click', () => {
+      const filteredGames = [...gameLinks].filter(link => !link.href.includes('youtube') && !link.href.includes('tiktok'));
+      if (!filteredGames.length) return;
+      const randomIndex = Math.floor(Math.random() * filteredGames.length);
+      window.location.href = filteredGames[randomIndex].href;
+    });
+  }
 
-randomGameBtn.addEventListener('click', () => {
-  const filteredGames = [...gameLinks].filter(link =>
-    !link.href.includes('youtube') &&
-    !link.href.includes('tiktok')
-  );
+  // ========= NEW GAME FILTERS =========
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const gameCardsForFilter = document.querySelectorAll('.game-card');
 
-  if (!filteredGames.length) return;
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-  const randomIndex = Math.floor(Math.random() * filteredGames.length);
-  window.location.href = filteredGames[randomIndex].href;
+      const category = btn.getAttribute('data-filter');
+
+      gameCardsForFilter.forEach(card => {
+        const link = card.closest('.game-link'); 
+        const cardCategory = card.getAttribute('data-category') || 'other';
+
+        if (category === 'all' || cardCategory.includes(category)) {
+          link.style.display = 'block';
+          link.style.animation = 'fadeIn 0.5s ease'; 
+        } else {
+          link.style.display = 'none';
+        }
+      });
+    });
+  });
+
 });
-  
 </script>
 </body>
 </html>
