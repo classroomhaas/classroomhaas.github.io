@@ -48,4 +48,5 @@ app.get("/go/:url", (req,res)=>{
   loadPage(decode(req.params.url), res);
 });
 
-app.listen(3000, ()=>console.log("Proxy running → http://localhost:3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Proxy running on port", PORT));
