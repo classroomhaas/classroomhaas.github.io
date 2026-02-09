@@ -3,35 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <title>Dolphin Mesh (Auto-Cleanup)</title>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; display: flex; align-items: center; justify-content: center; height: 100vh; color: #f8fafc; overflow: hidden; }
-        .container { background: #1e293b; width: 100%; max-width: 400px; height: 650px; display: flex; flex-direction: column; border-radius: 24px; overflow: hidden; position: relative; border: 1px solid #334155; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
-        
-        /* Overlay & Lobby */
+        .container { background: #1e293b; width: 100%; max-width: 400px; height: 680px; display: flex; flex-direction: column; border-radius: 24px; overflow: hidden; position: relative; border: 1px solid #334155; }
         #overlay { position: absolute; inset: 0; background: #1e293b; z-index: 100; display: flex; flex-direction: column; padding: 30px; }
         .logo { text-align: center; margin-bottom: 20px; }
         .logo h2 { color: #38bdf8; font-size: 28px; }
-        
-        input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #334155; border-radius: 12px; outline: none; background: #0f172a; color: white; transition: border 0.2s; }
-        input:focus { border-color: #38bdf8; }
-        
-        button { width: 100%; padding: 14px; background: #38bdf8; color: #0f172a; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: opacity 0.2s; }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        /* Fake "Discovery" Section */
-        .discovery { margin-top: 30px; background: #0f172a; border-radius: 16px; padding: 15px; flex: 1; border: 1px solid #334155; }
-        .discovery h4 { font-size: 12px; text-transform: uppercase; color: #64748b; margin-bottom: 10px; letter-spacing: 1px; }
-        .room-tag { display: inline-block; background: #1e293b; padding: 6px 12px; border-radius: 20px; font-size: 12px; margin: 4px; border: 1px solid #334155; cursor: pointer; }
-        .room-tag:hover { border-color: #38bdf8; color: #38bdf8; }
-
-        #chat { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; background: #0f172a; }
-        .msg { padding: 10px 16px; border-radius: 18px; max-width: 85%; font-size: 14px; line-height: 1.4; }
+        input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #334155; border-radius: 12px; outline: none; background: #0f172a; color: white; }
+        button { width: 100%; padding: 14px; background: #38bdf8; color: #0f172a; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .rec-box { margin-top: 20px; }
+        .tag { display: inline-block; background: #0f172a; padding: 6px 12px; border-radius: 20px; font-size: 12px; margin: 4px; border: 1px solid #334155; cursor: pointer; color: #38bdf8; }
+        #chat { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; background: #0f172a; }
+        .msg { padding: 10px 16px; border-radius: 18px; max-width: 85%; font-size: 14px; margin-bottom: 12px; }
         .sent { background: #38bdf8; color: #0f172a; align-self: flex-end; border-bottom-right-radius: 4px; }
         .recv { background: #334155; color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
-        
+        .sys-msg { align-self: center; font-size: 11px; color: #64748b; background: rgba(51, 65, 85, 0.3); padding: 4px 12px; border-radius: 10px; margin: 8px 0; }
         .input-area { padding: 15px; background: #1e293b; display: flex; gap: 10px; border-top: 1px solid #334155; }
         #log { font-size: 10px; color: #64748b; padding: 8px 15px; background: #1e293b; text-align: center; }
     </style>
@@ -40,133 +29,152 @@
 
 <div class="container">
     <div id="overlay">
-        <div class="logo">
-            <h2>Dolphin</h2>
-            <p style="font-size: 12px; color: #64748b;">Private P2P Mesh</p>
+        <div class="logo"><h2>Dolphin</h2><p>Auto-Wipe P2P Mesh</p></div>
+        <input type="text" id="nick" placeholder="Nickname">
+        <input type="text" id="room" placeholder="Room ID">
+        <div class="rec-box">
+            <span class="tag" onclick="setRoom('lobby')">#lobby</span>
+            <span class="tag" onclick="setRoom('dev')">#dev</span>
         </div>
-
-        <input type="text" id="nick" placeholder="Your Nickname">
-        <input type="text" id="room" placeholder="Enter Room ID (e.g. 1234)">
-        <button id="go">START CHAT</button>
-
-        <div class="discovery">
-            <h4>Common Rooms</h4>
-            <div id="quickRooms">
-                <span class="room-tag" onclick="setRoom('lobby')">#lobby</span>
-                <span class="room-tag" onclick="setRoom('help')">#help</span>
-                <span class="room-tag" onclick="setRoom('dev')">#dev</span>
-                <span class="room-tag" onclick="setRoom('gaming')">#gaming</span>
-            </div>
-            <p style="font-size: 10px; color: #475569; margin-top: 15px;">Note: IDs are private. Share your ID with a friend to connect directly.</p>
-        </div>
-        
-        <p id="status" style="font-size: 11px; margin-top: 15px; color: #38bdf8; text-align: center;"></p>
+        <button id="go">JOIN MESH</button>
     </div>
-
-    <div id="log">System: Offline</div>
+    <div id="log">Status: Offline</div>
     <div id="chat"></div>
     <div class="input-area">
         <input type="text" id="msgInp" placeholder="Type a message...">
-        <button id="send" style="width: 80px; margin: 0;">SEND</button>
+        <button id="send" style="width: 80px;">SEND</button>
     </div>
 </div>
 
 <script>
-    let peer = null, conn = null, myNick = "";
-    const logEl = document.getElementById('log');
-    const status = document.getElementById('status');
+    let peer = null, myNick = "";
+    let connections = {}; 
+    let seenMessages = new Set();
+    const namePool = ["WaveRider", "NeonDolphin", "CoralAce"];
 
-    function updateLog(msg) { logEl.innerText = "System: " + msg; }
     function setRoom(val) { document.getElementById('room').value = val; }
 
-    const iceConfig = {
-        config: { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }, { 'urls': 'stun:stun1.l.google.com:19302' }] }
+    // Logic to wipe data
+    function wipeData() {
+        console.log("Cleanup triggered: Wiping local history.");
+        localStorage.removeItem('dolphHistory');
+        seenMessages.clear();
+        // If we are still on the page, clear the UI
+        if(document.getElementById('chat')) document.getElementById('chat').innerHTML = "";
+    }
+
+    // 1. Wipe if you close the tab and are alone
+    window.addEventListener('pagehide', () => {
+        if (Object.keys(connections).length === 0) wipeData();
+    });
+
+    window.onload = () => {
+        const history = JSON.parse(localStorage.getItem('dolphHistory') || "[]");
+        history.forEach(m => {
+            seenMessages.add(m.id);
+            addMsg(m.n, m.m, m.side, false, m.id);
+        });
     };
 
     document.getElementById('go').onclick = function() {
-        myNick = document.getElementById('nick').value.trim() || "Anonymous";
+        myNick = document.getElementById('nick').value.trim() || namePool[Math.floor(Math.random()*namePool.length)];
         let roomInput = document.getElementById('room').value.trim().toLowerCase();
+        if(!roomInput) return alert("Enter Room ID");
         
-        if(!roomInput) return alert("Please enter a Room ID");
-        
-        this.disabled = true;
-        updateLog("Initializing Peer...");
-        const roomID = "dolph-p2p-" + roomInput;
+        const roomID = "dolph-mesh-" + roomInput;
+        peer = new Peer(roomID);
 
-        // Attempt to "own" this Room ID
-        peer = new Peer(roomID, iceConfig);
-
-        peer.on('open', (id) => {
-            status.innerText = "Room Created. Waiting for someone to join...";
-            updateLog("Listening on: " + roomInput);
+        peer.on('open', () => {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('log').innerText = "Status: Online (Host)";
         });
 
-        // If someone connects to us (we are the Host)
-        peer.on('connection', (incoming) => {
-            updateLog("Peer connected!");
-            conn = incoming;
-            setupConnection();
-        });
+        peer.on('connection', (conn) => setupConnection(conn));
 
         peer.on('error', (err) => {
-            if (err.type === 'unavailable-id') {
-                // Room is "taken", so we join as a Guest instead
-                updateLog("Room exists. Joining...");
-                joinRoom(roomID);
-            } else {
-                updateLog("Error: " + err.type);
-                this.disabled = false;
-            }
+            if (err.type === 'unavailable-id') joinAsGuest(roomID);
+            else location.reload();
         });
     };
 
-    function joinRoom(id) {
+    function joinAsGuest(id) {
         if (peer) peer.destroy();
-        // Create a peer with a random ID
-        peer = new Peer(iceConfig);
+        peer = new Peer(); 
         peer.on('open', () => {
-            conn = peer.connect(id, { reliable: true });
-            setupConnection();
+            document.getElementById('log').innerText = "Status: Online (Guest)";
+            setupConnection(peer.connect(id, { reliable: true }));
         });
     }
 
-    function setupConnection() {
+    function setupConnection(conn) {
         conn.on('open', () => {
-            updateLog("Secure Channel Established");
+            connections[conn.peer] = conn;
             document.getElementById('overlay').style.display = 'none';
-            // Announce presence
-            conn.send({ n: "System", m: `${myNick} has joined the chat.` });
+            broadcast({ type: 'sys', m: `${myNick} joined.` });
+            const history = JSON.parse(localStorage.getItem('dolphHistory') || "[]");
+            conn.send({ type: 'sync', history: history });
         });
 
         conn.on('data', (data) => {
-            if(data.n && data.m) addMsg(data.n, data.m, 'recv');
+            if (data.type === 'sync') {
+                data.history.forEach(m => {
+                    if (!seenMessages.has(m.id)) {
+                        seenMessages.add(m.id);
+                        addMsg(m.n, m.m, m.side, true, m.id);
+                    }
+                });
+            } else if (data.type === 'sys') {
+                addMsg("System", data.m, 'sys');
+            } else if (data.id && !seenMessages.has(data.id)) {
+                seenMessages.add(data.id);
+                addMsg(data.n, data.m, 'recv', true, data.id);
+            }
         });
 
         conn.on('close', () => {
-            alert("Peer disconnected.");
-            location.reload();
+            delete connections[conn.peer];
+            // 2. Immediate cleanup check when someone leaves
+            if (Object.keys(connections).length === 0) {
+                wipeData();
+                addMsg("System", "Room empty. History cleared.", 'sys');
+            }
         });
     }
 
-    function addMsg(name, msg, side) {
+    // 3. Heartbeat: Double-check every 5s if connections are actually alive
+    setInterval(() => {
+        if (peer && !peer.destroyed && document.getElementById('overlay').style.display === 'none') {
+            if (Object.keys(connections).length === 0) {
+                wipeData();
+            }
+        }
+    }, 5000);
+
+    function addMsg(name, msg, side, shouldSave = true, id = null) {
         const div = document.createElement('div');
-        div.className = `msg ${side}`;
-        const isSys = name === "System";
-        div.style.fontStyle = isSys ? "italic" : "normal";
-        div.style.opacity = isSys ? "0.6" : "1";
-        
-        div.innerHTML = `<small style="display:block;font-weight:bold;font-size:10px;margin-bottom:2px;">${name}</small>${msg}`;
+        div.className = (side === 'sys') ? 'sys-msg' : `msg ${side}`;
+        div.innerHTML = (side === 'sys') ? msg : `<small style="display:block;font-weight:bold;font-size:10px;opacity:0.7;">${name}</small>${msg}`;
         document.getElementById('chat').appendChild(div);
         document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+
+        if (shouldSave && side !== 'sys') {
+            let history = JSON.parse(localStorage.getItem('dolphHistory') || "[]");
+            history.push({ n: name, m: msg, side: side, id: id });
+            localStorage.setItem('dolphHistory', JSON.stringify(history.slice(-50)));
+        }
+    }
+
+    function broadcast(obj) {
+        Object.values(connections).forEach(c => { if (c.open) c.send(obj); });
     }
 
     function send() {
         const inp = document.getElementById('msgInp');
-        const val = inp.value.trim();
-        if(!val || !conn) return;
-        
-        conn.send({ n: myNick, m: val });
-        addMsg("You", val, 'sent');
+        if(!inp.value.trim()) return;
+        const msgId = Date.now() + "-" + Math.random().toString(36).substr(2, 5);
+        seenMessages.add(msgId);
+        broadcast({ n: myNick, m: inp.value, id: msgId });
+        addMsg("You", inp.value, 'sent', true, msgId);
         inp.value = "";
     }
 
