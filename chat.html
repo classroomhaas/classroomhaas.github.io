@@ -3,198 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClassroomChat | Private</title>
+    <title>Global Chat Node</title>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; display: flex; align-items: center; justify-content: center; height: 100vh; color: #f8fafc; overflow: hidden; }
-        .container { background: #1e293b; width: 100%; max-width: 400px; height: 680px; display: flex; flex-direction: column; border-radius: 24px; overflow: hidden; border: 1px solid #334155; position: relative; }
-        #overlay { position: absolute; inset: 0; background: #1e293b; z-index: 100; display: flex; flex-direction: column; padding: 30px; }
-        .logo { text-align: center; margin-bottom: 20px; }
-        .logo h2 { color: #38bdf8; font-size: 28px; }
-        input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #334155; border-radius: 12px; outline: none; background: #0f172a; color: white; }
-        button { width: 100%; padding: 14px; background: #38bdf8; color: #0f172a; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .tag { display: inline-block; background: #0f172a; padding: 6px 12px; border-radius: 20px; font-size: 12px; margin: 4px; border: 1px solid #334155; cursor: pointer; color: #38bdf8; }
-        #chat { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; background: #0f172a; }
-        .msg { padding: 10px 16px; border-radius: 18px; max-width: 85%; font-size: 14px; margin-bottom: 12px; }
-        .sent { background: #38bdf8; color: #0f172a; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .recv { background: #334155; color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .sys-msg { align-self: center; font-size: 11px; color: #64748b; background: rgba(51, 65, 85, 0.3); padding: 4px 12px; border-radius: 10px; margin: 8px 0; }
-        .input-area { padding: 15px; background: #1e293b; display: flex; gap: 10px; border-top: 1px solid #334155; }
-        #log { font-size: 10px; color: #ef4444; padding: 8px 15px; background: #1e293b; text-align: center; font-weight: bold; border-bottom: 1px solid #334155; }
+        :root { --bg: #0f172a; --panel: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        
+        .app-container { width: 100%; max-width: 500px; height: 100%; max-height: 800px; background: var(--panel); display: flex; flex-direction: column; position: relative; border-left: 1px solid #334155; border-right: 1px solid #334155; }
+        
+        /* Login Screen */
+        #login-screen { position: absolute; inset: 0; background: var(--panel); z-index: 50; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
+        h1 { color: var(--accent); margin-bottom: 20px; text-align: center; }
+        input { background: var(--bg); border: 1px solid #334155; color: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; font-size: 16px; outline: none; }
+        input:focus { border-color: var(--accent); }
+        button { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { opacity: 0.9; }
+        
+        /* Chat UI */
+        header { padding: 15px; border-bottom: 1px solid #334155; background: rgba(15, 23, 42, 0.5); display: flex; justify-content: space-between; align-items: center; }
+        #status { font-size: 12px; color: #4ade80; display: flex; align-items: center; gap: 6px; }
+        .dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; }
+        
+        #messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
+        .msg-row { display: flex; flex-direction: column; max-width: 85%; }
+        .msg-row.sent { align-self: flex-end; align-items: flex-end; }
+        .msg-row.recv { align-self: flex-start; align-items: flex-start; }
+        
+        .bubble { padding: 10px 14px; border-radius: 16px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
+        .sent .bubble { background: var(--accent); color: white; border-bottom-right-radius: 2px; }
+        .recv .bubble { background: #334155; color: white; border-bottom-left-radius: 2px; }
+        
+        .sender-name { font-size: 11px; color: #94a3b8; margin-bottom: 4px; margin-left: 2px; }
+        
+        footer { padding: 15px; background: var(--panel); border-top: 1px solid #334155; display: flex; gap: 10px; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="overlay">
-        <div class="logo"><h2>ClassroomChat</h2><p>Chat</p></div>
-        <input type="text" id="nick" placeholder="Nickname">
-        <input type="text" id="room" placeholder="Room ID">
-        <div style="margin-top:20px;">
-            <span class="tag" onclick="setRoom('lobby')">#lobby</span>
-            <span class="tag" onclick="setRoom('dev')">#dev</span>
-        </div>
-        <button id="go">JOIN CHAT</button>
+<div class="app-container">
+    <div id="login-screen">
+        <h1>Global Chat</h1>
+        <p style="color:#94a3b8; text-align:center; margin-bottom:20px; font-size:14px;">Enter a Room Name to join your friends.</p>
+        <input type="text" id="username" placeholder="Nickname" maxlength="12">
+        <input type="text" id="room" placeholder="Room Name (e.g. lobby)">
+        <button onclick="joinChat()">Join Room</button>
     </div>
-    <div id="log">Status: Offline</div>
-    <div id="chat"></div>
-    <div class="input-area">
-        <input type="text" id="msgInp" placeholder="Type a message...">
-        <button id="send" style="width: 80px;">SEND</button>
-    </div>
+
+    <header>
+        <div style="font-weight:bold; font-size:18px;" id="room-display">#Lobby</div>
+        <div id="status"><div class="dot"></div> <span id="peer-count">Connecting...</span></div>
+    </header>
+
+    <div id="messages"></div>
+
+    <footer>
+        <input type="text" id="msg-input" placeholder="Message..." autocomplete="off">
+        <button onclick="sendMessage()" style="width: 80px; padding: 0;">Send</button>
+    </footer>
 </div>
 
 <script>
-    let peer = null, myNick = "";
-    let connections = {}; 
-    let seenMessages = new Set();
-    let isGuest = false;
+    let peer, conn;
+    let myId, myName, roomId;
+    let connections = {};
+    let seenIds = new Set();
+    const bannedWords = ["badword1", "badword2"]; // Add filters if needed
 
-    const STORAGE_KEY = 'p2p_ephemeral_history';
-    const bannedWords = ["bitch", "nigger", "fuck", "shit"]; 
-
-    function filterText(text) {
-        let filtered = text;
-        bannedWords.forEach(word => {
-            const regex = new RegExp(`\\b${word}\\b`, 'gi');
-            filtered = filtered.replace(regex, "****");
-        });
-        return filtered;
+    function filter(text) {
+        // Basic filter placeholder
+        return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
-    function setRoom(val) { document.getElementById('room').value = val; }
-
-    // THE WIPE FUNCTION
-    function wipeData() {
-        sessionStorage.removeItem(STORAGE_KEY);
-        seenMessages.clear();
-        const chatBox = document.getElementById('chat');
-        if(chatBox) chatBox.innerHTML = "";
-        document.getElementById('log').innerText = "DATA WIPED: NO PEERS CONNECTED";
-        console.log("Self-destruct triggered.");
-    }
-
-    // Load session history on start
-    window.onload = () => {
-        const history = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
-        history.forEach(m => {
-            seenMessages.add(m.id);
-            addMsg(m.n, m.m, m.side, false, m.id);
-        });
-    };
-
-    document.getElementById('go').onclick = function() {
-        myNick = document.getElementById('nick').value.trim() || "User" + Math.floor(Math.random()*100);
-        let roomInput = document.getElementById('room').value.trim().toLowerCase();
-        if(!roomInput) return alert("Enter Room ID");
+    function joinChat() {
+        myName = document.getElementById('username').value.trim();
+        let r = document.getElementById('room').value.trim().toLowerCase();
         
-        const roomID = "cls-auto-" + roomInput;
-        peer = new Peer(roomID);
+        if (!myName || !r) return alert("Nickname and Room are required!");
+        
+        roomId = "chat-room-" + r.replace(/[^a-z0-9]/g, ''); // Sanitize room name
+        document.getElementById('room-display').innerText = "#" + r;
+        document.getElementById('login-screen').style.display = 'none';
 
-        peer.on('open', () => {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('log').innerText = "Status: Alone (Awaiting Peers)";
+        // Initialize PeerJS
+        peer = new Peer({ debug: 1 });
+
+        peer.on('open', (id) => {
+            myId = id;
+            document.getElementById('peer-count').innerText = "Online (Waiting)";
+            connectToHost();
         });
 
-        peer.on('connection', (conn) => setupConnection(conn));
-
+        peer.on('connection', handleConnection);
+        
         peer.on('error', (err) => {
-            if (err.type === 'unavailable-id') joinAsGuest(roomID);
-            else { location.reload(); }
-        });
-    };
-
-    function joinAsGuest(id) {
-        isGuest = true;
-        if (peer) peer.destroy();
-        peer = new Peer(); 
-        peer.on('open', () => {
-            document.getElementById('log').innerText = "Status: Connecting to Host...";
-            setupConnection(peer.connect(id, { reliable: true }));
+            console.log(err);
+            // If ID is taken, it means someone is hosting. We join them.
+             if (err.type === 'unavailable-id') { 
+                 // We tried to host but couldn't. 
+                 // In this logic, we just join.
+             }
         });
     }
 
-    function setupConnection(conn) {
+    // Logic: Everyone tries to connect to a deterministic "Room Host ID"
+    // If it fails, they become the host.
+    function connectToHost() {
+        // Attempt to connect to the "Room ID"
+        // Note: PeerJS doesn't let you claim a specific ID easily without an API key in some clouds,
+        // so we use a mesh broadcast strategy here for simplicity without a server.
+        
+        // Strategy: We just open a random ID.
+        // We need the user to share the link.
+        
+        // Revised Strategy for "No Link Sharing":
+        // We will try to connect to the roomId. 
+        // If we can't, we destroy our peer and recreate it AS the roomId.
+        
+        let destId = roomId;
+        
+        // Try connecting to the room host
+        let conn = peer.connect(destId);
+        
         conn.on('open', () => {
-            connections[conn.peer] = conn;
-            updateStatus();
-            
-            // Sync history
-            const history = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
-            conn.send({ type: 'sync', history: history });
+            document.getElementById('peer-count').innerText = "Connected to Room";
+            setupConn(conn);
         });
 
-        conn.on('data', (data) => {
-            if (data.type === 'sync') {
-                data.history.forEach(m => {
-                    if (!seenMessages.has(m.id)) {
-                        seenMessages.add(m.id);
-                        addMsg(m.n, m.m, m.side, true, m.id);
-                    }
+        conn.on('error', (err) => {
+            // Connection failed, maybe room doesn't exist?
+            // We become the room.
+            becomeHost();
+        });
+        
+        // Fallback: If connection doesn't open in 2 seconds, assume we need to host
+        setTimeout(() => {
+            if (!conn.open) becomeHost();
+        }, 2000);
+    }
+
+    function becomeHost() {
+        if (peer.id === roomId) return; // Already host
+        peer.destroy();
+        peer = new Peer(roomId); // Claim the Room ID
+        peer.on('open', () => {
+             document.getElementById('peer-count').innerText = "Hosting Room";
+             addSystemMsg("You are the host. Others can join " + roomId.replace('chat-room-', ''));
+        });
+        peer.on('connection', handleConnection);
+        peer.on('error', err => {
+            if (err.type === 'unavailable-id') {
+                // If we can't become host, someone else beat us to it.
+                // Revert to random ID and connect.
+                peer = new Peer();
+                peer.on('open', () => {
+                    let c = peer.connect(roomId);
+                    c.on('open', () => setupConn(c));
                 });
-            } else if (data.id && !seenMessages.has(data.id)) {
-                seenMessages.add(data.id);
-                addMsg(data.n, data.m, 'recv', true, data.id);
             }
         });
+    }
 
-        conn.on('close', () => {
-            delete connections[conn.peer];
-            updateStatus();
-            checkAndWipe();
+    function handleConnection(conn) {
+        setupConn(conn);
+    }
+
+    function setupConn(c) {
+        connections[c.peer] = c;
+        updateCount();
+        
+        c.on('data', (data) => {
+            if (seenIds.has(data.id)) return;
+            seenIds.add(data.id);
+            
+            // Relay if I am host
+            if (peer.id === roomId) broadcast(data);
+            
+            renderMessage(data);
+        });
+        
+        c.on('close', () => { delete connections[c.peer]; updateCount(); });
+    }
+
+    function broadcast(data) {
+        Object.values(connections).forEach(c => {
+            if (c.open) c.send(data);
         });
     }
 
-    function updateStatus() {
-        const count = Object.keys(connections).length;
-        document.getElementById('log').innerText = count > 0 ? `CONNECTED: ${count} PEER(S)` : "ALONE: AUTO-WIPE ACTIVE";
-    }
-
-    // CORE LOGIC: If you are alone, clear the messages.
-    function checkAndWipe() {
-        if (Object.keys(connections).length === 0) {
-            wipeData();
-        }
-    }
-
-    // Monitor connections every 3 seconds to enforce the "wipe if one" rule
-    setInterval(checkAndWipe, 3000);
-
-    function addMsg(name, msg, side, shouldSave = true, id = null) {
-        const div = document.createElement('div');
-        div.className = side === 'sys' ? 'sys-msg' : `msg ${side}`;
-        const cleanMsg = filterText(msg);
-
-        div.innerHTML = `<small style="display:block;font-weight:bold;font-size:10px;opacity:0.7;">${name}</small>${cleanMsg}`;
-        document.getElementById('chat').appendChild(div);
-        document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
-
-        if (shouldSave) {
-            let history = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
-            history.push({ n: name, m: cleanMsg, side: side, id: id });
-            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-50)));
-        }
-    }
-
-    function broadcast(obj) {
-        Object.values(connections).forEach(c => { if (c.open) c.send(obj); });
-    }
-
-    function send() {
-        const inp = document.getElementById('msgInp');
-        if(!inp.value.trim()) return;
-        const msgId = Date.now() + "-" + Math.random().toString(36).substr(2, 5);
-        seenMessages.add(msgId);
-        const cleanOut = filterText(inp.value);
+    function sendMessage() {
+        const txt = document.getElementById('msg-input').value.trim();
+        if (!txt) return;
         
-        broadcast({ n: myNick, m: cleanOut, id: msgId });
-        addMsg("You", cleanOut, 'sent', true, msgId);
-        inp.value = "";
+        const msgId = Date.now() + Math.random().toString();
+        const payload = { id: msgId, name: myName, text: filter(txt) };
+        
+        seenIds.add(msgId);
+        broadcast(payload); // Send to peers
+        renderMessage(payload, true); // Show locally
+        
+        document.getElementById('msg-input').value = '';
     }
 
-    document.getElementById('send').onclick = send;
-    document.getElementById('msgInp').onkeypress = (e) => { if(e.key === 'Enter') send(); };
+    function renderMessage(data, isMe = false) {
+        const box = document.getElementById('messages');
+        const div = document.createElement('div');
+        div.className = `msg-row ${isMe ? 'sent' : 'recv'}`;
+        div.innerHTML = `
+            <div class="sender-name">${isMe ? 'You' : data.name}</div>
+            <div class="bubble">${data.text}</div>
+        `;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function addSystemMsg(txt) {
+        const box = document.getElementById('messages');
+        box.innerHTML += `<div style="text-align:center; font-size:12px; color:#64748b; margin:10px 0;">${txt}</div>`;
+    }
+
+    function updateCount() {
+        const c = Object.keys(connections).length;
+        document.getElementById('peer-count').innerText = c > 0 ? `${c} Peers` : "Waiting...";
+    }
+    
+    // Enter key to send
+    document.getElementById('msg-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
 </script>
 </body>
 </html>
