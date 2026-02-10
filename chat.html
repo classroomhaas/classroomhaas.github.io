@@ -3,44 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Chat + Filter</title>
+    <title>Private Access Chat</title>
    
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root { --bg: #0f172a; --panel: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        
+       
         .app-container { width: 100%; max-width: 500px; height: 100%; max-height: 800px; background: var(--panel); display: flex; flex-direction: column; position: relative; border-left: 1px solid #334155; border-right: 1px solid #334155; }
+       
+        /* --- 1. GATEKEEPER SCREEN (New) --- */
+        #gatekeeper-screen { position: absolute; inset: 0; background: var(--bg); z-index: 100; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
         
-        /* Login Screen */
+        /* --- 2. LOGIN SCREEN --- */
         #login-screen { position: absolute; inset: 0; background: var(--panel); z-index: 50; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
+        
         h1 { color: var(--accent); margin-bottom: 20px; text-align: center; }
+        h2 { color: white; margin-bottom: 10px; text-align: center; font-size: 18px; }
+        
         input { background: var(--bg); border: 1px solid #334155; color: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; font-size: 16px; outline: none; }
         input:focus { border-color: var(--accent); }
         button { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button:hover { opacity: 0.9; }
-        
+        button.secondary { background: #334155; margin-top: 10px; }
+       
         /* Chat UI */
         header { padding: 15px; border-bottom: 1px solid #334155; background: rgba(15, 23, 42, 0.5); display: flex; justify-content: space-between; align-items: center; }
         #status { font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
         .dot { width: 8px; height: 8px; background: #64748b; border-radius: 50%; }
         .dot.green { background: #4ade80; }
         .dot.orange { background: #facc15; }
-        
+        .dot.red { background: #ef4444; }
+       
         #messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
         .msg-row { display: flex; flex-direction: column; max-width: 85%; }
         .msg-row.sent { align-self: flex-end; align-items: flex-end; }
         .msg-row.recv { align-self: flex-start; align-items: flex-start; }
-        
+       
         .bubble { padding: 10px 14px; border-radius: 16px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
         .sent .bubble { background: var(--accent); color: white; border-bottom-right-radius: 2px; }
         .recv .bubble { background: #334155; color: white; border-bottom-left-radius: 2px; }
-        
+       
         .sender-name { font-size: 11px; color: #94a3b8; margin-bottom: 4px; margin-left: 2px; }
-        
+       
         footer { padding: 15px; background: var(--panel); border-top: 1px solid #334155; display: flex; gap: 10px; }
-        
+       
         /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
@@ -49,12 +57,20 @@
 <body>
 
 <div class="app-container">
+
+    <div id="gatekeeper-screen">
+        <h1>Private Access</h1>
+        <p style="color:#94a3b8; text-align:center; margin-bottom:20px;">Enter the site password to continue.</p>
+        <input type="password" id="site-password" placeholder="Password">
+        <button onclick="checkSitePassword()">Unlock</button>
+    </div>
+
     <div id="login-screen">
         <h1>Global Chat</h1>
-        <p style="color:#94a3b8; text-align:center; margin-bottom:20px; font-size:14px;">Enter a unique Room Name to join friends.</p>
+        <p style="color:#94a3b8; text-align:center; margin-bottom:20px;">Join a Room</p>
         <input type="text" id="username" placeholder="Nickname" maxlength="12">
-        <input type="text" id="room" placeholder="Room Name (e.g. pizza-party-99)">
-        <button onclick="joinChat()">Join Room</button>
+        <input type="text" id="room" placeholder="Room Name (e.g. lobby)">
+        <button onclick="joinChat()">Start Chatting</button>
     </div>
 
     <header>
@@ -72,24 +88,38 @@
 
 <script>
     // --- CONFIGURATION ---
-    
-    // 1. EDIT THIS LIST TO ADD YOUR BANNED WORDS
-    const BANNED_WORDS = [
-        "fuck", 
-        "nigger", 
-        "faggot", 
-        "shit",
-        "bullshit",
-        "ching chong",
-        "ass"
-    ];
+
+    // 1. SET YOUR SITE PASSWORD HERE:
+    const SITE_ACCESS_PASSWORD = "notlebronjames"; 
+
+    // 2. BANNED WORDS
+    const BANNED_WORDS = [ "shit","bullshit", "fuck", "nigger" ];
+
+    // --- GATEKEEPER LOGIC ---
+    function checkSitePassword() {
+        const input = document.getElementById('site-password').value;
+        if (input === SITE_ACCESS_PASSWORD) {
+            // Success: Hide gatekeeper, reveal login
+            document.getElementById('gatekeeper-screen').style.display = 'none';
+        } else {
+            alert("Access Denied: Incorrect Password");
+            document.getElementById('site-password').value = '';
+        }
+    }
+
+    // Allow "Enter" key on gatekeeper screen
+    document.getElementById('site-password').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkSitePassword();
+    });
+
+    // --- CHAT LOGIC ---
 
     let peer;
     let myId, myName, roomId;
     let connections = {};
     let seenIds = new Set();
     let isHost = false;
-    
+   
     const peerConfig = {
         debug: 1,
         config: {
@@ -100,38 +130,28 @@
         }
     };
 
-    // Helper: Escapes HTML to prevent injection
     function filter(text) {
         return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
-    // Helper: Censors words from the BANNED_WORDS list
     function censorMessage(text) {
         let cleanText = text;
-        
         BANNED_WORDS.forEach(word => {
-            // Create a Regular Expression
-            // \b ensures we match whole words only (so "class" isn't censored if "ass" is banned)
-            // 'gi' means Global search and Case Insensitive
             const regex = new RegExp(`\\b${word}\\b`, 'gi');
-            
-            // Replace with asterisks of the same length
             const replacement = '*'.repeat(word.length);
-            
             cleanText = cleanText.replace(regex, replacement);
         });
-        
         return cleanText;
     }
 
     function joinChat() {
         myName = document.getElementById('username').value.trim();
         let r = document.getElementById('room').value.trim().toLowerCase();
-        
+       
         if (!myName || !r) return alert("Nickname and Room are required!");
-        
+       
         roomId = "chat-room-" + r.replace(/[^a-z0-9]/g, ''); 
-        
+       
         document.getElementById('room-display').innerText = "#" + r;
         document.getElementById('login-screen').style.display = 'none';
         setStatus("Connecting...", "orange");
@@ -141,7 +161,7 @@
 
     function initPeer(forceHost = false) {
         let id = forceHost ? roomId : null;
-        
+       
         if (peer) peer.destroy();
         peer = new Peer(id, peerConfig);
 
@@ -150,7 +170,7 @@
             if (myId === roomId) {
                 isHost = true;
                 setStatus("Hosting Room", "green");
-                addSystemMsg("You are the host. Waiting for others...");
+                addSystemMsg("You are the host.");
             } else {
                 connectToHost();
             }
@@ -174,9 +194,7 @@
 
     function connectToHost() {
         setStatus("Finding Host...", "orange");
-        
         let conn = peer.connect(roomId, { reliable: true });
-
         let connected = false;
 
         conn.on('open', () => {
@@ -187,7 +205,6 @@
 
         setTimeout(() => {
             if (!connected) {
-                console.log("Host not found. Becoming Host.");
                 initPeer(true);
             }
         }, 5000); 
@@ -200,16 +217,15 @@
     function setupConn(c) {
         connections[c.peer] = c;
         updateCount();
-        
+       
         c.on('data', (data) => {
             if (seenIds.has(data.id)) return;
             seenIds.add(data.id);
-            
+           
             if (isHost) broadcast(data);
-            
             renderMessage(data);
         });
-        
+       
         c.on('close', () => { 
             delete connections[c.peer]; 
             updateCount(); 
@@ -225,21 +241,15 @@
     function sendMessage() {
         const txt = document.getElementById('msg-input').value.trim();
         if (!txt) return;
-        
+       
         const msgId = Date.now() + Math.random().toString();
-        
-        // 1. Censor the text first
         const censoredText = censorMessage(txt);
-        
-        // 2. Escape HTML
         const safeText = filter(censoredText);
 
         const payload = { id: msgId, name: myName, text: safeText };
-        
+       
         seenIds.add(msgId);
-        
         broadcast(payload); 
-        
         renderMessage(payload, true);
         document.getElementById('msg-input').value = '';
     }
