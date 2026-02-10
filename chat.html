@@ -155,7 +155,6 @@
     function checkSitePassword() {
         const input = document.getElementById('site-password').value;
         if (input === SITE_ACCESS_PASSWORD) {
-            // Success: Hide gatekeeper, reveal login
             document.getElementById('gatekeeper-screen').style.display = 'none';
         } else {
             alert("Access Denied: Incorrect Password");
@@ -163,7 +162,6 @@
         }
     }
 
-    // Allow "Enter" key on gatekeeper screen
     document.getElementById('site-password').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') checkSitePassword();
     });
@@ -241,11 +239,30 @@
             if (err.type === 'unavailable-id') {
                 isHost = false;
                 initPeer(false); 
-            } 
-            else if (err.type === 'network' || err.type === 'disconnected') {
+            } else if (err.type === 'network' || err.type === 'disconnected') {
                 setStatus("Connection Lost", "red");
             }
         });
+    }
+
+    // Broadcast to all peers
+    function broadcast(data) {
+        Object.values(connections).forEach(c => {
+            if (c.open) c.send(data);
+        });
+    }
+
+    // Broadcast a system message (host only)
+    function broadcastSystem(message) {
+        const msgId = Date.now() + Math.random().toString();
+        const payload = {
+            id: msgId,
+            type: 'system',
+            text: message
+        };
+        seenIds.add(msgId);
+        broadcast(payload);
+        renderSystemMessage(payload);
     }
 
     function connectToHost() {
@@ -273,11 +290,22 @@
     function setupConn(c) {
         connections[c.peer] = c;
         updateCount();
+
+        // Host announces when someone joins
+        if (isHost) {
+            broadcastSystem("A new user joined the chat.");
+        }
        
         c.on('data', (data) => {
             if (seenIds.has(data.id)) return;
             seenIds.add(data.id);
-           
+
+            // System vs normal messages
+            if (data.type === 'system') {
+                renderSystemMessage(data);
+                return;
+            }
+
             if (isHost) broadcast(data);
             renderMessage(data);
         });
@@ -285,12 +313,6 @@
         c.on('close', () => { 
             delete connections[c.peer]; 
             updateCount(); 
-        });
-    }
-
-    function broadcast(data) {
-        Object.values(connections).forEach(c => {
-            if (c.open) c.send(data);
         });
     }
 
@@ -322,6 +344,18 @@
         box.scrollTop = box.scrollHeight;
     }
 
+    function renderSystemMessage(data) {
+        const box = document.getElementById('messages');
+        const div = document.createElement('div');
+        div.style.textAlign = "center";
+        div.style.fontSize = "12px";
+        div.style.color = "#64748b";
+        div.style.margin = "10px 0";
+        div.textContent = data.text;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
     function addSystemMsg(txt) {
         const box = document.getElementById('messages');
         box.innerHTML += `<div style="text-align:center; font-size:12px; color:#64748b; margin:10px 0;">${txt}</div>`;
@@ -343,5 +377,6 @@
         if (e.key === 'Enter') sendMessage();
     });
 </script>
+
 </body>
 </html>
