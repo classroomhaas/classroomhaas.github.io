@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>billybob proxy</title>
+<style>
+body{margin:0;font-family:Arial;background:#050b1a;color:white;text-align:center}
+header{background:#061b3a;padding:20px;font-size:32px;color:#4da6ff;text-shadow:0 0 10px #4da6ff}
+.bar{margin-top:80px}
+input{width:60%;padding:14px;border-radius:10px;border:none}
+button{padding:14px;border:none;border-radius:10px;background:#1e90ff;color:white;box-shadow:0 0 10px #1e90ff}
+</style>
+</head>
+<body>
+<header>billybob proxy</header>
+<div class="bar">
+<input id="url" placeholder="https://example.com">
+<button onclick="go()">Go</button>
+</div>
+<script>
+function go(){
+ let u=document.getElementById("url").value;
+ if(!u.startsWith("http"))u="https://"+u;
+ location.href="/go/"+btoa(u);
+}
+</script>
+</body>
+</html>
