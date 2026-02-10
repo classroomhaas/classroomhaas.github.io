@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassroomChat | Private</title>
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; display: flex; align-items: center; justify-content: center; height: 100vh; color: #f8fafc; overflow: hidden; }
+        .container { background: #1e293b; width: 100%; max-width: 400px; height: 680px; display: flex; flex-direction: column; border-radius: 24px; overflow: hidden; border: 1px solid #334155; position: relative; }
+        #overlay { position: absolute; inset: 0; background: #1e293b; z-index: 100; display: flex; flex-direction: column; padding: 30px; }
+        .logo { text-align: center; margin-bottom: 20px; }
+        .logo h2 { color: #38bdf8; font-size: 28px; }
+        input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #334155; border-radius: 12px; outline: none; background: #0f172a; color: white; }
+        button { width: 100%; padding: 14px; background: #38bdf8; color: #0f172a; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .tag { display: inline-block; background: #0f172a; padding: 6px 12px; border-radius: 20px; font-size: 12px; margin: 4px; border: 1px solid #334155; cursor: pointer; color: #38bdf8; }
+        #chat { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; background: #0f172a; }
+        .msg { padding: 10px 16px; border-radius: 18px; max-width: 85%; font-size: 14px; margin-bottom: 12px; }
+        .sent { background: #38bdf8; color: #0f172a; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .recv { background: #334155; color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .sys-msg { align-self: center; font-size: 11px; color: #64748b; background: rgba(51, 65, 85, 0.3); padding: 4px 12px; border-radius: 10px; margin: 8px 0; }
+        .input-area { padding: 15px; background: #1e293b; display: flex; gap: 10px; border-top: 1px solid #334155; }
+        #log { font-size: 10px; color: #ef4444; padding: 8px 15px; background: #1e293b; text-align: center; font-weight: bold; border-bottom: 1px solid #334155; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="overlay">
+        <div class="logo"><h2>ClassroomChat</h2><p>Chat</p></div>
+        <input type="text" id="nick" placeholder="Nickname">
+        <input type="text" id="room" placeholder="Room ID">
+        <div style="margin-top:20px;">
+            <span class="tag" onclick="setRoom('lobby')">#lobby</span>
+            <span class="tag" onclick="setRoom('dev')">#dev</span>
+        </div>
+        <button id="go">JOIN CHAT</button>
+    </div>
+    <div id="log">Status: Offline</div>
+    <div id="chat"></div>
+    <div class="input-area">
+        <input type="text" id="msgInp" placeholder="Type a message...">
+        <button id="send" style="width: 80px;">SEND</button>
+    </div>
+</div>
+
+<script>
+    let peer = null, myNick = "";
+    let connections = {}; 
+    let seenMessages = new Set();
+    let isGuest = false;
+
+    const STORAGE_KEY = 'p2p_ephemeral_history';
+    const bannedWords = ["bitch", "nigger", "fuck", "shit"]; 
+
+    function filterText(text) {
+        let filtered = text;
+        bannedWords.forEach(word => {
+            const regex = new RegExp(`\\b${word}\\b`, 'gi');
+            filtered = filtered.replace(regex, "****");
+        });
+        return filtered;
+    }
+
+    function setRoom(val) { document.getElementById('room').value = val; }
+
+    // THE WIPE FUNCTION
+    function wipeData() {
+        sessionStorage.removeItem(STORAGE_KEY);
+        seenMessages.clear();
+        const chatBox = document.getElementById('chat');
+        if(chatBox) chatBox.innerHTML = "";
+        document.getElementById('log').innerText = "DATA WIPED: NO PEERS CONNECTED";
+        console.log("Self-destruct triggered.");
+    }
+
+    // Load session history on start
+    window.onload = () => {
+        const history = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
+        history.forEach(m => {
+            seenMessages.add(m.id);
+            addMsg(m.n, m.m, m.side, false, m.id);
+        });
+    };
+
+    document.getElementById('go').onclick = function() {
+        myNick = document.getElementById('nick').value.trim() || "User" + Math.floor(Math.random()*100);
+        let roomInput = document.getElementById('room').value.trim().toLowerCase();
+        if(!roomInput) return alert("Enter Room ID");
+        
+        const roomID = "cls-auto-" + roomInput;
+        peer = new Peer(roomID);
+
+        peer.on('open', () => {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('log').innerText = "Status: Alone (Awaiting Peers)";
+        });
+
+        peer.on('connection', (conn) => setupConnection(conn));
+
+        peer.on('error', (err) => {
+            if (err.type === 'unavailable-id') joinAsGuest(roomID);
+            else { location.reload(); }
+        });
+    };
+
+    function joinAsGuest(id) {
+        isGuest = true;
+        if (peer) peer.destroy();
+        peer = new Peer(); 
+        peer.on('open', () => {
+            document.getElementById('log').innerText = "Status: Connecting to Host...";
+            setupConnection(peer.connect(id, { reliable: true }));
+        });
+    }
+
+    function setupConnection(conn) {
+        conn.on('open', () => {
+            connections[conn.peer] = conn;
+            updateStatus();
+            
+            // Sync history
+            const history = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
+            conn.send({ type: 'sync', history: history });
+        });
+
+        conn.on('data', (data) => {
+            if (data.type === 'sync') {
+                data.history.forEach(m => {
+                    if (!seenMessages.has(m.id)) {
+                        seenMessages.add(m.id);
+                        addMsg(m.n, m.m, m.side, true, m.id);
+                    }
+                });
+            } else if (data.id && !seenMessages.has(data.id)) {
+                seenMessages.add(data.id);
+                addMsg(data.n, data.m, 'recv', true, data.id);
+            }
+        });
+
+        conn.on('close', () => {
+            delete connections[conn.peer];
+            updateStatus();
+            checkAndWipe();
+        });
+    }
+
+    function updateStatus() {
+        const count = Object.keys(connections).length;
+        document.getElementById('log').innerText = count > 0 ? `CONNECTED: ${count} PEER(S)` : "ALONE: AUTO-WIPE ACTIVE";
+    }
+
+    // CORE LOGIC: If you are alone, clear the messages.
+    function checkAndWipe() {
+        if (Object.keys(connections).length === 0) {
+            wipeData();
+        }
+    }
+
+    // Monitor connections every 3 seconds to enforce the "wipe if one" rule
+    setInterval(checkAndWipe, 3000);
+
+    function addMsg(name, msg, side, shouldSave = true, id = null) {
+        const div = document.createElement('div');
+        div.className = side === 'sys' ? 'sys-msg' : `msg ${side}`;
+        const cleanMsg = filterText(msg);
+
+        div.innerHTML = `<small style="display:block;font-weight:bold;font-size:10px;opacity:0.7;">${name}</small>${cleanMsg}`;
+        document.getElementById('chat').appendChild(div);
+        document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+
+        if (shouldSave) {
+            let history = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
+            history.push({ n: name, m: cleanMsg, side: side, id: id });
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-50)));
+        }
+    }
+
+    function broadcast(obj) {
+        Object.values(connections).forEach(c => { if (c.open) c.send(obj); });
+    }
+
+    function send() {
+        const inp = document.getElementById('msgInp');
+        if(!inp.value.trim()) return;
+        const msgId = Date.now() + "-" + Math.random().toString(36).substr(2, 5);
+        seenMessages.add(msgId);
+        const cleanOut = filterText(inp.value);
+        
+        broadcast({ n: myNick, m: cleanOut, id: msgId });
+        addMsg("You", cleanOut, 'sent', true, msgId);
+        inp.value = "";
+    }
+
+    document.getElementById('send').onclick = send;
+    document.getElementById('msgInp').onkeypress = (e) => { if(e.key === 'Enter') send(); };
+</script>
+</body>
+</html>
