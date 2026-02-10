@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassroomChat | Private</title>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; display: flex; align-items: center; justify-content: center; height: 100vh; color: #f8fafc; overflow: hidden; }
-        .container { background: #1e293b; width: 100%; max-width: 400px; height: 680px; display: flex; flex-direction: column; border-radius: 24px; overflow: hidden; position: relative; border: 1px solid #334155; }
+        .container { background: #1e293b; width: 100%; max-width: 400px; height: 680px; display: flex; flex-direction: column; border-radius: 24px; overflow: hidden; border: 1px solid #334155; position: relative; }
         #overlay { position: absolute; inset: 0; background: #1e293b; z-index: 100; display: flex; flex-direction: column; padding: 30px; }
         .logo { text-align: center; margin-bottom: 20px; }
         .logo h2 { color: #38bdf8; font-size: 28px; }
@@ -20,14 +21,14 @@
         .recv { background: #334155; color: white; align-self: flex-start; border-bottom-left-radius: 4px; }
         .sys-msg { align-self: center; font-size: 11px; color: #64748b; background: rgba(51, 65, 85, 0.3); padding: 4px 12px; border-radius: 10px; margin: 8px 0; }
         .input-area { padding: 15px; background: #1e293b; display: flex; gap: 10px; border-top: 1px solid #334155; }
-        #log { font-size: 10px; color: #64748b; padding: 8px 15px; background: #1e293b; text-align: center; }
+        #log { font-size: 10px; color: #ef4444; padding: 8px 15px; background: #1e293b; text-align: center; font-weight: bold; border-bottom: 1px solid #334155; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="overlay">
-        <div class="logo"><h2>ClassroomChat</h2><p>Chat for people</p></div>
+        <div class="logo"><h2>ClassroomChat</h2><p>Chat</p></div>
         <input type="text" id="nick" placeholder="Nickname">
         <input type="text" id="room" placeholder="Room ID">
         <div style="margin-top:20px;">
@@ -48,16 +49,14 @@
     let peer = null, myNick = "";
     let connections = {}; 
     let seenMessages = new Set();
-    const namePool = ["WaveRider", "NeonDolphin", "CoralAce"];
+    let isGuest = false;
 
-    // --- CENSORSHIP LIST ---
-    // Add any words you want to block here
+    const STORAGE_KEY = 'p2p_ephemeral_history';
     const bannedWords = ["bitch", "nigger", "fuck", "shit"]; 
-    
+
     function filterText(text) {
         let filtered = text;
         bannedWords.forEach(word => {
-            // Case-insensitive global search for the word
             const regex = new RegExp(`\\b${word}\\b`, 'gi');
             filtered = filtered.replace(regex, "****");
         });
@@ -66,18 +65,19 @@
 
     function setRoom(val) { document.getElementById('room').value = val; }
 
+    // THE WIPE FUNCTION
     function wipeData() {
-        localStorage.removeItem('dolphHistory');
+        sessionStorage.removeItem(STORAGE_KEY);
         seenMessages.clear();
-        if(document.getElementById('chat')) document.getElementById('chat').innerHTML = "";
+        const chatBox = document.getElementById('chat');
+        if(chatBox) chatBox.innerHTML = "";
+        document.getElementById('log').innerText = "DATA WIPED: NO PEERS CONNECTED";
+        console.log("Self-destruct triggered.");
     }
 
-    window.addEventListener('pagehide', () => {
-        if (Object.keys(connections).length === 0) wipeData();
-    });
-
+    // Load session history on start
     window.onload = () => {
-        const history = JSON.parse(localStorage.getItem('dolphHistory') || "[]");
+        const history = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
         history.forEach(m => {
             seenMessages.add(m.id);
             addMsg(m.n, m.m, m.side, false, m.id);
@@ -85,31 +85,32 @@
     };
 
     document.getElementById('go').onclick = function() {
-        myNick = document.getElementById('nick').value.trim() || namePool[Math.floor(Math.random()*namePool.length)];
+        myNick = document.getElementById('nick').value.trim() || "User" + Math.floor(Math.random()*100);
         let roomInput = document.getElementById('room').value.trim().toLowerCase();
         if(!roomInput) return alert("Enter Room ID");
         
-        const roomID = "dolph-mesh-" + roomInput;
+        const roomID = "cls-auto-" + roomInput;
         peer = new Peer(roomID);
 
         peer.on('open', () => {
             document.getElementById('overlay').style.display = 'none';
-            document.getElementById('log').innerText = "Status: Online (Host)";
+            document.getElementById('log').innerText = "Status: Alone (Awaiting Peers)";
         });
 
         peer.on('connection', (conn) => setupConnection(conn));
 
         peer.on('error', (err) => {
             if (err.type === 'unavailable-id') joinAsGuest(roomID);
-            else location.reload();
+            else { location.reload(); }
         });
     };
 
     function joinAsGuest(id) {
+        isGuest = true;
         if (peer) peer.destroy();
         peer = new Peer(); 
         peer.on('open', () => {
-            document.getElementById('log').innerText = "Status: Online (Guest)";
+            document.getElementById('log').innerText = "Status: Connecting to Host...";
             setupConnection(peer.connect(id, { reliable: true }));
         });
     }
@@ -117,9 +118,10 @@
     function setupConnection(conn) {
         conn.on('open', () => {
             connections[conn.peer] = conn;
-            document.getElementById('overlay').style.display = 'none';
-            broadcast({ type: 'sys', m: `${myNick} joined.` });
-            const history = JSON.parse(localStorage.getItem('dolphHistory') || "[]");
+            updateStatus();
+            
+            // Sync history
+            const history = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
             conn.send({ type: 'sync', history: history });
         });
 
@@ -131,8 +133,6 @@
                         addMsg(m.n, m.m, m.side, true, m.id);
                     }
                 });
-            } else if (data.type === 'sys') {
-                addMsg("System", data.m, 'sys');
             } else if (data.id && !seenMessages.has(data.id)) {
                 seenMessages.add(data.id);
                 addMsg(data.n, data.m, 'recv', true, data.id);
@@ -141,33 +141,39 @@
 
         conn.on('close', () => {
             delete connections[conn.peer];
-            if (Object.keys(connections).length === 0) {
-                wipeData();
-            }
+            updateStatus();
+            checkAndWipe();
         });
     }
 
-    setInterval(() => {
-        if (peer && !peer.destroyed && document.getElementById('overlay').style.display === 'none') {
-            if (Object.keys(connections).length === 0) wipeData();
+    function updateStatus() {
+        const count = Object.keys(connections).length;
+        document.getElementById('log').innerText = count > 0 ? `CONNECTED: ${count} PEER(S)` : "ALONE: AUTO-WIPE ACTIVE";
+    }
+
+    // CORE LOGIC: If you are alone, clear the messages.
+    function checkAndWipe() {
+        if (Object.keys(connections).length === 0) {
+            wipeData();
         }
-    }, 5000);
+    }
+
+    // Monitor connections every 3 seconds to enforce the "wipe if one" rule
+    setInterval(checkAndWipe, 3000);
 
     function addMsg(name, msg, side, shouldSave = true, id = null) {
         const div = document.createElement('div');
-        div.className = (side === 'sys') ? 'sys-msg' : `msg ${side}`;
-        
-        // --- Apply the filter here ---
-        const cleanMsg = (side === 'sys') ? msg : filterText(msg);
+        div.className = side === 'sys' ? 'sys-msg' : `msg ${side}`;
+        const cleanMsg = filterText(msg);
 
-        div.innerHTML = (side === 'sys') ? cleanMsg : `<small style="display:block;font-weight:bold;font-size:10px;opacity:0.7;">${name}</small>${cleanMsg}`;
+        div.innerHTML = `<small style="display:block;font-weight:bold;font-size:10px;opacity:0.7;">${name}</small>${cleanMsg}`;
         document.getElementById('chat').appendChild(div);
         document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
 
-        if (shouldSave && side !== 'sys') {
-            let history = JSON.parse(localStorage.getItem('dolphHistory') || "[]");
+        if (shouldSave) {
+            let history = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "[]");
             history.push({ n: name, m: cleanMsg, side: side, id: id });
-            localStorage.setItem('dolphHistory', JSON.stringify(history.slice(-50)));
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-50)));
         }
     }
 
@@ -180,8 +186,6 @@
         if(!inp.value.trim()) return;
         const msgId = Date.now() + "-" + Math.random().toString(36).substr(2, 5);
         seenMessages.add(msgId);
-        
-        // We filter locally before sending to ensure outgoing messages are clean too
         const cleanOut = filterText(inp.value);
         
         broadcast({ n: myNick, m: cleanOut, id: msgId });
