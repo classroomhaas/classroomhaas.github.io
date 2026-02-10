@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Chat Node</title>
-    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <title>Global Chat + Filter</title>
+   
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root { --bg: #0f172a; --panel: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         
         .app-container { width: 100%; max-width: 500px; height: 100%; max-height: 800px; background: var(--panel); display: flex; flex-direction: column; position: relative; border-left: 1px solid #334155; border-right: 1px solid #334155; }
-        /*idk*/
+        
         /* Login Screen */
         #login-screen { position: absolute; inset: 0; background: var(--panel); z-index: 50; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
         h1 { color: var(--accent); margin-bottom: 20px; text-align: center; }
@@ -22,8 +23,10 @@
         
         /* Chat UI */
         header { padding: 15px; border-bottom: 1px solid #334155; background: rgba(15, 23, 42, 0.5); display: flex; justify-content: space-between; align-items: center; }
-        #status { font-size: 12px; color: #4ade80; display: flex; align-items: center; gap: 6px; }
-        .dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; }
+        #status { font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
+        .dot { width: 8px; height: 8px; background: #64748b; border-radius: 50%; }
+        .dot.green { background: #4ade80; }
+        .dot.orange { background: #facc15; }
         
         #messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
         .msg-row { display: flex; flex-direction: column; max-width: 85%; }
@@ -48,15 +51,15 @@
 <div class="app-container">
     <div id="login-screen">
         <h1>Global Chat</h1>
-        <p style="color:#94a3b8; text-align:center; margin-bottom:20px; font-size:14px;">Enter a Room Name to join your friends.</p>
+        <p style="color:#94a3b8; text-align:center; margin-bottom:20px; font-size:14px;">Enter a unique Room Name to join friends.</p>
         <input type="text" id="username" placeholder="Nickname" maxlength="12">
-        <input type="text" id="room" placeholder="Room Name (e.g. lobby)">
+        <input type="text" id="room" placeholder="Room Name (e.g. pizza-party-99)">
         <button onclick="joinChat()">Join Room</button>
     </div>
 
     <header>
         <div style="font-weight:bold; font-size:18px;" id="room-display">#Lobby</div>
-        <div id="status"><div class="dot"></div> <span id="peer-count">Connecting...</span></div>
+        <div id="status"><div class="dot" id="status-dot"></div> <span id="peer-count">Offline</span></div>
     </header>
 
     <div id="messages"></div>
@@ -68,15 +71,57 @@
 </div>
 
 <script>
-    let peer, conn;
+    // --- CONFIGURATION ---
+    
+    // 1. EDIT THIS LIST TO ADD YOUR BANNED WORDS
+    const BANNED_WORDS = [
+        "fuck", 
+        "nigger", 
+        "faggot", 
+        "shit",
+        "bullshit",
+        "ching chong",
+        "ass"
+    ];
+
+    let peer;
     let myId, myName, roomId;
     let connections = {};
     let seenIds = new Set();
-    const bannedWords = ["badword1", "badword2"]; // Add filters if needed
+    let isHost = false;
+    
+    const peerConfig = {
+        debug: 1,
+        config: {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+            ]
+        }
+    };
 
+    // Helper: Escapes HTML to prevent injection
     function filter(text) {
-        // Basic filter placeholder
         return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Helper: Censors words from the BANNED_WORDS list
+    function censorMessage(text) {
+        let cleanText = text;
+        
+        BANNED_WORDS.forEach(word => {
+            // Create a Regular Expression
+            // \b ensures we match whole words only (so "class" isn't censored if "ass" is banned)
+            // 'gi' means Global search and Case Insensitive
+            const regex = new RegExp(`\\b${word}\\b`, 'gi');
+            
+            // Replace with asterisks of the same length
+            const replacement = '*'.repeat(word.length);
+            
+            cleanText = cleanText.replace(regex, replacement);
+        });
+        
+        return cleanText;
     }
 
     function joinChat() {
@@ -85,87 +130,67 @@
         
         if (!myName || !r) return alert("Nickname and Room are required!");
         
-        roomId = "chat-room-" + r.replace(/[^a-z0-9]/g, ''); // Sanitize room name
+        roomId = "chat-room-" + r.replace(/[^a-z0-9]/g, ''); 
+        
         document.getElementById('room-display').innerText = "#" + r;
         document.getElementById('login-screen').style.display = 'none';
+        setStatus("Connecting...", "orange");
 
-        // Initialize PeerJS
-        peer = new Peer({ debug: 1 });
+        initPeer(false); 
+    }
+
+    function initPeer(forceHost = false) {
+        let id = forceHost ? roomId : null;
+        
+        if (peer) peer.destroy();
+        peer = new Peer(id, peerConfig);
 
         peer.on('open', (id) => {
             myId = id;
-            document.getElementById('peer-count').innerText = "Online (Waiting)";
-            connectToHost();
+            if (myId === roomId) {
+                isHost = true;
+                setStatus("Hosting Room", "green");
+                addSystemMsg("You are the host. Waiting for others...");
+            } else {
+                connectToHost();
+            }
         });
 
-        peer.on('connection', handleConnection);
-        
+        peer.on('connection', (conn) => {
+            handleConnection(conn);
+        });
+
         peer.on('error', (err) => {
-            console.log(err);
-            // If ID is taken, it means someone is hosting. We join them.
-             if (err.type === 'unavailable-id') { 
-                 // We tried to host but couldn't. 
-                 // In this logic, we just join.
-             }
+            console.log("Peer Error:", err.type);
+            if (err.type === 'unavailable-id') {
+                isHost = false;
+                initPeer(false); 
+            } 
+            else if (err.type === 'network' || err.type === 'disconnected') {
+                setStatus("Connection Lost", "red");
+            }
         });
     }
 
-    // Logic: Everyone tries to connect to a deterministic "Room Host ID"
-    // If it fails, they become the host.
     function connectToHost() {
-        // Attempt to connect to the "Room ID"
-        // Note: PeerJS doesn't let you claim a specific ID easily without an API key in some clouds,
-        // so we use a mesh broadcast strategy here for simplicity without a server.
+        setStatus("Finding Host...", "orange");
         
-        // Strategy: We just open a random ID.
-        // We need the user to share the link.
-        
-        // Revised Strategy for "No Link Sharing":
-        // We will try to connect to the roomId. 
-        // If we can't, we destroy our peer and recreate it AS the roomId.
-        
-        let destId = roomId;
-        
-        // Try connecting to the room host
-        let conn = peer.connect(destId);
-        
+        let conn = peer.connect(roomId, { reliable: true });
+
+        let connected = false;
+
         conn.on('open', () => {
-            document.getElementById('peer-count').innerText = "Connected to Room";
+            connected = true;
+            setStatus("Connected", "green");
             setupConn(conn);
         });
 
-        conn.on('error', (err) => {
-            // Connection failed, maybe room doesn't exist?
-            // We become the room.
-            becomeHost();
-        });
-        
-        // Fallback: If connection doesn't open in 2 seconds, assume we need to host
         setTimeout(() => {
-            if (!conn.open) becomeHost();
-        }, 2000);
-    }
-
-    function becomeHost() {
-        if (peer.id === roomId) return; // Already host
-        peer.destroy();
-        peer = new Peer(roomId); // Claim the Room ID
-        peer.on('open', () => {
-             document.getElementById('peer-count').innerText = "Hosting Room";
-             addSystemMsg("You are the host. Others can join " + roomId.replace('chat-room-', ''));
-        });
-        peer.on('connection', handleConnection);
-        peer.on('error', err => {
-            if (err.type === 'unavailable-id') {
-                // If we can't become host, someone else beat us to it.
-                // Revert to random ID and connect.
-                peer = new Peer();
-                peer.on('open', () => {
-                    let c = peer.connect(roomId);
-                    c.on('open', () => setupConn(c));
-                });
+            if (!connected) {
+                console.log("Host not found. Becoming Host.");
+                initPeer(true);
             }
-        });
+        }, 5000); 
     }
 
     function handleConnection(conn) {
@@ -180,13 +205,15 @@
             if (seenIds.has(data.id)) return;
             seenIds.add(data.id);
             
-            // Relay if I am host
-            if (peer.id === roomId) broadcast(data);
+            if (isHost) broadcast(data);
             
             renderMessage(data);
         });
         
-        c.on('close', () => { delete connections[c.peer]; updateCount(); });
+        c.on('close', () => { 
+            delete connections[c.peer]; 
+            updateCount(); 
+        });
     }
 
     function broadcast(data) {
@@ -200,12 +227,20 @@
         if (!txt) return;
         
         const msgId = Date.now() + Math.random().toString();
-        const payload = { id: msgId, name: myName, text: filter(txt) };
+        
+        // 1. Censor the text first
+        const censoredText = censorMessage(txt);
+        
+        // 2. Escape HTML
+        const safeText = filter(censoredText);
+
+        const payload = { id: msgId, name: myName, text: safeText };
         
         seenIds.add(msgId);
-        broadcast(payload); // Send to peers
-        renderMessage(payload, true); // Show locally
         
+        broadcast(payload); 
+        
+        renderMessage(payload, true);
         document.getElementById('msg-input').value = '';
     }
 
@@ -226,12 +261,18 @@
         box.innerHTML += `<div style="text-align:center; font-size:12px; color:#64748b; margin:10px 0;">${txt}</div>`;
     }
 
+    function setStatus(msg, color) {
+        document.getElementById('peer-count').innerText = msg;
+        const dot = document.getElementById('status-dot');
+        dot.className = "dot " + color;
+    }
+
     function updateCount() {
+        if (!isHost) return; 
         const c = Object.keys(connections).length;
-        document.getElementById('peer-count').innerText = c > 0 ? `${c} Peers` : "Waiting...";
+        document.getElementById('peer-count').innerText = `${c} Peers Connected`;
     }
     
-    // Enter key to send
     document.getElementById('msg-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
