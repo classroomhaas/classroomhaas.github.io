@@ -13,7 +13,7 @@
        
         .app-container { width: 100%; max-width: 500px; height: 100%; max-height: 800px; background: var(--panel); display: flex; flex-direction: column; position: relative; border-left: 1px solid #334155; border-right: 1px solid #334155; }
        
-        /* --- 1. GATEKEEPER SCREEN (New) --- */
+        /* --- 1. GATEKEEPER SCREEN --- */
         #gatekeeper-screen { position: absolute; inset: 0; background: var(--bg); z-index: 100; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
         
         /* --- 2. LOGIN SCREEN --- */
@@ -27,6 +27,13 @@
         button { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button:hover { opacity: 0.9; }
         button.secondary { background: #334155; margin-top: 10px; }
+
+        /* --- FEATURED SPACES UI --- */
+        .featured-spaces { margin-top: 20px; text-align: center; }
+        .featured-spaces p { color: #94a3b8; font-size: 14px; margin-bottom: 10px; }
+        .space-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .space-tag { background: #334155; color: #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
+        .space-tag:hover { background: var(--bg); border-color: var(--accent); color: white; }
        
         /* Chat UI */
         header { padding: 15px; border-bottom: 1px solid #334155; background: rgba(15, 23, 42, 0.5); display: flex; justify-content: space-between; align-items: center; }
@@ -71,6 +78,16 @@
         <input type="text" id="username" placeholder="Nickname" maxlength="60">
         <input type="text" id="room" placeholder="Room Name (e.g. lobby)">
         <button onclick="joinChat()">Start Chatting</button>
+        
+        <div class="featured-spaces">
+            <p>Or join a popular space:</p>
+            <div class="space-tags">
+                <span class="space-tag" onclick="quickJoin('lobby')">#lobby</span>
+                <span class="space-tag" onclick="quickJoin('gaming')">#gaming</span>
+                <span class="space-tag" onclick="quickJoin('music')">#music</span>
+                <span class="space-tag" onclick="quickJoin('random')">#random</span>
+            </div>
+        </div>
     </div>
 
     <header>
@@ -165,6 +182,17 @@
     document.getElementById('site-password').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') checkSitePassword();
     });
+
+    // --- QUICK JOIN LOGIC ---
+    function quickJoin(roomName) {
+        document.getElementById('room').value = roomName;
+        // If they haven't typed a nickname yet, focus that box. Otherwise, start chat!
+        if (!document.getElementById('username').value.trim()) {
+            document.getElementById('username').focus();
+        } else {
+            joinChat();
+        }
+    }
 
     // --- CHAT LOGIC ---
 
