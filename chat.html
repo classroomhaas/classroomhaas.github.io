@@ -3,41 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <title>Private Access Chat</title>
+   
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root { --bg: #0f172a; --panel: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        
+       
         .app-container { width: 100%; max-width: 500px; height: 100%; max-height: 800px; background: var(--panel); display: flex; flex-direction: column; position: relative; border-left: 1px solid #334155; border-right: 1px solid #334155; }
-        /*idk*/
-        /* Login Screen */
+       
+        /* --- 1. GATEKEEPER SCREEN (New) --- */
+        #gatekeeper-screen { position: absolute; inset: 0; background: var(--bg); z-index: 100; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
+        
+        /* --- 2. LOGIN SCREEN --- */
         #login-screen { position: absolute; inset: 0; background: var(--panel); z-index: 50; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
+        
         h1 { color: var(--accent); margin-bottom: 20px; text-align: center; }
+        h2 { color: white; margin-bottom: 10px; text-align: center; font-size: 18px; }
+        
         input { background: var(--bg); border: 1px solid #334155; color: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; font-size: 16px; outline: none; }
         input:focus { border-color: var(--accent); }
         button { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button:hover { opacity: 0.9; }
-        
+        button.secondary { background: #334155; margin-top: 10px; }
+       
         /* Chat UI */
         header { padding: 15px; border-bottom: 1px solid #334155; background: rgba(15, 23, 42, 0.5); display: flex; justify-content: space-between; align-items: center; }
-        #status { font-size: 12px; color: #4ade80; display: flex; align-items: center; gap: 6px; }
-        .dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; }
-        
+        #status { font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
+        .dot { width: 8px; height: 8px; background: #64748b; border-radius: 50%; }
+        .dot.green { background: #4ade80; }
+        .dot.orange { background: #facc15; }
+        .dot.red { background: #ef4444; }
+       
         #messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
         .msg-row { display: flex; flex-direction: column; max-width: 85%; }
         .msg-row.sent { align-self: flex-end; align-items: flex-end; }
         .msg-row.recv { align-self: flex-start; align-items: flex-start; }
-        
+       
         .bubble { padding: 10px 14px; border-radius: 16px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
         .sent .bubble { background: var(--accent); color: white; border-bottom-right-radius: 2px; }
         .recv .bubble { background: #334155; color: white; border-bottom-left-radius: 2px; }
-        
+       
         .sender-name { font-size: 11px; color: #94a3b8; margin-bottom: 4px; margin-left: 2px; }
-        
+       
         footer { padding: 15px; background: var(--panel); border-top: 1px solid #334155; display: flex; gap: 10px; }
-        
+       
         /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
@@ -46,17 +57,25 @@
 <body>
 
 <div class="app-container">
+
+    <div id="gatekeeper-screen">
+        <h1>Private Access</h1>
+        <p style="color:#94a3b8; text-align:center; margin-bottom:20px;">Enter the site password to continue.</p>
+        <input type="password" id="site-password" placeholder="Password">
+        <button onclick="checkSitePassword()">Unlock</button>
+    </div>
+
     <div id="login-screen">
         <h1>Global Chat</h1>
-        <p style="color:#94a3b8; text-align:center; margin-bottom:20px; font-size:14px;">Enter a Room Name to join your friends.</p>
-        <input type="text" id="username" placeholder="Nickname" maxlength="12">
+        <p style="color:#94a3b8; text-align:center; margin-bottom:20px;">Join a Room</p>
+        <input type="text" id="username" placeholder="Nickname" maxlength="60">
         <input type="text" id="room" placeholder="Room Name (e.g. lobby)">
-        <button onclick="joinChat()">Join Room</button>
+        <button onclick="joinChat()">Start Chatting</button>
     </div>
 
     <header>
         <div style="font-weight:bold; font-size:18px;" id="room-display">#Lobby</div>
-        <div id="status"><div class="dot"></div> <span id="peer-count">Connecting...</span></div>
+        <div id="status"><div class="dot" id="status-dot"></div> <span id="peer-count">Offline</span></div>
     </header>
 
     <div id="messages"></div>
@@ -68,104 +87,200 @@
 </div>
 
 <script>
-    let peer, conn;
+    // --- CONFIGURATION ---
+
+    // 1. SET YOUR SITE PASSWORD HERE:
+    const SITE_ACCESS_PASSWORD = "notlebronjames"; 
+
+    // 2. BANNED WORDS
+    const BANNED_WORDS = [ "nig", "nazi", "jew", "fag", "neg", "faggot",
+
+"n1g", "nigger", "naz1", "j3w", "f@g", "f a g",
+
+"n i g", "n a z i", "j e w", "f a g",
+
+"retard", "coon", "c00n", "c o o n", "damm", "d4mm", "h3ll", "d-a-m-m", "d a m m ",
+
+"r e t a r d", "c-u-n-t", "cunt", "c u n t",
+
+"n-i-g", "j-e-w", "f-a-g", "f-@-g", "fuc",
+
+"shit", "s-h-i-t", "s h i t", "sh1t", "f u c", "fuck",
+
+"f-u-c", "f-uc", "fu-c", "á", "ä", "í", "ï",
+
+"ü", "é", "ú", "ë", "a-s-s", "a-ss", "a s s", "as-s", "a$$",
+
+"@ss", "ass", "as$", "a$s", "a-$$", "dild", "d i l d", "d-i-l-d", "d-i-ld", "d-ild", "dil-d",
+
+"r@pe", "rap3", "rape", "r4pe", "r4p3", "r a p e", "r-a-p-e", "rap-e", "dick", "d1ck", "dicck",
+
+"d-i-c-k", "di ck", "d i c k", "d-ick", "d-1ck", "d1c", "porn", "p0rn", "p o r n", "p-o-r-n",
+
+"f.u.c.k", "n.i.g", "n_i_g", "mothafu", "motha fu", "nog", "ó", "ö", "ò", "one cup two", "one cup one",
+
+"one guy one", "one guy two", "peg", "p3g", "p-3-g", "p3-g", "penis", "p3n1s", "p e n i s", "p.e.n.i.s",
+
+"p.3.n.i.s", "p3.nis", "kys", "kill yourself", "kil yourself", "hope you die", "commit suicide",
+
+"wh0r", "whor3", "whore", "w-h-o-r-e", "w h o r e", "wh-ore", "w-hor3", "w_h_o_r_e", "h03", "ho3", "hoe",
+
+"h0e", "h o e", "h_o_e", "h.o.e", "h.o_e", "h_o.e", "slut", "s-l-u-t", "s l u t", "s_l_u_t", "s.l.u.t",
+
+"slu t", "stfu", "tw4t", "twat", "t w a t", "t w 4 t", "t-w-a-t", "t-w-4-t", "twa t", "t.w.a.t", "t_w_a_t",
+
+"t_w_4_t", "tw@t", "tw at", "x-rated", "xrated", "18+", "zoophile", "zoophilia", "5h1t", "anal", "4n4l", "boob",
+
+"b00b", "b!tch", "b17ch", "gore", "gor3", "g0r3", "g0re", "c.0.c.k", "c0ck", "cock", "childp", "childfu", "cocaine",
+
+"heroine", "cum", "c-u-m", "c u m", "deepthro", "d33pthr0", "d33pthro", "deepthr0", "ectasy", "molly",
+
+"lsd", "mdma", "xanax", "x4nax", "xan4x", "x4n4x", "ketamine", "k3t4m", "k e t a m", "k3tam", "special k",
+
+"acid", "magic shroom", "magic mushroom", "marijuana", "methamphetamine", "meth", "m3th", "smoke crank",
+
+"fentanyl", "morphine", "steroids", "amytal", "suck my", "lick my", "gag my", "blow my", "f ag", "fa g", "n ig", "ni g",
+
+"ì", "𝕒", "𝕓","𝕔","𝕕","𝕖","𝕗","𝕘","𝕙","𝕚","𝕛","𝕜","𝕝","𝕞","𝕟","𝕠","𝕡","𝕣","𝕤","𝕥","𝕦","𝕧","𝕨","𝕩","𝕪","𝕫",
+
+"𝖋","𝖈","𝖎","𝖌","𝖊","𝖗","𝓯","𝓬","𝓲","𝓰","𝓭","𝓮","𝓻","𝓾","𝓽","🄶","🄵","🄲",
+
+"ⓕ", "ⓒ", "ⓖ", "cancer", "kanker", "tering", "debiel", "mongool", "tyfus", "siktir",
+
+"joder", "zorra", "pendejo", "arse", "idiot", "sukkel", "id1ot", "1diot", "1d1ot", "idi0t", "id10t", "flikker",
+
+"ÿ", "ý", "vagina", "shi", "sh1", "5h", "uck", "4hit" ];
+
+    // --- GATEKEEPER LOGIC ---
+    function checkSitePassword() {
+        const input = document.getElementById('site-password').value;
+        if (input === SITE_ACCESS_PASSWORD) {
+            document.getElementById('gatekeeper-screen').style.display = 'none';
+        } else {
+            alert("Access Denied: Incorrect Password");
+            document.getElementById('site-password').value = '';
+        }
+    }
+
+    document.getElementById('site-password').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') checkSitePassword();
+    });
+
+    // --- CHAT LOGIC ---
+
+    let peer;
     let myId, myName, roomId;
     let connections = {};
     let seenIds = new Set();
-    const bannedWords = ["badword1", "badword2"]; // Add filters if needed
+    let isHost = false;
+   
+    const peerConfig = {
+        debug: 1,
+        config: {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+            ]
+        }
+    };
 
     function filter(text) {
-        // Basic filter placeholder
         return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function censorMessage(text) {
+        let cleanText = text;
+        BANNED_WORDS.forEach(word => {
+            const regex = new RegExp(`\\b${word}\\b`, 'gi');
+            const replacement = '*'.repeat(word.length);
+            cleanText = cleanText.replace(regex, replacement);
+        });
+        return cleanText;
     }
 
     function joinChat() {
         myName = document.getElementById('username').value.trim();
         let r = document.getElementById('room').value.trim().toLowerCase();
-        
+       
         if (!myName || !r) return alert("Nickname and Room are required!");
-        
-        roomId = "chat-room-" + r.replace(/[^a-z0-9]/g, ''); // Sanitize room name
+       
+        roomId = "chat-room-" + r.replace(/[^a-z0-9]/g, ''); 
+       
         document.getElementById('room-display').innerText = "#" + r;
         document.getElementById('login-screen').style.display = 'none';
+        setStatus("Connecting...", "orange");
 
-        // Initialize PeerJS
-        peer = new Peer({ debug: 1 });
+        initPeer(false); 
+    }
+
+    function initPeer(forceHost = false) {
+        let id = forceHost ? roomId : null;
+       
+        if (peer) peer.destroy();
+        peer = new Peer(id, peerConfig);
 
         peer.on('open', (id) => {
             myId = id;
-            document.getElementById('peer-count').innerText = "Online (Waiting)";
-            connectToHost();
+            if (myId === roomId) {
+                isHost = true;
+                setStatus("Hosting Room", "green");
+                addSystemMsg("You are the host.");
+            } else {
+                connectToHost();
+            }
         });
 
-        peer.on('connection', handleConnection);
-        
+        peer.on('connection', (conn) => {
+            handleConnection(conn);
+        });
+
         peer.on('error', (err) => {
-            console.log(err);
-            // If ID is taken, it means someone is hosting. We join them.
-             if (err.type === 'unavailable-id') { 
-                 // We tried to host but couldn't. 
-                 // In this logic, we just join.
-             }
+            console.log("Peer Error:", err.type);
+            if (err.type === 'unavailable-id') {
+                isHost = false;
+                initPeer(false); 
+            } else if (err.type === 'network' || err.type === 'disconnected') {
+                setStatus("Connection Lost", "red");
+            }
         });
     }
 
-    // Logic: Everyone tries to connect to a deterministic "Room Host ID"
-    // If it fails, they become the host.
+    // Broadcast to all peers
+    function broadcast(data) {
+        Object.values(connections).forEach(c => {
+            if (c.open) c.send(data);
+        });
+    }
+
+    // Broadcast a system message (host only)
+    function broadcastSystem(message) {
+        const msgId = Date.now() + Math.random().toString();
+        const payload = {
+            id: msgId,
+            type: 'system',
+            text: message
+        };
+        seenIds.add(msgId);
+        broadcast(payload);
+        renderSystemMessage(payload);
+    }
+
     function connectToHost() {
-        // Attempt to connect to the "Room ID"
-        // Note: PeerJS doesn't let you claim a specific ID easily without an API key in some clouds,
-        // so we use a mesh broadcast strategy here for simplicity without a server.
-        
-        // Strategy: We just open a random ID.
-        // We need the user to share the link.
-        
-        // Revised Strategy for "No Link Sharing":
-        // We will try to connect to the roomId. 
-        // If we can't, we destroy our peer and recreate it AS the roomId.
-        
-        let destId = roomId;
-        
-        // Try connecting to the room host
-        let conn = peer.connect(destId);
-        
+        setStatus("Finding Host...", "orange");
+        let conn = peer.connect(roomId, { reliable: true });
+        let connected = false;
+
         conn.on('open', () => {
-            document.getElementById('peer-count').innerText = "Connected to Room";
+            connected = true;
+            setStatus("Connected", "green");
             setupConn(conn);
         });
 
-        conn.on('error', (err) => {
-            // Connection failed, maybe room doesn't exist?
-            // We become the room.
-            becomeHost();
-        });
-        
-        // Fallback: If connection doesn't open in 2 seconds, assume we need to host
         setTimeout(() => {
-            if (!conn.open) becomeHost();
-        }, 2000);
-    }
-
-    function becomeHost() {
-        if (peer.id === roomId) return; // Already host
-        peer.destroy();
-        peer = new Peer(roomId); // Claim the Room ID
-        peer.on('open', () => {
-             document.getElementById('peer-count').innerText = "Hosting Room";
-             addSystemMsg("You are the host. Others can join " + roomId.replace('chat-room-', ''));
-        });
-        peer.on('connection', handleConnection);
-        peer.on('error', err => {
-            if (err.type === 'unavailable-id') {
-                // If we can't become host, someone else beat us to it.
-                // Revert to random ID and connect.
-                peer = new Peer();
-                peer.on('open', () => {
-                    let c = peer.connect(roomId);
-                    c.on('open', () => setupConn(c));
-                });
+            if (!connected) {
+                initPeer(true);
             }
-        });
+        }, 5000); 
     }
 
     function handleConnection(conn) {
@@ -175,37 +290,45 @@
     function setupConn(c) {
         connections[c.peer] = c;
         updateCount();
-        
+
+        // Host announces when someone joins
+        if (isHost) {
+            broadcastSystem("A new user joined the chat.");
+        }
+       
         c.on('data', (data) => {
             if (seenIds.has(data.id)) return;
             seenIds.add(data.id);
-            
-            // Relay if I am host
-            if (peer.id === roomId) broadcast(data);
-            
+
+            // System vs normal messages
+            if (data.type === 'system') {
+                renderSystemMessage(data);
+                return;
+            }
+
+            if (isHost) broadcast(data);
             renderMessage(data);
         });
-        
-        c.on('close', () => { delete connections[c.peer]; updateCount(); });
-    }
-
-    function broadcast(data) {
-        Object.values(connections).forEach(c => {
-            if (c.open) c.send(data);
+       
+        c.on('close', () => { 
+            delete connections[c.peer]; 
+            updateCount(); 
         });
     }
 
     function sendMessage() {
         const txt = document.getElementById('msg-input').value.trim();
         if (!txt) return;
-        
+       
         const msgId = Date.now() + Math.random().toString();
-        const payload = { id: msgId, name: myName, text: filter(txt) };
-        
+        const censoredText = censorMessage(txt);
+        const safeText = filter(censoredText);
+
+        const payload = { id: msgId, name: myName, text: safeText };
+       
         seenIds.add(msgId);
-        broadcast(payload); // Send to peers
-        renderMessage(payload, true); // Show locally
-        
+        broadcast(payload); 
+        renderMessage(payload, true);
         document.getElementById('msg-input').value = '';
     }
 
@@ -221,20 +344,39 @@
         box.scrollTop = box.scrollHeight;
     }
 
+    function renderSystemMessage(data) {
+        const box = document.getElementById('messages');
+        const div = document.createElement('div');
+        div.style.textAlign = "center";
+        div.style.fontSize = "12px";
+        div.style.color = "#64748b";
+        div.style.margin = "10px 0";
+        div.textContent = data.text;
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
     function addSystemMsg(txt) {
         const box = document.getElementById('messages');
         box.innerHTML += `<div style="text-align:center; font-size:12px; color:#64748b; margin:10px 0;">${txt}</div>`;
     }
 
+    function setStatus(msg, color) {
+        document.getElementById('peer-count').innerText = msg;
+        const dot = document.getElementById('status-dot');
+        dot.className = "dot " + color;
+    }
+
     function updateCount() {
+        if (!isHost) return; 
         const c = Object.keys(connections).length;
-        document.getElementById('peer-count').innerText = c > 0 ? `${c} Peers` : "Waiting...";
+        document.getElementById('peer-count').innerText = `${c} Peers Connected`;
     }
     
-    // Enter key to send
     document.getElementById('msg-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
 </script>
+
 </body>
 </html>
