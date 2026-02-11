@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Private Access Chat</title>
+    
    
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root { --bg: #0f172a; --panel: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -13,7 +13,7 @@
        
         .app-container { width: 100%; max-width: 500px; height: 100%; max-height: 800px; background: var(--panel); display: flex; flex-direction: column; position: relative; border-left: 1px solid #334155; border-right: 1px solid #334155; }
        
-        /* --- 1. GATEKEEPER SCREEN (New) --- */
+        /* --- 1. GATEKEEPER SCREEN --- */
         #gatekeeper-screen { position: absolute; inset: 0; background: var(--bg); z-index: 100; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
         
         /* --- 2. LOGIN SCREEN --- */
@@ -27,6 +27,13 @@
         button { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button:hover { opacity: 0.9; }
         button.secondary { background: #334155; margin-top: 10px; }
+
+        /* --- FEATURED SPACES UI --- */
+        .featured-spaces { margin-top: 20px; text-align: center; }
+        .featured-spaces p { color: #94a3b8; font-size: 14px; margin-bottom: 10px; }
+        .space-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .space-tag { background: #334155; color: #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
+        .space-tag:hover { background: var(--bg); border-color: var(--accent); color: white; }
        
         /* Chat UI */
         header { padding: 15px; border-bottom: 1px solid #334155; background: rgba(15, 23, 42, 0.5); display: flex; justify-content: space-between; align-items: center; }
@@ -71,10 +78,23 @@
         <input type="text" id="username" placeholder="Nickname" maxlength="60">
         <input type="text" id="room" placeholder="Room Name (e.g. lobby)">
         <button onclick="joinChat()">Start Chatting</button>
+        
+        <div class="featured-spaces">
+            <p>Or join a popular space:</p>
+            <div class="space-tags">
+                <span class="space-tag" onclick="quickJoin('lobby')">#lobby</span>
+                <span class="space-tag" onclick="quickJoin('gaming')">#gaming</span>
+                <span class="space-tag" onclick="quickJoin('music')">#music</span>
+                <span class="space-tag" onclick="quickJoin('random')">#random</span>
+            </div>
+        </div>
     </div>
 
     <header>
-        <div style="font-weight:bold; font-size:18px;" id="room-display">#Lobby</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button onclick="leaveRoom()" style="padding: 6px 12px; font-size: 13px; width: auto; background: #334155; margin: 0;">&#8592; Back</button>
+            <div style="font-weight:bold; font-size:18px;" id="room-display">#Lobby</div>
+        </div>
         <div id="status"><div class="dot" id="status-dot"></div> <span id="peer-count">Offline</span></div>
     </header>
 
@@ -93,7 +113,8 @@
     const SITE_ACCESS_PASSWORD = "notlebronjames"; 
 
     // 2. BANNED WORDS
-    const BANNED_WORDS = [ "nig", "nazi", "jew", "fag", "neg", "faggot",
+    const BANNED_WORDS = [ 
+         "nig", "nazi", "jew", "fag", "neg", "faggot",
 
 "n1g", "nigger", "naz1", "j3w", "f@g", "f a g",
 
@@ -149,7 +170,8 @@
 
 "joder", "zorra", "pendejo", "arse", "idiot", "sukkel", "id1ot", "1diot", "1d1ot", "idi0t", "id10t", "flikker",
 
-"ÿ", "ý", "vagina", "shi", "sh1", "5h", "uck", "4hit" ];
+"ÿ", "ý", "vagina", "shi", "sh1", "5h", "uck", "4hit" 
+    ];
 
     // --- GATEKEEPER LOGIC ---
     function checkSitePassword() {
@@ -166,6 +188,17 @@
         if (e.key === 'Enter') checkSitePassword();
     });
 
+    // --- QUICK JOIN LOGIC ---
+    function quickJoin(roomName) {
+        document.getElementById('room').value = roomName;
+        // If they haven't typed a nickname yet, focus that box. Otherwise, start chat!
+        if (!document.getElementById('username').value.trim()) {
+            document.getElementById('username').focus();
+        } else {
+            joinChat();
+        }
+    }
+
     // --- CHAT LOGIC ---
 
     let peer;
@@ -175,14 +208,19 @@
     let isHost = false;
    
     const peerConfig = {
-        debug: 1,
-        config: {
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' },
-            ]
-        }
-    };
+    debug: 1,
+    config: {
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            // Add your TURN server info here
+            { 
+                urls: 'turn:your-turn-server-url.com:443', 
+                username: 'your-username', 
+                credential: 'your-password' 
+            }
+        ]
+    }
+};
 
     function filter(text) {
         return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -211,6 +249,48 @@
         setStatus("Connecting...", "orange");
 
         initPeer(false); 
+    }
+
+    // --- LEAVE ROOM LOGIC ---
+    // --- LEAVE ROOM LOGIC ---
+    function leaveRoom() {
+    // 1. Disconnect from the current peer network
+    if (peer) {
+        peer.destroy();
+        peer = null;
+    }
+    
+    // 2. Reset state variables
+    connections = {};
+    seenIds.clear();
+    isHost = false;
+    
+    // 3. Clear chat messages
+    document.getElementById('messages').innerHTML = '';
+    
+    // 4. Reset UI
+    document.getElementById('login-screen').style.display = 'flex';
+    setStatus("Offline", "");
+    document.getElementById('status-dot').className = "dot";
+    document.getElementById('room-display').innerText = "#Lobby";
+}
+        if (peer) {
+            peer.destroy();
+            peer = null;
+        
+        // Reset state variables
+        connections = {};
+        seenIds.clear();
+        isHost = false;
+        
+        // Clear chat messages
+        document.getElementById('messages').innerHTML = '';
+        
+        // Show the login screen again and reset header
+        document.getElementById('login-screen').style.display = 'flex';
+        setStatus("Offline", "");
+        document.getElementById('status-dot').className = "dot";
+        document.getElementById('room-display').innerText = "#Lobby";
     }
 
     function initPeer(forceHost = false) {
@@ -372,7 +452,7 @@
         const c = Object.keys(connections).length;
         document.getElementById('peer-count').innerText = `${c} Peers Connected`;
     }
-    
+   
     document.getElementById('msg-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
