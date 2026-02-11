@@ -249,26 +249,26 @@
     // --- LEAVE ROOM LOGIC ---
     // --- LEAVE ROOM LOGIC ---
     function leaveRoom() {
-        // Disconnect from the current peer network
-        if (peer) {
-            peer.destroy();
-            peer = null;
-        } // <--- This closing brace was missing!
-        
-        // Reset state variables
-        connections = {};
-        seenIds.clear();
-        isHost = false;
-        
-        // Clear chat messages
-        document.getElementById('messages').innerHTML = '';
-        
-        // Show the login screen again and reset header
-        document.getElementById('login-screen').style.display = 'flex';
-        setStatus("Offline", "");
-        document.getElementById('status-dot').className = "dot";
-        document.getElementById('room-display').innerText = "#Lobby";
+    // 1. Disconnect from the current peer network
+    if (peer) {
+        peer.destroy();
+        peer = null;
     }
+    
+    // 2. Reset state variables
+    connections = {};
+    seenIds.clear();
+    isHost = false;
+    
+    // 3. Clear chat messages
+    document.getElementById('messages').innerHTML = '';
+    
+    // 4. Reset UI
+    document.getElementById('login-screen').style.display = 'flex';
+    setStatus("Offline", "");
+    document.getElementById('status-dot').className = "dot";
+    document.getElementById('room-display').innerText = "#Lobby";
+}
         if (peer) {
             peer.destroy();
             peer = null;
