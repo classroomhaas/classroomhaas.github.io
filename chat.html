@@ -91,7 +91,10 @@
     </div>
 
     <header>
-        <div style="font-weight:bold; font-size:18px;" id="room-display">#Lobby</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button onclick="leaveRoom()" style="padding: 6px 12px; font-size: 13px; width: auto; background: #334155; margin: 0;">&#8592; Back</button>
+            <div style="font-weight:bold; font-size:18px;" id="room-display">#Lobby</div>
+        </div>
         <div id="status"><div class="dot" id="status-dot"></div> <span id="peer-count">Offline</span></div>
     </header>
 
@@ -110,7 +113,8 @@
     const SITE_ACCESS_PASSWORD = "notlebronjames"; 
 
     // 2. BANNED WORDS
-    const BANNED_WORDS = [ "nig", "nazi", "jew", "fag", "neg", "faggot",
+    const BANNED_WORDS = [ 
+         "nig", "nazi", "jew", "fag", "neg", "faggot",
 
 "n1g", "nigger", "naz1", "j3w", "f@g", "f a g",
 
@@ -166,7 +170,8 @@
 
 "joder", "zorra", "pendejo", "arse", "idiot", "sukkel", "id1ot", "1diot", "1d1ot", "idi0t", "id10t", "flikker",
 
-"ÿ", "ý", "vagina", "shi", "sh1", "5h", "uck", "4hit" ];
+"ÿ", "ý", "vagina", "shi", "sh1", "5h", "uck", "4hit" 
+    ];
 
     // --- GATEKEEPER LOGIC ---
     function checkSitePassword() {
@@ -239,6 +244,48 @@
         setStatus("Connecting...", "orange");
 
         initPeer(false); 
+    }
+
+    // --- LEAVE ROOM LOGIC ---
+    // --- LEAVE ROOM LOGIC ---
+    function leaveRoom() {
+        // Disconnect from the current peer network
+        if (peer) {
+            peer.destroy();
+            peer = null;
+        } // <--- This closing brace was missing!
+        
+        // Reset state variables
+        connections = {};
+        seenIds.clear();
+        isHost = false;
+        
+        // Clear chat messages
+        document.getElementById('messages').innerHTML = '';
+        
+        // Show the login screen again and reset header
+        document.getElementById('login-screen').style.display = 'flex';
+        setStatus("Offline", "");
+        document.getElementById('status-dot').className = "dot";
+        document.getElementById('room-display').innerText = "#Lobby";
+    }
+        if (peer) {
+            peer.destroy();
+            peer = null;
+        
+        // Reset state variables
+        connections = {};
+        seenIds.clear();
+        isHost = false;
+        
+        // Clear chat messages
+        document.getElementById('messages').innerHTML = '';
+        
+        // Show the login screen again and reset header
+        document.getElementById('login-screen').style.display = 'flex';
+        setStatus("Offline", "");
+        document.getElementById('status-dot').className = "dot";
+        document.getElementById('room-display').innerText = "#Lobby";
     }
 
     function initPeer(forceHost = false) {
@@ -400,7 +447,7 @@
         const c = Object.keys(connections).length;
         document.getElementById('peer-count').innerText = `${c} Peers Connected`;
     }
-    
+   
     document.getElementById('msg-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
