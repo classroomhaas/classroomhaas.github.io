@@ -3,195 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zearn Chat</title>
     
-   
     <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --bg: #0f172a; --panel: #1e293b; --accent: #3b82f6; --text: #f8fafc; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-       
-        .app-container { width: 100%; max-width: 500px; height: 100%; max-height: 800px; background: var(--panel); display: flex; flex-direction: column; position: relative; border-left: 1px solid #334155; border-right: 1px solid #334155; }
-       
-        /* --- 1. GATEKEEPER SCREEN --- */
-        #gatekeeper-screen { position: absolute; inset: 0; background: var(--bg); z-index: 100; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
-        
-        /* --- 2. LOGIN SCREEN --- */
-        #login-screen { position: absolute; inset: 0; background: var(--panel); z-index: 50; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
-        
-        h1 { color: var(--accent); margin-bottom: 20px; text-align: center; }
-        h2 { color: white; margin-bottom: 10px; text-align: center; font-size: 18px; }
-        
-        input { background: var(--bg); border: 1px solid #334155; color: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; font-size: 16px; outline: none; }
-        input:focus { border-color: var(--accent); }
-        button { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button:hover { opacity: 0.9; }
-        button.secondary { background: #334155; margin-top: 10px; }
+        :root {
+            --bg-dark: #050505;
+            --primary: #4da6ff; /* Neon Blue */
+            --glass: rgba(20, 20, 20, 0.7);
+            --glass-strong: rgba(10, 10, 10, 0.9);
+            --border: 1px solid rgba(77, 166, 255, 0.2);
+            --text: #e0e0e0;
+            --shadow: 0 0 20px rgba(77, 166, 255, 0.1);
+        }
 
-        /* --- FEATURED SPACES UI --- */
-        .featured-spaces { margin-top: 20px; text-align: center; }
-        .featured-spaces p { color: #94a3b8; font-size: 14px; margin-bottom: 10px; }
-        .space-tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-        .space-tag { background: #334155; color: #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; }
-        .space-tag:hover { background: var(--bg); border-color: var(--accent); color: white; }
-       
-        /* Chat UI */
-        header { padding: 15px; border-bottom: 1px solid #334155; background: rgba(15, 23, 42, 0.5); display: flex; justify-content: space-between; align-items: center; }
-        #status { font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
-        .dot { width: 8px; height: 8px; background: #64748b; border-radius: 50%; }
-        .dot.green { background: #4ade80; }
-        .dot.orange { background: #facc15; }
-        .dot.red { background: #ef4444; }
-       
-        #messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
-        .msg-row { display: flex; flex-direction: column; max-width: 85%; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                linear-gradient(rgba(77, 166, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(77, 166, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* --- PARTICLES --- */
+        #tsparticles {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh; z-index: 0; pointer-events: none;
+        }
+
+        /* --- CONTAINER --- */
+        .app-container {
+            width: 100%; max-width: 600px;
+            height: 90vh; max-height: 800px;
+            background: var(--glass-strong);
+            backdrop-filter: blur(15px);
+            border: var(--border);
+            border-radius: 16px;
+            display: flex; flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        /* --- SCREENS --- */
+        .screen {
+            position: absolute; inset: 0;
+            background: var(--glass-strong);
+            z-index: 50;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 40px;
+            transition: opacity 0.3s ease;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(77,166,255,0.4);
+        }
+
+        p { color: #94a3b8; font-size: 0.9rem; margin-bottom: 25px; text-align: center; }
+
+        input {
+            width: 100%; max-width: 300px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            color: white; padding: 12px 20px;
+            margin-bottom: 15px;
+            border-radius: 8px; font-size: 16px; outline: none;
+            transition: 0.3s;
+            text-align: center;
+        }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(77,166,255,0.2); }
+
+        button {
+            background: rgba(77, 166, 255, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px; font-weight: 700;
+            cursor: pointer; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        button:hover { background: var(--primary); color: #000; box-shadow: 0 0 20px var(--primary); }
+
+        /* --- FEATURED TAGS --- */
+        .space-tags { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+        .space-tag {
+            background: rgba(255,255,255,0.05);
+            color: #aaa; padding: 8px 16px;
+            border-radius: 20px; font-size: 12px; cursor: pointer;
+            border: 1px solid transparent; transition: 0.3s;
+        }
+        .space-tag:hover { border-color: var(--primary); color: white; background: rgba(77,166,255,0.1); }
+
+        /* --- CHAT UI --- */
+        header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.4);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .back-btn { padding: 6px 12px; font-size: 12px; border-color: #444; color: #aaa; background: transparent; }
+        .back-btn:hover { border-color: white; color: white; background: transparent; box-shadow: none; }
+        
+        #room-display { font-family: 'Poppins', sans-serif; font-weight: 700; color: white; font-size: 1.1rem; }
+        
+        #status { font-size: 12px; color: #666; display: flex; align-items: center; gap: 8px; font-family: monospace; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #444; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        .dot.green { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
+        .dot.orange { background: #ffaa00; box-shadow: 0 0 8px #ffaa00; }
+        .dot.red { background: #ff0044; box-shadow: 0 0 8px #ff0044; }
+
+        /* --- MESSAGES --- */
+        #messages {
+            flex: 1; overflow-y: auto; padding: 20px;
+            display: flex; flex-direction: column; gap: 12px;
+            scroll-behavior: smooth;
+        }
+        
+        .msg-row { display: flex; flex-direction: column; max-width: 80%; }
         .msg-row.sent { align-self: flex-end; align-items: flex-end; }
         .msg-row.recv { align-self: flex-start; align-items: flex-start; }
-       
-        .bubble { padding: 10px 14px; border-radius: 16px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
-        .sent .bubble { background: var(--accent); color: white; border-bottom-right-radius: 2px; }
-        .recv .bubble { background: #334155; color: white; border-bottom-left-radius: 2px; }
-       
-        .sender-name { font-size: 11px; color: #94a3b8; margin-bottom: 4px; margin-left: 2px; }
-       
-        footer { padding: 15px; background: var(--panel); border-top: 1px solid #334155; display: flex; gap: 10px; }
-       
+
+        .sender-name { font-size: 10px; color: #666; margin-bottom: 4px; margin-left: 4px; font-family: monospace; }
+        .sent .sender-name { margin-right: 4px; }
+
+        .bubble {
+            padding: 10px 16px; border-radius: 12px; font-size: 14px;
+            line-height: 1.5; word-wrap: break-word;
+            position: relative;
+        }
+        .sent .bubble {
+            background: rgba(77, 166, 255, 0.15);
+            border: 1px solid rgba(77, 166, 255, 0.3);
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+        .recv .bubble {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            border-bottom-left-radius: 2px;
+        }
+
+        /* --- FOOTER INPUT --- */
+        footer {
+            padding: 15px;
+            background: rgba(0,0,0,0.6);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; gap: 10px;
+        }
+        
+        #msg-input {
+            margin: 0; text-align: left;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        #msg-input:focus { border-color: var(--primary); }
+        
+        .send-btn { width: auto; padding: 0 25px; margin: 0; }
+
         /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
     </style>
 </head>
 <body>
 
+<div id="tsparticles"></div>
+
 <div class="app-container">
 
-    <div id="gatekeeper-screen">
+    <div id="gatekeeper-screen" class="screen">
         <h1>Private Access</h1>
-        <p style="color:#94a3b8; text-align:center; margin-bottom:20px;">Enter the site password to continue.</p>
-        <input type="password" id="site-password" placeholder="Password">
+        <p>Enter the site password to continue.</p>
+        <input type="password" id="site-password" placeholder="PASSWORD">
         <button onclick="checkSitePassword()">Unlock</button>
     </div>
 
-    <div id="login-screen">
+    <div id="login-screen" class="screen" style="display:none;">
         <h1>Global Chat</h1>
-        <p style="color:#94a3b8; text-align:center; margin-bottom:20px;">Join a Room</p>
-        <input type="text" id="username" placeholder="Nickname" maxlength="60">
+        <p>Choose a nickname and room</p>
+        <input type="text" id="username" placeholder="Nickname" maxlength="20">
         <input type="text" id="room" placeholder="Room Name (e.g. lobby)">
         <button onclick="joinChat()">Start Chatting</button>
         
-        <div class="featured-spaces">
-            <p>Or join a popular space:</p>
+        <div style="margin-top: 30px;">
+            <p style="margin-bottom: 10px; font-size: 0.8rem;">POPULAR ROOMS</p>
             <div class="space-tags">
                 <span class="space-tag" onclick="quickJoin('lobby')">#lobby</span>
                 <span class="space-tag" onclick="quickJoin('gaming')">#gaming</span>
                 <span class="space-tag" onclick="quickJoin('music')">#music</span>
-                <span class="space-tag" onclick="quickJoin('random')">#random</span>
+                <span class="space-tag" onclick="quickJoin('dev')">#dev</span>
             </div>
         </div>
     </div>
 
     <header>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <button onclick="leaveRoom()" style="padding: 6px 12px; font-size: 13px; width: auto; background: #334155; margin: 0;">&#8592; Back</button>
-            <div style="font-weight:bold; font-size:18px;" id="room-display">#Lobby</div>
+        <div class="header-left">
+            <button class="back-btn" onclick="leaveRoom()">&#8592; Exit</button>
+            <div id="room-display">#Lobby</div>
         </div>
-        <div id="status"><div class="dot" id="status-dot"></div> <span id="peer-count">Offline</span></div>
+        <div id="status">
+            <div class="dot" id="status-dot"></div>
+            <span id="peer-count">Offline</span>
+        </div>
     </header>
 
     <div id="messages"></div>
 
     <footer>
-        <input type="text" id="msg-input" placeholder="Message..." autocomplete="off">
-        <button onclick="sendMessage()" style="width: 80px; padding: 0;">Send</button>
+        <input type="text" id="msg-input" placeholder="Type a message..." autocomplete="off">
+        <button class="send-btn" onclick="sendMessage()">Send</button>
     </footer>
+
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+<script>
+    tsParticles.load("tsparticles", {
+        fullScreen: { enable: false },
+        fpsLimit: 60,
+        particles: {
+            color: { value: "#4da6ff" },
+            links: { color: "#4da6ff", distance: 150, enable: true, opacity: 0.1, width: 1 },
+            move: { enable: true, speed: 0.5 },
+            number: { density: { enable: true, area: 800 }, value: 40 },
+            opacity: { value: 0.3 },
+            shape: { type: "circle" },
+            size: { value: { min: 1, max: 3 } }
+        },
+        detectRetina: true
+    });
+</script>
 
 <script>
     // --- CONFIGURATION ---
-
-    // 1. SET YOUR SITE PASSWORD HERE:
     const SITE_ACCESS_PASSWORD = "notlebronjames"; 
-
-    // 2. BANNED WORDS
-    const BANNED_WORDS = [ 
-         "nig", "nazi", "jew", "fag", "neg", "faggot",
-
-"n1g", "nigger", "naz1", "j3w", "f@g", "f a g",
-
-"n i g", "n a z i", "j e w", "f a g",
-
-"retard", "coon", "c00n", "c o o n", "damm", "d4mm", "h3ll", "d-a-m-m", "d a m m ",
-
-"r e t a r d", "c-u-n-t", "cunt", "c u n t",
-
-"n-i-g", "j-e-w", "f-a-g", "f-@-g", "fuc",
-
-"shit", "s-h-i-t", "s h i t", "sh1t", "f u c", "fuck",
-
-"f-u-c", "f-uc", "fu-c", "á", "ä", "í", "ï",
-
-"ü", "é", "ú", "ë", "a-s-s", "a-ss", "a s s", "as-s", "a$$",
-
-"@ss", "ass", "as$", "a$s", "a-$$", "dild", "d i l d", "d-i-l-d", "d-i-ld", "d-ild", "dil-d",
-
-"r@pe", "rap3", "rape", "r4pe", "r4p3", "r a p e", "r-a-p-e", "rap-e", "dick", "d1ck", "dicck",
-
-"d-i-c-k", "di ck", "d i c k", "d-ick", "d-1ck", "d1c", "porn", "p0rn", "p o r n", "p-o-r-n",
-
-"f.u.c.k", "n.i.g", "n_i_g", "mothafu", "motha fu", "nog", "ó", "ö", "ò", "one cup two", "one cup one",
-
-"one guy one", "one guy two", "peg", "p3g", "p-3-g", "p3-g", "penis", "p3n1s", "p e n i s", "p.e.n.i.s",
-
-"p.3.n.i.s", "p3.nis", "kys", "kill yourself", "kil yourself", "hope you die", "commit suicide",
-
-"wh0r", "whor3", "whore", "w-h-o-r-e", "w h o r e", "wh-ore", "w-hor3", "w_h_o_r_e", "h03", "ho3", "hoe",
-
-"h0e", "h o e", "h_o_e", "h.o.e", "h.o_e", "h_o.e", "slut", "s-l-u-t", "s l u t", "s_l_u_t", "s.l.u.t",
-
-"slu t", "stfu", "tw4t", "twat", "t w a t", "t w 4 t", "t-w-a-t", "t-w-4-t", "twa t", "t.w.a.t", "t_w_a_t",
-
-"t_w_4_t", "tw@t", "tw at", "x-rated", "xrated", "18+", "zoophile", "zoophilia", "5h1t", "anal", "4n4l", "boob",
-
-"b00b", "b!tch", "b17ch", "gore", "gor3", "g0r3", "g0re", "c.0.c.k", "c0ck", "cock", "childp", "childfu", "cocaine",
-
-"heroine", "cum", "c-u-m", "c u m", "deepthro", "d33pthr0", "d33pthro", "deepthr0", "ectasy", "molly",
-
-"lsd", "mdma", "xanax", "x4nax", "xan4x", "x4n4x", "ketamine", "k3t4m", "k e t a m", "k3tam", "special k",
-
-"acid", "magic shroom", "magic mushroom", "marijuana", "methamphetamine", "meth", "m3th", "smoke crank",
-
-"fentanyl", "morphine", "steroids", "amytal", "suck my", "lick my", "gag my", "blow my", "f ag", "fa g", "n ig", "ni g",
-
-"ì", "𝕒", "𝕓","𝕔","𝕕","𝕖","𝕗","𝕘","𝕙","𝕚","𝕛","𝕜","𝕝","𝕞","𝕟","𝕠","𝕡","𝕣","𝕤","𝕥","𝕦","𝕧","𝕨","𝕩","𝕪","𝕫",
-
-"𝖋","𝖈","𝖎","𝖌","𝖊","𝖗","𝓯","𝓬","𝓲","𝓰","𝓭","𝓮","𝓻","𝓾","𝓽","🄶","🄵","🄲",
-
-"ⓕ", "ⓒ", "ⓖ", "cancer", "kanker", "tering", "debiel", "mongool", "tyfus", "siktir",
-
-"joder", "zorra", "pendejo", "arse", "idiot", "sukkel", "id1ot", "1diot", "1d1ot", "idi0t", "id10t", "flikker",
-
-"ÿ", "ý", "vagina", "shi", "sh1", "5h", "uck", "4hit" 
+    
+    // --- BANNED WORDS LIST ---
+    const BANNED_WORDS = [
+        "badword", "blockme", "test", "swear", "hack",
+        "nig", "nazi", "jew", "fag", "neg", "faggot",
+        "n1g", "nigger", "naz1", "j3w", "f@g", "retard", "coon", 
+        "c00n", "damm", "d4mm", "h3ll", "cunt", "fuc", "shit", 
+        "fuck", "ass", "dild", "rape", "dick", "porn", "penis", 
+        "kys", "whore", "hoe", "slut", "stfu", "twat", "anal", 
+        "boob", "bitch", "gore", "cock", "cum"
     ];
 
-    // --- GATEKEEPER LOGIC ---
+    // --- STATE ---
+    let peer;
+    let myId, myName, roomId;
+    let connections = {};
+    let seenIds = new Set();
+    let isHost = false;
+
+    // --- CENSORSHIP FUNCTION ---
+    function censorMessage(text) {
+        let cleanText = text;
+        BANNED_WORDS.forEach(word => {
+            // Case-insensitive replacement
+            const regex = new RegExp(word, 'gi');
+            cleanText = cleanText.replace(regex, '*'.repeat(word.length));
+        });
+        return cleanText;
+    }
+
+    // --- GATEKEEPER ---
     function checkSitePassword() {
         const input = document.getElementById('site-password').value;
         if (input === SITE_ACCESS_PASSWORD) {
-            document.getElementById('gatekeeper-screen').style.display = 'none';
+            document.getElementById('gatekeeper-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('gatekeeper-screen').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'flex';
+            }, 300);
         } else {
-            alert("Access Denied: Incorrect Password");
+            alert("Incorrect Password");
             document.getElementById('site-password').value = '';
         }
     }
 
-    document.getElementById('site-password').addEventListener('keypress', (e) => {
+    document.getElementById('site-password').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') checkSitePassword();
     });
 
-    // --- QUICK JOIN LOGIC ---
+    // --- JOIN LOGIC ---
     function quickJoin(roomName) {
         document.getElementById('room').value = roomName;
-        // If they haven't typed a nickname yet, focus that box. Otherwise, start chat!
         if (!document.getElementById('username').value.trim()) {
             document.getElementById('username').focus();
         } else {
@@ -199,112 +322,65 @@
         }
     }
 
-    // --- CHAT LOGIC ---
-
-    let peer;
-    let myId, myName, roomId;
-    let connections = {};
-    let seenIds = new Set();
-    let isHost = false;
-   
-    const peerConfig = {
-    debug: 1,
-    config: {
-        iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            // Add your TURN server info here
-            { 
-                urls: 'turn:your-turn-server-url.com:443', 
-                username: 'your-username', 
-                credential: 'your-password' 
-            }
-        ]
-    }
-};
-
-    function filter(text) {
-        return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
-
-    function censorMessage(text) {
-        let cleanText = text;
-        BANNED_WORDS.forEach(word => {
-            const regex = new RegExp(`\\b${word}\\b`, 'gi');
-            const replacement = '*'.repeat(word.length);
-            cleanText = cleanText.replace(regex, replacement);
-        });
-        return cleanText;
-    }
-
     function joinChat() {
         myName = document.getElementById('username').value.trim();
         let r = document.getElementById('room').value.trim().toLowerCase();
-       
+        
         if (!myName || !r) return alert("Nickname and Room are required!");
-       
+        
         roomId = "chat-room-" + r.replace(/[^a-z0-9]/g, ''); 
-       
+        
         document.getElementById('room-display').innerText = "#" + r;
-        document.getElementById('login-screen').style.display = 'none';
-        setStatus("Connecting...", "orange");
+        
+        // Hide Login
+        document.getElementById('login-screen').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('login-screen').style.display = 'none';
+        }, 300);
 
+        setStatus("Connecting...", "orange");
         initPeer(false); 
     }
 
-    // --- LEAVE ROOM LOGIC ---
-    // --- LEAVE ROOM LOGIC ---
     function leaveRoom() {
-    // 1. Disconnect from the current peer network
-    if (peer) {
-        peer.destroy();
-        peer = null;
-    }
-    
-    // 2. Reset state variables
-    connections = {};
-    seenIds.clear();
-    isHost = false;
-    
-    // 3. Clear chat messages
-    document.getElementById('messages').innerHTML = '';
-    
-    // 4. Reset UI
-    document.getElementById('login-screen').style.display = 'flex';
-    setStatus("Offline", "");
-    document.getElementById('status-dot').className = "dot";
-    document.getElementById('room-display').innerText = "#Lobby";
-}
         if (peer) {
             peer.destroy();
             peer = null;
-        
-        // Reset state variables
+        }
         connections = {};
         seenIds.clear();
         isHost = false;
-        
-        // Clear chat messages
         document.getElementById('messages').innerHTML = '';
         
-        // Show the login screen again and reset header
         document.getElementById('login-screen').style.display = 'flex';
+        setTimeout(() => document.getElementById('login-screen').style.opacity = '1', 10);
+        
         setStatus("Offline", "");
         document.getElementById('status-dot').className = "dot";
-        document.getElementById('room-display').innerText = "#Lobby";
     }
 
+    // --- PEERJS LOGIC ---
     function initPeer(forceHost = false) {
         let id = forceHost ? roomId : null;
-       
+        
         if (peer) peer.destroy();
-        peer = new Peer(id, peerConfig);
+        
+        peer = new Peer(id, {
+            debug: 1,
+            config: {
+                iceServers: [
+                    { urls: 'stun:stun.l.google.com:19302' },
+                    { urls: 'stun:global.stun.twilio.com:3478' }
+                ]
+            }
+        });
 
         peer.on('open', (id) => {
             myId = id;
             if (myId === roomId) {
                 isHost = true;
                 setStatus("Hosting Room", "green");
-                addSystemMsg("You are the host.");
+                addSystemMsg("You created the room.");
             } else {
                 connectToHost();
             }
@@ -325,26 +401,6 @@
         });
     }
 
-    // Broadcast to all peers
-    function broadcast(data) {
-        Object.values(connections).forEach(c => {
-            if (c.open) c.send(data);
-        });
-    }
-
-    // Broadcast a system message (host only)
-    function broadcastSystem(message) {
-        const msgId = Date.now() + Math.random().toString();
-        const payload = {
-            id: msgId,
-            type: 'system',
-            text: message
-        };
-        seenIds.add(msgId);
-        broadcast(payload);
-        renderSystemMessage(payload);
-    }
-
     function connectToHost() {
         setStatus("Finding Host...", "orange");
         let conn = peer.connect(roomId, { reliable: true });
@@ -360,7 +416,7 @@
             if (!connected) {
                 initPeer(true);
             }
-        }, 5000); 
+        }, 3000); 
     }
 
     function handleConnection(conn) {
@@ -371,45 +427,63 @@
         connections[c.peer] = c;
         updateCount();
 
-        // Host announces when someone joins
-        if (isHost) {
-            broadcastSystem("A new user joined the chat.");
-        }
-       
+        if (isHost) broadcastSystem(`${c.metadata?.name || 'Someone'} joined.`);
+        
         c.on('data', (data) => {
             if (seenIds.has(data.id)) return;
             seenIds.add(data.id);
 
-            // System vs normal messages
             if (data.type === 'system') {
                 renderSystemMessage(data);
                 return;
             }
 
-            if (isHost) broadcast(data);
+            if (isHost) broadcast(data); 
             renderMessage(data);
         });
-       
+        
         c.on('close', () => { 
             delete connections[c.peer]; 
             updateCount(); 
         });
     }
 
-    function sendMessage() {
-        const txt = document.getElementById('msg-input').value.trim();
-        if (!txt) return;
-       
+    function broadcast(data) {
+        Object.values(connections).forEach(c => {
+            if (c.open) c.send(data);
+        });
+    }
+
+    function broadcastSystem(message) {
         const msgId = Date.now() + Math.random().toString();
+        const payload = { id: msgId, type: 'system', text: message };
+        seenIds.add(msgId);
+        broadcast(payload);
+        renderSystemMessage(payload);
+    }
+
+    // --- MESSAGING ---
+    function sendMessage() {
+        const input = document.getElementById('msg-input');
+        const txt = input.value.trim();
+        if (!txt) return;
+        
+        const msgId = Date.now() + Math.random().toString();
+        
+        // 1. CENSOR TEXT (Calling the function now!)
         const censoredText = censorMessage(txt);
-        const safeText = filter(censoredText);
+        
+        // 2. ESCAPE HTML
+        const safeText = censoredText.replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
 
         const payload = { id: msgId, name: myName, text: safeText };
-       
+        
         seenIds.add(msgId);
         broadcast(payload); 
         renderMessage(payload, true);
-        document.getElementById('msg-input').value = '';
+        
+        input.value = '';
+        input.focus();
     }
 
     function renderMessage(data, isMe = false) {
@@ -428,17 +502,17 @@
         const box = document.getElementById('messages');
         const div = document.createElement('div');
         div.style.textAlign = "center";
-        div.style.fontSize = "12px";
-        div.style.color = "#64748b";
-        div.style.margin = "10px 0";
+        div.style.fontSize = "11px";
+        div.style.color = "#666";
+        div.style.margin = "8px 0";
+        div.style.fontFamily = "monospace";
         div.textContent = data.text;
         box.appendChild(div);
         box.scrollTop = box.scrollHeight;
     }
 
     function addSystemMsg(txt) {
-        const box = document.getElementById('messages');
-        box.innerHTML += `<div style="text-align:center; font-size:12px; color:#64748b; margin:10px 0;">${txt}</div>`;
+        renderSystemMessage({ text: txt });
     }
 
     function setStatus(msg, color) {
@@ -450,11 +524,15 @@
     function updateCount() {
         if (!isHost) return; 
         const c = Object.keys(connections).length;
-        document.getElementById('peer-count').innerText = `${c} Peers Connected`;
+        document.getElementById('peer-count').innerText = `${c} Peers`;
     }
-   
-    document.getElementById('msg-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
+    
+    // --- ENTER KEY FIX (USING KEYDOWN) ---
+    document.getElementById('msg-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevents newline if using textarea
+            sendMessage();
+        }
     });
 </script>
 
