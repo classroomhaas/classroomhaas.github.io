@@ -24,29 +24,33 @@
       --primary: #4da6ff;
       --glass: rgba(20, 20, 20, 0.7);
       --border: 1px solid rgba(255, 255, 255, 0.1);
-      --sidebar-width: 240px; /* Width of the sidebar */
+      --sidebar-width: 240px; 
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* COLLAPSIBLE STATE */
+    body.sidebar-collapsed {
+      --sidebar-width: 0px;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
       background-color: var(--bg-dark);
-      /* Subtle grid background */
       background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
       background-size: 30px 30px;
       color: #e0e0e0;
       position: relative;
-      display: flex; /* Enable flex layout for sidebar + main */
+      display: flex;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     
-    /* --- GLASS HEADER --- */
     header {
       position: fixed;
       top: 0;
-      left: var(--sidebar-width); /* Push header to right of sidebar */
+      left: var(--sidebar-width);
       right: 0;
       height: 70px;
       background: var(--glass);
@@ -58,12 +62,30 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: left 0.3s ease; /* Smooth transition when toggling */
     }
 
     .header-left {
         display: flex;
         align-items: center;
         gap: 20px;
+    }
+
+    /* Toggle Button */
+    #sidebar-toggle {
+      background: transparent;
+      border: 1px solid rgba(77, 166, 255, 0.3);
+      color: var(--primary);
+      font-size: 1.2rem;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #sidebar-toggle:hover {
+      background: rgba(77, 166, 255, 0.1);
+      border-color: var(--primary);
     }
 
     h1 {
@@ -76,7 +98,6 @@
       margin: 0;
     }
 
-    /* Buttons in Header */
     .header-actions button {
       background: rgba(77, 166, 255, 0.1);
       border: 1px solid var(--primary);
@@ -96,11 +117,6 @@
       box-shadow: 0 0 15px var(--primary);
     }
 
-    /* Search */
-    #search-container {
-      position: relative;
-    }
-
     #search-input {
       background: rgba(0, 0, 0, 0.5);
       border: var(--border);
@@ -115,7 +131,6 @@
     #search-input:focus {
       border-color: var(--primary);
       width: 300px;
-      box-shadow: 0 0 10px rgba(77, 166, 255, 0.2);
     }
 
     #search-pane {
@@ -139,12 +154,11 @@
     #search-pane a:hover { background: var(--primary); color: black; }
     .search-img img { width: 30px; height: 30px; border-radius: 4px; object-fit: cover; }
 
-    /* --- SIDEBAR --- */
     #sidebar {
         position: fixed;
         top: 0;
         left: 0;
-        width: var(--sidebar-width);
+        width: 240px; /* Fixed width for the element */
         height: 100vh;
         background: rgba(10, 10, 10, 0.95);
         border-right: var(--border);
@@ -153,6 +167,11 @@
         overflow-y: auto;
         display: flex;
         flex-direction: column;
+        transition: transform 0.3s ease;
+    }
+
+    body.sidebar-collapsed #sidebar {
+      transform: translateX(-100%);
     }
 
     .sidebar-title {
@@ -164,10 +183,7 @@
         border-left: 3px solid var(--primary);
     }
 
-    .category-list {
-        list-style: none;
-        padding: 0;
-    }
+    .category-list { list-style: none; padding: 0; }
 
     .category-btn {
         display: block;
@@ -185,23 +201,13 @@
         transition: all 0.2s ease;
     }
 
-    .category-btn:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: #fff;
-        padding-left: 20px; /* Slide effect */
-    }
+    .category-btn:hover { background: rgba(255, 255, 255, 0.05); color: #fff; padding-left: 20px; }
+    .category-btn.active { background: rgba(77, 166, 255, 0.15); color: var(--primary); border-right: 3px solid var(--primary); }
 
-    .category-btn.active {
-        background: rgba(77, 166, 255, 0.15);
-        color: var(--primary);
-        border-right: 3px solid var(--primary);
-    }
-
-    /* --- MAIN CONTENT --- */
     #content-wrapper {
-        margin-left: var(--sidebar-width); /* Push content right */
+        margin-left: var(--sidebar-width);
         width: calc(100% - var(--sidebar-width));
-        padding-top: 90px; /* Space for fixed header */
+        padding-top: 90px;
         padding-bottom: 40px;
         padding-left: 30px;
         padding-right: 30px;
@@ -210,19 +216,11 @@
         display: flex;
         flex-direction: column;
         min-height: 100vh;
+        transition: margin-left 0.3s ease, width 0.3s ease;
     }
 
-    main {
-      width: 100%;
-      flex-grow: 1; /* Pushes footer down */
-    }
-
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 25px;
-    }
-
+    main { width: 100%; flex-grow: 1; }
+    .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 25px; }
     a.game-link { text-decoration: none; color: inherit; display: block; }
 
     .game-card {
@@ -237,66 +235,28 @@
       position: relative;
     }
 
-    .game-card:hover {
-      transform: translateY(-8px);
-      border-color: var(--primary);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(77, 166, 255, 0.2);
-    }
-
+    .game-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(77, 166, 255, 0.2); }
     .game-image { flex-grow: 1; overflow: hidden; position: relative; }
     .game-image img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
     .game-card:hover .game-image img { transform: scale(1.1); }
-    
-    .game-name {
-      background: rgba(0,0,0,0.8);
-      color: #fff;
-      padding: 12px;
-      font-weight: 600;
-      text-align: center;
-      font-size: 0.95rem;
-      border-top: var(--border);
-    }
+    .game-name { background: rgba(0,0,0,0.8); color: #fff; padding: 12px; font-weight: 600; text-align: center; font-size: 0.95rem; border-top: var(--border); }
 
-    /* --- FOOTER & LOGS --- */
-    .changelog {
-      background: rgba(20, 20, 20, 0.8);
-      border: var(--border);
-      border-radius: 16px;
-      padding: 30px;
-      max-width: 900px;
-      margin: 4rem auto;
-    }
+    .changelog { background: rgba(20, 20, 20, 0.8); border: var(--border); border-radius: 16px; padding: 30px; max-width: 900px; margin: 4rem auto; }
+    .changelog-entry { display: none; }
 
-    .changelog-entry {
-        display: none; 
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      color: #888;
-      font-size: 0.9rem;
-      background: rgba(0,0,0,0.5);
-      border-top: var(--border);
-      margin-top: auto; /* Push to bottom */
-    }
-
+    footer { text-align: center; padding: 2rem; color: #888; font-size: 0.9rem; background: rgba(0,0,0,0.5); border-top: var(--border); margin-top: auto; }
     footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
-    footer a:hover { text-decoration: underline; text-shadow: 0 0 10px var(--primary); }
 
-    /* Particles Canvas */
     #tsparticles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     
-    /* Responsive Mobile */
     @media (max-width: 900px) {
         :root { --sidebar-width: 0px; }
-        #sidebar { display: none; } /* Hide sidebar on mobile for now */
+        #sidebar { transform: translateX(-100%); }
         header { left: 0; padding: 0 15px; }
         #content-wrapper { margin-left: 0; padding: 80px 15px 30px; }
-        /* You might want a hamburger menu here later */
-        .header-actions { display: none; } /* Simplify header on mobile */
+        .header-actions { display: none; }
     }
   </style>
 </head>
@@ -355,6 +315,7 @@ tsParticles.load("tsparticles", {
 
     <header>
         <div class="header-left">
+            <button id="sidebar-toggle" title="Toggle Sidebar">☰</button>
             <h1>billybobgames v2</h1>
         </div>
 
@@ -481,38 +442,32 @@ tsParticles.load("tsparticles", {
             <a href="./games/xtrenchrun/" class="game-link"><div class="game-card" data-name="x-trench run" data-category="driving action"><div class="game-image"><img src="./siteimages/gamelogos/xtrenchrun.png" alt="X-Trench Run" /></div><div class="game-name">X-Trench Run</div></div></a>
             <a href="./games/yohoho/" class="game-link"><div class="game-card" data-name="yohoho.io" data-category="action"><div class="game-image"><img src="./siteimages/gamelogos/yohoho.png" alt="Yohoho.io" /></div><div class="game-name">Yohoho.io</div></div></a>
             <a href="./youtube.html" class="game-link"><div class="game-card" data-name="youtube"><div class="game-image"><img src="./siteimages/gamelogos/youtube.png" alt="YouTube" /></div><div class="game-name">🌐 YouTube 🌐</div></div></a>
-            </div>
+        </div>
     </main>
 
     <section id="changelog" class="changelog">
       <h2 style="font-size:2em; font-weight:700; color:var(--primary); text-align:center; margin-bottom:30px;">
         Changelog & Other Links
       </h2>
-      
       <div style="display:flex; justify-content:center; gap:40px; flex-wrap:wrap;">
         <div id="changelog-container" style="flex:1 1 350px; text-align:left; line-height:1.4;">
           <h3 style="color:var(--primary); font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
-          
           <div class="changelog-entry" style="display:block; margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
             <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 1.215 — February 3, 2026</h3>
             <p style="color:#aaa; font-size:0.9em;">Added Filters: Action, Platformer, Shooter, Driving, Sports, Puzzle, Strategy, Simulation, Horror</p>
           </div>
-
           <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
             <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 1.2 — January 15, 2026</h3>
             <p style="color:#aaa; font-size:0.9em;">Added new game: Slope. Updated Cyber Dark Theme.</p>
           </div>
-
           <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
             <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 1.0 — January 1, 2026</h3>
             <p style="color:#aaa; font-size:0.9em;">Initial release of BillyBobGames V2.</p>
           </div>
-          
           <div style="text-align:center; margin-top: 15px;">
             <button id="show-more" style="background:var(--primary); border:none; padding:10px 20px; border-radius:12px; color:black; cursor:pointer; font-weight:bold;">Show More</button>
           </div>
         </div>
-        
         <div id="other-links-container" style="flex:0 1 300px; height: fit-content;">
           <h3 style="color:var(--primary); font-size:1.4em; margin-bottom:15px; text-align:center;">Other Links</h3>
           <div class="link-slot" style="margin-bottom:10px;">
@@ -543,17 +498,32 @@ tsParticles.load("tsparticles", {
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
+  // ========= SIDEBAR TOGGLE LOGIC =========
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const body = document.body;
+
+  // Persistence check
+  if (localStorage.getItem('sidebarCollapsed') === 'true') {
+    body.classList.add('sidebar-collapsed');
+  }
+
+  sidebarToggle.addEventListener('click', () => {
+    body.classList.toggle('sidebar-collapsed');
+    localStorage.setItem('sidebarCollapsed', body.classList.contains('sidebar-collapsed'));
+    
+    // Resize particles canvas if needed
+    window.dispatchEvent(new Event('resize'));
+  });
+
   // ========= SIDEBAR FILTER LOGIC =========
   const categoryBtns = document.querySelectorAll('.category-btn');
   const gameCards = document.querySelectorAll('.game-card');
 
   categoryBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      // 1. Update Active State
       categoryBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      // 2. Filter Games
       const category = btn.getAttribute('data-filter');
       gameCards.forEach(card => {
         const link = card.closest('.game-link'); 
@@ -566,8 +536,6 @@ document.addEventListener('DOMContentLoaded', () => {
           link.style.display = 'none';
         }
       });
-      
-      // Scroll to top of grid
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
@@ -610,7 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const changelogSection = document.getElementById('changelog');
   if(changelogBtn && changelogSection){
     changelogBtn.addEventListener('click', () => {
-      const yOffset = -80; // Offset for fixed header
+      const yOffset = -80; 
       const y = changelogSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     });
@@ -627,7 +595,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   if(showMoreBtn && entries.length > 1) {
     showMoreBtn.parentNode.appendChild(showLessBtn);
-
     entries.forEach((entry, index) => {
         if(index >= shownCount) entry.style.display = 'none';
     });
@@ -637,7 +604,6 @@ document.addEventListener('DOMContentLoaded', () => {
         entries[shownCount].style.display = 'block';
         entries[shownCount].style.animation = 'fadeIn 0.5s ease';
         shownCount++;
-        
         if(shownCount > 1) showLessBtn.style.display = 'inline-block';
       }
       if(shownCount === entries.length) {
@@ -650,25 +616,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if(shownCount > 1){
         shownCount--;
         entries[shownCount].style.display = 'none'; 
-        
         showMoreBtn.style.opacity = "1";
         showMoreBtn.style.cursor = "pointer";
-
         if(shownCount === 1) showLessBtn.style.display = 'none';
       }
     });
-  } else if (showMoreBtn) {
-      showMoreBtn.style.display = 'none';
   }
 
   // ========= PROXY BUTTONS =========
   const proxyUrl = './proxy.html'; 
   const smartProxyBtn = document.getElementById('smart-proxy-btn');
-  const proxyHomeBtn = document.getElementById('proxy-home-btn');
   if(smartProxyBtn) smartProxyBtn.addEventListener('click', () => window.location.href = proxyUrl);
-  if(proxyHomeBtn) proxyHomeBtn.addEventListener('click', () => 
-    window.open("https://docs.google.com/forms/d/e/1FAIpQLSeEDxNxyOYUb0g0hH12EijhNAXDRmr0k0JrtdThVjpFIcbfyg/viewform?usp=dialog", "_blank")
-  );
 
   // ========= RANDOM GAME BUTTON =========
   const gameLinks = document.querySelectorAll('.game-link');
@@ -681,7 +639,6 @@ document.addEventListener('DOMContentLoaded', () => {
       window.location.href = filteredGames[randomIndex].href;
     });
   }
-
 });
 </script>
 </body>
