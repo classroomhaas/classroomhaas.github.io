@@ -14,258 +14,229 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Zearn</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+    :root {
+      --bg-dark: #050505;
+      --card-bg: rgba(30, 30, 30, 0.4);
+      --primary: #4da6ff;
+      --glass: rgba(20, 20, 20, 0.7);
+      --border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #2b2b2b;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      /* Subtle grid background */
+      background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
       color: #e0e0e0;
       position: relative;
     }
     
-    /* --- HEADER STYLES --- */
+    /* --- GLASS HEADER --- */
     header {
       position: fixed;
-      top: 0;
+      top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      width: calc(100% - 22px);
-      background: rgba(58, 58, 58, 0.95); 
-      backdrop-filter: blur(10px); 
-      -webkit-backdrop-filter: blur(10px);
+      width: 95%;
+      max-width: 1200px;
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       z-index: 200;
-      padding: 15px 20px;   
-      border-radius: 14px;
-      box-sizing: border-box;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      padding: 15px;
+      border-radius: 16px;
+      border: var(--border);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
     }
 
     .header-container {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
-      padding: 6px 6px;
-      margin: 0;
     }
 
-    .header-container h1 {
-      margin: 0 10px;
-      color: #00aaff;
-      font-size: 1.8em;
-      text-shadow: 0 0 6px #00aaff, 0 0 12px rgba(0,170,255,0.8);
+    h1 {
+      font-family: 'Poppins', sans-serif;
+      margin: 0 15px;
+      color: var(--primary);
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px rgba(77, 166, 255, 0.4);
     }
 
-    .header-container button {
-      background: #00aaff;
-      border: none;
-      padding: 7px 14px;
-      border-radius: 12px;
-      color: white;
+    /* Buttons */
+    .header-container button, .filter-btn {
+      background: rgba(77, 166, 255, 0.1);
+      border: 1px solid var(--primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      color: var(--primary);
       cursor: pointer;
-      font-weight: bold;
-      font-size: 0.85em;
-      transition: 0.3s;
-      white-space: nowrap;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
     }
 
-    .header-container button:hover {
-      background: #0088cc;
-      box-shadow: 0 0 12px #00aaff;
+    .header-container button:hover, .filter-btn:hover, .filter-btn.active {
+      background: var(--primary);
+      color: #000;
+      box-shadow: 0 0 15px var(--primary);
     }
 
-    /* --- SEARCH BAR --- */
+    /* Search */
     #search-container {
       position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
 
     #search-input {
-      width: 170px;
-      padding: 6px 10px;
-      font-size: 0.88rem;
-      border: none;
-      border-radius: 8px;
-      background: #2b2b2b;
+      background: rgba(0, 0, 0, 0.5);
+      border: var(--border);
+      padding: 8px 15px;
+      border-radius: 50px;
       color: white;
-      box-shadow: 0 0 6px rgba(77,166,255,0.3);
+      width: 200px;
+      outline: none;
+      transition: 0.3s;
+    }
+    
+    #search-input:focus {
+      border-color: var(--primary);
+      width: 240px;
+      box-shadow: 0 0 10px rgba(77, 166, 255, 0.2);
     }
 
     #search-pane {
       position: absolute;
-      top: calc(100% + 6px);
-      left: 0;
-      max-width: 90vw;
-      width: 260px;
-      max-height: 300px;
-      overflow-y: auto;
-      background: rgba(30,30,30,0.95);
-      border: 1px solid #4da6ff;
-      border-radius: 10px;
-      padding: 0.5rem;
+      top: 110%; left: 0; width: 100%;
+      background: #111;
+      border: var(--border);
+      border-radius: 8px;
       display: none;
       flex-direction: column;
       z-index: 300;
+      max-height: 300px;
+      overflow-y: auto;
     }
     
     #search-pane a {
-      text-decoration: none;
-      color: white;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin: 0.4rem 0;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px; color: #fff; text-decoration: none;
+      border-bottom: 1px solid #222;
     }
+    #search-pane a:hover { background: var(--primary); color: black; }
+    .search-img img { width: 30px; height: 30px; border-radius: 4px; object-fit: cover; }
 
-    #search-pane .search-img {
-      width: 40px;
-      height: 40px;
-      border-radius: 6px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    #search-pane .search-img img { width: 100%; height: 100%; object-fit: cover; }
-    #search-pane .search-name { font-size: 0.9rem; white-space: nowrap; }
-
-    /* --- FILTER BAR STYLES --- */
+    /* Filters */
     #filter-container {
-      display: none; /* CHANGED: Hidden by default */
+      display: none;
       justify-content: center;
-      gap: 10px;
-      padding-top: 12px;
-      margin-top: 5px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      overflow-x: auto;
-      white-space: nowrap;
-      padding-bottom: 5px; 
-      scrollbar-width: none; 
+      gap: 8px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      flex-wrap: wrap;
     }
-    
-    /* Class to show the filters via JavaScript */
-    #filter-container.active-filter-bar {
-      display: flex;
-      animation: fadeIn 0.4s ease;
-    }
+    #filter-container.active-filter-bar { display: flex; animation: fadeIn 0.4s ease; }
 
-    #filter-container::-webkit-scrollbar { display: none; } 
-
-    .filter-btn {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid #00aaff;
-      padding: 6px 14px;
-      border-radius: 15px;
-      color: #00aaff;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 0.85rem;
-      transition: 0.3s;
-      flex-shrink: 0;
-    }
-
-    .filter-btn:hover {
-      background: #00aaff;
-      color: white;
-      box-shadow: 0 0 10px #00aaff;
-    }
-
-    .filter-btn.active {
-      background: #00aaff;
-      color: white;
-      box-shadow: 0 0 15px #00aaff;
-    }
-
-    /* --- MAIN & GRID --- */
+    /* --- GRID --- */
     main {
       max-width: 1200px;
-      margin: 0 auto 2rem;
-      padding: 0 1rem;
+      margin: 160px auto 3rem; /* Spacing for fixed header */
+      padding: 0 20px;
       position: relative;
       z-index: 10;
-      margin-top: 180px; 
     }
 
     .games-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
     }
 
     a.game-link { text-decoration: none; color: inherit; display: block; }
 
     .game-card {
-      background: #404040;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
-      text-align: center;
-      height: 300px;
+      background: var(--card-bg);
+      border: var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      height: 240px;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
     }
 
     .game-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      transform: translateY(-8px);
+      border-color: var(--primary);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(77, 166, 255, 0.2);
     }
 
-    .game-image { flex-grow: 1; overflow: hidden; }
-    .game-image img { width: 100%; height: 100%; object-fit: cover; }
+    .game-image { flex-grow: 1; overflow: hidden; position: relative; }
+    .game-image img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+    .game-card:hover .game-image img { transform: scale(1.1); }
     
     .game-name {
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 10px;
       font-weight: 600;
-      color: #ffffff;
-      background: #333;
-      padding: 0.5rem;
-      font-size: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      border-top: var(--border);
     }
 
-    /* --- CHANGELOG & FOOTER --- */
-    .changelog {
-      max-width: 900px;
-      margin: 3rem auto;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 1rem;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    }
+    /* --- FOOTER & LOGS --- */
     #changelog {
-      position: relative; 
-      z-index: 10;        
-      background: rgba(43, 43, 43, 0.9); 
-      padding: 40px 20px;
-    }
-    
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      color: #ccc;
-      font-size: 0.9rem;
+      background: rgba(20, 20, 20, 0.8);
+      border: var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 800px;
+      margin: 4rem auto;
       position: relative;
       z-index: 10;
     }
 
-    /* --- PARTICLES & ANIMATION --- */
-    #tsparticles {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 0; pointer-events: none; background: #2b2b2b;
+    .changelog-entry {
+        display: none; /* Hidden by default (except the first one via JS) */
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #888;
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 10;
+      background: #000;
+      border-top: var(--border);
     }
 
-    /* --- RESPONSIVE --- */
+    footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    footer a:hover { text-decoration: underline; text-shadow: 0 0 10px var(--primary); }
+
+    /* Particles Canvas */
+    #tsparticles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    
+    /* Responsive */
     @media (max-width: 900px) {
-      main { margin-top: 220px; } 
+      main { margin-top: 220px; }
+      #search-input { width: 100%; }
     }
   </style>
 </head>
@@ -283,12 +254,12 @@ tsParticles.load("tsparticles", {
     },
     particles: {
         color: { value: "#4da6ff" },
-        links: { color: "#4da6ff", distance: 120, enable: true, opacity: 0.2, width: 1 },
+        links: { color: "#4da6ff", distance: 120, enable: true, opacity: 0.15, width: 1 },
         move: { enable: true, speed: 1, outModes: { default: "bounce" } },
-        number: { density: { enable: true, area: 800 }, value: 40 },
+        number: { density: { enable: true, area: 800 }, value: 30 },
         opacity: { value: 0.3 },
         shape: { type: "circle" },
-        size: { value: { min: 1, max: 4 } }
+        size: { value: { min: 1, max: 3 } }
     },
     detectRetina: true
 });
@@ -301,12 +272,13 @@ tsParticles.load("tsparticles", {
       <div id="search-pane"></div>
     </div>
 
+    <h1>billybobgames v2</h1>
+    
     <button id="smart-proxy-btn">Smart Proxy</button>
     <button id="changelog-btn">Changelog</button>
-    <h1>billybobgames v2</h1>
     <button id="toggle-filter-btn">Filters</button>
     <button id="proxy-home-btn">GotW Entry</button>
-    <button id="random-game-btn">🎲 Random Game 🎲</button>
+    <button id="random-game-btn">🎲 Random</button>
   </div>
   
   <div id="filter-container">
@@ -383,7 +355,7 @@ tsParticles.load("tsparticles", {
     <a href="./games/ovo" class="game-link"><div class="game-card" data-name="ovo" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/ovo.png" alt="OvO" /></div><div class="game-name">OvO</div></div></a>
     <a href="./games/ovo2" class="game-link"><div class="game-card" data-name="ovo 2" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/ovo2.jpg" alt="OvO 2" /></div><div class="game-name">OvO 2</div></div></a>
     <a href="./games/papasfreezeria" class="game-link"><div class="game-card" data-name="papas freezeria" data-category="simulation strategy"><div class="game-image"><img src="./siteimages/gamelogos/papasfreezeria.png" alt="Papa's Freezeria" /></div><div class="game-name">Papa's Freezeria</div></div></a>
- <a href="./games/parkourblock3d/" class="game-link"><div class="game-card" data-name="parkour block" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock3d.png" alt="Parkour Block" /></div><div class="game-name">Parkour Block</div></div></a>
+    <a href="./games/parkourblock3d/" class="game-link"><div class="game-card" data-name="parkour block" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock3d.png" alt="Parkour Block" /></div><div class="game-name">Parkour Block</div></div></a>
     <a href="./games/parkourblock2/" class="game-link"><div class="game-card" data-name="parkour block 2" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock2.png" alt="Parkour Block 2" /></div><div class="game-name">Parkour Block 2</div></div></a>
     <a href="./games/parkourblock3/" class="game-link"><div class="game-card" data-name="parkour block 3" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock3.png" alt="🏆Parkour Block🏆" /></div><div class="game-name">Parkour Block 3</div></div></a>
     <a href="./games/parkourblock4/" class="game-link"><div class="game-card" data-name="parkour block 4" data-category="platformer"><div class="game-image"><img src="./siteimages/gamelogos/parkourblock4.png" alt="Parkour Block 4" /></div><div class="game-name">Parkour Block 4</div></div></a>
@@ -437,65 +409,60 @@ tsParticles.load("tsparticles", {
   </div>
 </main>
 
-<section id="changelog" style="color:white; margin-top:60px; font-family:'Poppins', sans-serif;">
-  <h2 style="font-size:2em; font-weight:700; color:#00aaff; text-shadow:0 0 8px #00aaff; text-align:center; margin-bottom:30px;">
+<section id="changelog" class="changelog">
+  <h2 style="font-size:2em; font-weight:700; color:var(--primary); text-align:center; margin-bottom:30px;">
     Changelog & Other Links
   </h2>
+  
   <div style="display:flex; justify-content:center; gap:40px; flex-wrap:wrap;">
-    
-    <div id="changelog-container" style="flex:1 1 350px; max-width:700px; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:left; font-size:0.95em; line-height:1.4;">
-      <h3 style="color:#00aaff; font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
+    <div id="changelog-container" style="flex:1 1 350px; text-align:left; line-height:1.4;">
+      <h3 style="color:var(--primary); font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
       
-      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
-        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.215 — February 3, 2026</h3>
-        <p>Added Filters:</p>
-        <p> - Action, Platformer, Shooter, Driving, Sports, Puzzle, Strategy, Simulation, Horror</p>
+      <div class="changelog-entry" style="display:block; margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
+        <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 1.215 — February 3, 2026</h3>
+        <p style="color:#aaa; font-size:0.9em;">Added Filters: Action, Platformer, Shooter, Driving, Sports, Puzzle, Strategy, Simulation, Horror</p>
       </div>
-      
-      <div style="text-align:center; margin-top:10px;">
-        <button id="show-more" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s;">Show More</button>
-      </div>
-    </div>
-    
-    <div id="other-links-container" style="flex:0 1 300px; max-width:350px; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:center; height: fit-content;">
-      <h3 style="color:#00aaff; font-size:1.4em; margin-bottom:15px;">Other Links</h3>
-      
-      <div class="link-slot" style="margin-bottom:15px;">
-        <a href="https://classroomhaas.github.io" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Link 1</a>
-      </div>
-      
-      <div class="link-slot" style="margin-bottom:15px;">
-        <a href="https://zearnhaas.netlify.app/" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 1</a>
-      </div>
-      
-      <div class="link-slot" style="margin-bottom:15px;">
-        <a href="https://boilafiles.netlify.app/" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 2</a>
-      </div>
-      
-      <div class="link-slot">
-        <a href="https://zearnhaas.github.io" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 3 (OLD)</a>
-      </div>
-    </div>
 
+      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
+        <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 1.2 — January 15, 2026</h3>
+        <p style="color:#aaa; font-size:0.9em;">Added new game: Slope. Updated Cyber Dark Theme.</p>
+      </div>
+
+      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
+        <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 1.0 — January 1, 2026</h3>
+        <p style="color:#aaa; font-size:0.9em;">Initial release of BillyBobGames V2.</p>
+      </div>
+      
+      <div style="text-align:center; margin-top: 15px;">
+        <button id="show-more" style="background:var(--primary); border:none; padding:10px 20px; border-radius:12px; color:black; cursor:pointer; font-weight:bold;">Show More</button>
+      </div>
+    </div>
+    
+    <div id="other-links-container" style="flex:0 1 300px; height: fit-content;">
+      <h3 style="color:var(--primary); font-size:1.4em; margin-bottom:15px; text-align:center;">Other Links</h3>
+      <div class="link-slot" style="margin-bottom:10px;">
+        <a href="https://classroomhaas.github.io" target="_blank" style="display:block; padding:12px; background:rgba(255,255,255,0.05); color:var(--primary); text-decoration:none; border-radius:8px; text-align:center;">Link 1</a>
+      </div>
+      <div class="link-slot" style="margin-bottom:10px;">
+        <a href="https://zearnhaas.netlify.app/" target="_blank" style="display:block; padding:12px; background:rgba(255,255,255,0.05); color:var(--primary); text-decoration:none; border-radius:8px; text-align:center;">Backup 1</a>
+      </div>
+      <div class="link-slot" style="margin-bottom:10px;">
+        <a href="https://boilafiles.netlify.app/" target="_blank" style="display:block; padding:12px; background:rgba(255,255,255,0.05); color:var(--primary); text-decoration:none; border-radius:8px; text-align:center;">Backup 2</a>
+      </div>
+    </div>
   </div>
 </section>
 
 <footer>
   NKC is now mostly maintaining this site with some help from averageperson4.
   <br /><br />
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSehIZWpUlPu8cv4Ew4hIhjYopDhIsQwGViUc1NYf9YrvBGecA/viewform?usp=dialog" target="_blank" style="color: #4da6ff; text-decoration: underline;">
-    Request a Game/Feedback
-  </a>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSehIZWpUlPu8cv4Ew4hIhjYopDhIsQwGViUc1NYf9YrvBGecA/viewform?usp=dialog" target="_blank">Request a Game/Feedback</a>
   <br />
- <!-- <a href="./chat.html" style="color: #4da6ff; text-decoration: underline;">Chat (WIP)</a>
-  <br /> -->
-  <a href="https://www.youtube.com/@billybobgamesv2" target="_blank" style="color: #4da6ff; text-decoration: underline;">
-    Check out our YouTube!
-  </a>
+  <a href="https://www.youtube.com/@billybobgamesv2" target="_blank">Check out our YouTube!</a>
   <br />
-  <a href="https://discord.gg/qG7x2QWEXA" target="_blank" style="color: #4da6ff; text-decoration: underline;">
-    Join our Discord!
-  </a>
+  <a href="https://discord.gg/qG7x2QWEXA" target="_blank">Join our Discord!</a>
+  <br />
+  <a href="./chat.html">Chat</a>
 </footer>
 
 <script>
@@ -506,16 +473,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterContainer = document.getElementById('filter-container');
 
   toggleFilterBtn.addEventListener('click', () => {
-    // Toggles the visibility class
     filterContainer.classList.toggle('active-filter-bar');
-    
-    // Optional: Changes button color when bar is open
     if(filterContainer.classList.contains('active-filter-bar')){
-      toggleFilterBtn.style.background = "#0088cc";
-      toggleFilterBtn.style.boxShadow = "0 0 12px #00aaff";
+      toggleFilterBtn.style.background = "#4da6ff";
+      toggleFilterBtn.style.color = "#000";
     } else {
-      toggleFilterBtn.style.background = "#00aaff";
-      toggleFilterBtn.style.boxShadow = "none";
+      toggleFilterBtn.style.background = "rgba(77, 166, 255, 0.1)";
+      toggleFilterBtn.style.color = "#4da6ff";
     }
   });
 
@@ -553,47 +517,70 @@ document.addEventListener('DOMContentLoaded', () => {
     } else searchPane.style.display = 'none';
   });
 
-  // ========= CHANGELOG BUTTON =========
+  // ========= CHANGELOG SCROLL BUTTON =========
   const changelogBtn = document.getElementById('changelog-btn');
   const changelogSection = document.getElementById('changelog');
   if(changelogBtn && changelogSection){
     changelogBtn.addEventListener('click', () => {
-      const yOffset = -20;
+      const yOffset = -20; // Scroll a bit above for better view
       const y = changelogSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     });
   }
 
-  // ========= SHOW MORE / SHOW LESS =========
+  // ========= SHOW MORE / SHOW LESS LOGIC =========
   const showMoreBtn = document.getElementById('show-more');
   const entries = document.querySelectorAll('.changelog-entry');
-  let shown = 1;
+  let shownCount = 1; // Start with 1 shown
+
+  // Create "Show Less" button dynamically
   const showLessBtn = document.createElement('button');
   showLessBtn.textContent = 'Show Less';
-  showLessBtn.style.cssText = `background:#444; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s; display:none; margin-left:10px;`;
+  showLessBtn.style.cssText = `background:#222; border:1px solid #444; padding:10px 20px; border-radius:12px; color:#aaa; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s; display:none; margin-left:10px;`;
   
-  if(showMoreBtn) {
+  if(showMoreBtn && entries.length > 1) {
     showMoreBtn.parentNode.appendChild(showLessBtn);
-    entries.forEach((entry,index) => { if(index > 0) entry.style.display='none'; });
 
+    // Initial State: Hide all except first
+    entries.forEach((entry, index) => {
+        if(index >= shownCount) entry.style.display = 'none';
+    });
+
+    // Show More Click
     showMoreBtn.addEventListener('click', () => {
-      if(shown < entries.length){
-        entries[shown].style.display='block';
-        entries[shown].style.animation='fadeIn 0.5s ease';
-        shown++;
-        showLessBtn.style.display = 'inline-block';
+      if(shownCount < entries.length){
+        // Show the next one
+        entries[shownCount].style.display = 'block';
+        entries[shownCount].style.animation = 'fadeIn 0.5s ease';
+        shownCount++;
+        
+        // Show "Show Less" button if we have more than 1 visible
+        if(shownCount > 1) showLessBtn.style.display = 'inline-block';
       }
-      if(shown === entries.length) showMoreBtn.disabled = true;
+      // If all shown, disable "Show More"
+      if(shownCount === entries.length) {
+          showMoreBtn.style.opacity = "0.5";
+          showMoreBtn.style.cursor = "default";
+      }
     });
 
+    // Show Less Click
     showLessBtn.addEventListener('click', () => {
-      if(shown > 1){
-        entries[shown-1].style.display='none';
-        shown--;
-        showMoreBtn.disabled = false;
-        if(shown === 1) showLessBtn.style.display = 'none';
+      if(shownCount > 1){
+        shownCount--;
+        entries[shownCount].style.display = 'none'; // Hide the last one
+        
+        // Re-enable Show More
+        showMoreBtn.style.opacity = "1";
+        showMoreBtn.style.cursor = "pointer";
+
+        // Hide "Show Less" if back to 1
+        if(shownCount === 1) showLessBtn.style.display = 'none';
       }
     });
+  } else if (showMoreBtn) {
+      // If only 1 entry exists, hide button
+      showMoreBtn.style.display = 'none';
   }
 
   // ========= PROXY BUTTONS =========
