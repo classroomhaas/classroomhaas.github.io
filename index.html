@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4MQ8PHH7T"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-G4MQ8PHH7T');
-  </script>
+  
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G4MQ8PHH7T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-G4MQ8PHH7T');
+</script>
   
   <meta name="google-site-verification" content="xyIEzBKAISm0GpwHevG6H2OD84DAG8pliiGei0OsNMU" />
   <meta charset="UTF-8" />
@@ -16,28 +19,13 @@
   <link rel="icon" href="./siteimages/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="./siteimages/apple-touch-icon.png" type="image/png">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
-
   <style>
-    :root {
-      --bg-dark: #050505;
-      --primary: #4da6ff;
-      --glass: rgba(20, 20, 20, 0.6);
-      --glass-border: 1px solid rgba(77, 166, 255, 0.2);
-      --shadow: 0 0 20px rgba(77, 166, 255, 0.15);
-    }
-
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-dark);
-      background-image: 
-          linear-gradient(rgba(77, 166, 255, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(77, 166, 255, 0.03) 1px, transparent 1px);
-      background-size: 30px 30px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #2b2b2b;
       color: #e0e0e0;
       overflow: hidden;
       height: 100vh;
@@ -47,354 +35,319 @@
       justify-content: center;
       user-select: none;
     }
+    #title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 4rem;
+      background: linear-gradient(90deg, #4da6ff, #1e90ff, #4da6ff);
+      background-size: 200% 200%;
+      animation: gradientShift 3s ease infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 8px rgba(77, 166, 255, 0.6);
+      margin-bottom: 1rem;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    #button-container {
+      display: flex;
+      gap: 40px;
+      z-index: 10;
+    }
 
-    /* --- PARTICLES --- */
+    button {
+      background: #4da6ff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 32px;
+      font-size: 1.1rem;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      min-width: 220px;
+    }
+    button:hover {
+      background: #3a8dde;
+    }
     #tsparticles {
       position: fixed;
       top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
       pointer-events: none;
     }
 
-    /* --- PASSWORD SCREEN --- */
+    /* Stylish Password Screen */
     #passwordScreen {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(15px);
+      background: linear-gradient(135deg, #1a1a1a, #2b2b2b);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      color: white;
       z-index: 9999;
+      font-family: 'Poppins', sans-serif;
       animation: fadeIn 0.5s ease-out;
     }
-
-    .glass-card {
-      background: var(--glass);
-      border: var(--glass-border);
-      padding: 3rem;
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      max-width: 400px;
-      width: 90%;
-    }
-
     #passwordScreen h2 {
-      font-family: 'Poppins', sans-serif;
       font-size: 2rem;
       margin-bottom: 20px;
-      background: linear-gradient(90deg, #fff, var(--primary));
+      background: linear-gradient(90deg, #4da6ff, #1e90ff, #4da6ff);
+      background-size: 200% 200%;
+      animation: gradientShift 3s ease infinite;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-transform: uppercase;
-      letter-spacing: 2px;
     }
-
-    input {
-      width: 100%;
+    #passwordScreen input {
       padding: 12px 16px;
-      border: 1px solid #333;
-      border-radius: 8px;
-      font-size: 16px;
-      background: #000;
-      color: var(--primary);
-      outline: none;
-      text-align: center;
-      margin-bottom: 15px;
-      font-family: monospace;
-      transition: 0.3s;
-    }
-
-    input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 10px rgba(77, 166, 255, 0.2);
-    }
-
-    .glow-btn {
-      padding: 10px 30px;
-      font-size: 16px;
-      background: rgba(77, 166, 255, 0.1);
-      border: 1px solid var(--primary);
-      border-radius: 8px;
-      color: var(--primary);
-      cursor: pointer;
-      font-weight: 700;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .glow-btn:hover {
-      background: var(--primary);
-      color: #000;
-      box-shadow: 0 0 20px var(--primary);
-    }
-
-    #error {
-      color: #ff4d4d;
-      margin-top: 15px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      display: none;
-      animation: shake 0.4s ease;
-    }
-
-    /* --- REAL CONTENT --- */
-    #realContent {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      position: relative;
-    }
-
-    #title {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 800;
-      font-size: 4rem;
-      color: white;
-      text-shadow: 0 0 20px rgba(77, 166, 255, 0.5);
-      margin-bottom: 2rem;
-      letter-spacing: -2px;
-    }
-
-    #button-container {
-      display: flex;
-      gap: 30px;
-      align-items: center;
-    }
-
-    .main-btn {
-      background: var(--primary);
       border: none;
-      border-radius: 12px;
-      padding: 16px 40px;
-      font-size: 1.2rem;
-      color: #000;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 0 15px rgba(77, 166, 255, 0.4);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .main-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 30px rgba(77, 166, 255, 0.6);
-      background: #fff;
-    }
-
-    .no-fix-link {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #aaa;
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: 0.3s;
-      padding: 10px 20px;
-      border-radius: 12px;
-      border: 1px solid transparent;
-    }
-
-    .no-fix-link:hover {
+      border-radius: 8px;
+      font-size: 16px;
+      background: #222;
       color: white;
-      border: 1px solid #333;
-      background: rgba(255,255,255,0.05);
+      box-shadow: 0 0 10px rgba(77,166,255,0.2);
+      outline: none;
     }
-
-    #random-text {
-      margin-top: 40px;
-      font-size: 14px;
-      color: #666;
-      font-family: monospace;
-      min-height: 20px;
+    #passwordScreen button {
+      margin-top: 12px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #4da6ff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(77,166,255,0.3);
+      transition: background 0.3s ease, transform 0.2s ease;
     }
-
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
+    #passwordScreen button:hover {
+      background: #3a8dde;
+      transform: scale(1.05);
+    }
+    #passwordScreen #error {
+      color: #ff4d4d;
+      margin-top: 12px;
+      font-weight: 500;
+      display: none;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 <body>
 
-  <div id="passwordScreen">
-    <div class="glass-card">
-      <h2>Restricted</h2>
-      <input type="password" id="passwordInput" placeholder="ENTER PASSWORD" />
-      <button class="glow-btn" onclick="checkPassword()">Unlock</button>
-      <p id="error">ACCESS DENIED</p>
-    </div>
-  </div>
+<div id="passwordScreen">
+  <h2>Enter Password</h2>
+  <input type="password" id="passwordInput" placeholder="Password" />
+  <button onclick="checkPassword()">Enter</button>
+  <p id="error">Incorrect password</p>
+</div>
 
-  <div id="realContent">
-    <div id="title">Fix Selector</div>
-
-    <div id="button-container">
-      <button id="bypass-button" class="main-btn">Fix</button>
-      
-      <a href="site.html" class="no-fix-link">
-        <span style="font-size: 1.1rem; font-weight: 600; text-decoration: underline;">No Fix</span>
-        <span style="font-size: 0.8rem; opacity: 0.7;">(Fewer Features)</span>
-      </a>
-    </div>
-    
-    <div id="random-text"></div>
-  </div>
+<div id="realContent" style="display:none; flex-direction: column; align-items: center; justify-content: center;">
 
   <div id="tsparticles"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
-  <script>
-    /* --- PARTICLES CONFIG --- */
-    tsParticles.load("tsparticles", {
-      fullScreen: { enable: false },
-      fpsLimit: 60,
-      particles: {
-        color: { value: "#4da6ff" },
-        links: {
-          color: "#4da6ff",
-          distance: 120,
-          enable: true,
-          opacity: 0.2,
-          width: 1
-        },
-        collisions: { enable: false },
-        move: {
-          directions: "none",
-          enable: true,
-          outModes: { default: "bounce" },
-          random: false,
-          speed: 1,
-          straight: false
-        },
-        number: { density: { enable: true, area: 800 }, value: 40 },
-        opacity: { value: 0.3 },
-        shape: { type: "circle" },
-        size: { value: { min: 1, max: 4 } }
+  <div id="title">Fix Selector</div>
+
+  <div id="button-container" style="margin-top: 10px;">
+    <button id="bypass-button">Fix</button>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <a href="site" style="font-size: 14px; color: #aaa; text-decoration: underline; cursor: pointer;">
+        No Fix
+      </a>
+      <div style="font-size: 12px; color: #666;">less features</div>
+    </div>
+  </div>
+</div>
+
+  <div id="random-text" style="margin-top: 25px; font-size: 14px; color: #666; text-decoration: none; cursor: default;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+<script>
+  tsParticles.load("tsparticles", {
+    fullScreen: { enable: false },
+    fpsLimit: 60,
+    particles: {
+      color: { value: "#4da6ff" },
+      links: {
+        color: "#4da6ff",
+        distance: 120,
+        enable: true,
+        opacity: 0.2,
+        width: 1
       },
-      detectRetina: true
-    });
+      collisions: { enable: false },
+      move: {
+        directions: "none",
+        enable: true,
+        outModes: { default: "bounce" },
+        random: false,
+        speed: 1,
+        straight: false
+      },
+      number: { density: { enable: true, area: 800 }, value: 40 },
+      opacity: { value: 0.3 },
+      shape: { type: "circle" },
+      size: { value: { min: 1, max: 4 } }
+    },
+    detectRetina: true
+  });
+</script>
 
-    /* --- BYPASS BUTTON LOGIC (WITH GOOGLE REDIRECT) --- */
-    const bypassBtn = document.getElementById('bypass-button');
+<script>
+  const bypassBtn = document.getElementById('bypass-button');
 
-    bypassBtn.addEventListener('click', () => {
-      // 1. Open the new cloaked tab
-      const newTab = window.open('about:blank');
-      if (!newTab) {
-        alert("Pop-up blocked! Please allow pop-ups for this site.");
-        return;
-      }
-
-      // Get exact path to site.html
-      const targetUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/')) + '/site.html';
-
-      const code = `
-        document.title = "Home";
-        const favicon = document.createElement('link');
-        favicon.rel = 'icon';
-        favicon.href = 'https://ssl.gstatic.com/classroom/favicon.png';
-        document.head.appendChild(favicon);
-
-        const style = document.createElement('style');
-        style.textContent = \`
-          body { margin: 0; background: #050505; overflow: hidden; }
-          iframe { width: 100vw; height: 100vh; border: none; }
-          #go-home-btn {
-            position: fixed; top: 15px; right: 15px;
-            width: 40px; height: 40px;
-            background: #4da6ff; border-radius: 50%;
-            border: none; color: white; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: 0.3s; z-index: 1000; overflow: hidden;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-          }
-          #go-home-btn:hover { width: 120px; border-radius: 20px; }
-          #go-home-btn span { display: none; margin-left: 5px; font-weight: bold; }
-          #go-home-btn:hover span { display: inline; }
-        \`;
-        document.head.appendChild(style);
-
-        const iframe = document.createElement('iframe');
-        iframe.src = '${targetUrl}'; 
-        document.body.appendChild(iframe);
-
-        const goHomeBtn = document.createElement('button');
-        goHomeBtn.id = 'go-home-btn';
-        goHomeBtn.innerHTML = '🏠<span>Home</span>';
-        goHomeBtn.onclick = () => { iframe.src = iframe.src; };
-        document.body.appendChild(goHomeBtn);
-      `;
-
-      // Inject code into new tab
-      const script = newTab.document.createElement('script');
-      script.textContent = code;
-      newTab.document.body.innerHTML = '';
-      newTab.document.body.appendChild(script);
-
-      // 2. REDIRECT THE PREVIOUS TAB (THIS TAB) TO GOOGLE CLASSROOM
-      window.location.href = "https://classroom.google.com";
-    });
-
-    /* --- PASSWORD LOGIC --- */
-    document.getElementById("passwordInput").addEventListener("keydown", function(e) {
-      if (e.key === "Enter") checkPassword();
-    });
-
-    const randomTexts = [
-      "Welcome back!",
-      "Don't let the teachers catch ya!",
-      "Instead of playing the same 4 games on the site try some other ones! Kidding, you're not forced to.",
-      "I've got my eye on you...",
-      "Would you rather play video games or do your school work? I know which one you chose.",
-      "Does anyone want to hop on some games?",
-      "I have a dream that every kid will be able to play video games in school.",
-      "Remember to vote for Game of the Week!",
-      "Did you vote yet?",
-      "There are many features you probably haven't heard of yet such as Game of the Week. Speaking of that, go check it out!",
-      "Are oranges called oranges because of the color orange or is it because they're orange? What am I talking about again?",
-      "Fun Fact: This text has a 1 in 1,000,000 chance of appearing! Edit: No it doesn't that's a lie.",
-      "Fun Fact: This text has a 1 in 23 chance of appearing! Edit: It really does and it's not a lie.",
-      "This text appearing 1 out of 23 times means there are 22 other quotes like this waiting to be discovered!",
-      ".(emit-eerf evah uoy sselnu) krow ruoy oD",
-      "Yelvin is sigma.",
-      "Special thanks to you!",
-      "Go check out our oranges! Wait, I meant YouTube... Discord... or whatever.",
-      "Recommend some games you like using the request form!",
-      "Check out our YouTube!",
-      "Join our Discord!",
-      "Averageperson4 is average. NKC is better.",
-      "Who is APAP?",
-    ];
-
-    function showRandomText() {
-      const chosen = randomTexts[Math.floor(Math.random() * randomTexts.length)];
-      document.getElementById("random-text").textContent = chosen;
+  bypassBtn.addEventListener('click', () => {
+    const newTab = window.open('about:blank');
+newTab.opener = null;
+    if (!newTab) {
+      alert("Pop-up blocked! Please allow pop-ups for this site.");
+      return;
     }
 
-    function checkPassword() {
-      const input = document.getElementById("passwordInput").value;
-      if (input === "lebronjames") {
-        document.getElementById("passwordScreen").style.display = "none";
-        document.getElementById("realContent").style.display = "flex";
-        showRandomText(); 
-      } else {
-        const err = document.getElementById("error");
-        err.style.display = "block";
-        setTimeout(() => { err.style.display = "none"; }, 1000);
-      }
+    window.location.href = 'https://classroom.google.com';
+
+    const code = `
+  document.title = "Home";
+
+  const favicon = document.createElement('link');
+  favicon.rel = 'icon';
+  favicon.href = './siteimages/apple-touch-icon.png';
+  document.head.appendChild(favicon);
+
+  const style = document.createElement('style');
+  style.textContent = \`
+    body {
+      margin: 0;
+      background: #121212;
     }
-  </script>
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+    #go-home-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      font-size: 32px;
+      padding: 10px;
+      background: #4da6ff;
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: width 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #go-home-btn.expanded {
+      width: auto;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-weight: 600;
+    }
+    #go-home-btn span {
+      margin-left: 8px;
+      font-size: 1rem;
+      display: none;
+    }
+    #go-home-btn.expanded span {
+      display: inline;
+    }
+  \`;
+  document.head.appendChild(style);
+
+  const iframe = document.createElement('iframe');
+  iframe.src = 'site';
+  document.body.appendChild(iframe);
+
+  const goHomeBtn = document.createElement('button');
+  goHomeBtn.id = 'go-home-btn';
+  goHomeBtn.innerHTML = '🏠<span>Go Home</span>';
+
+  goHomeBtn.addEventListener('mouseenter', () => {
+    goHomeBtn.classList.add('expanded');
+  });
+  goHomeBtn.addEventListener('mouseleave', () => {
+    goHomeBtn.classList.remove('expanded');
+  });
+  goHomeBtn.addEventListener('click', () => {
+    iframe.src = iframe.src;
+  });
+
+  document.body.appendChild(goHomeBtn);
+`;
+
+    const script = newTab.document.createElement('script');
+    script.textContent = code;
+    newTab.document.body.innerHTML = '';
+    newTab.document.body.appendChild(script);
+  });
+
+  document.getElementById("passwordInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") checkPassword();
+  });
+
+  // Text you can edit anytime:
+const randomTexts = [
+  "Welcome back!",
+  "Don't let the teachers catch ya!",
+  "Instead of playing the same 4 games on the site try some other ones! Kidding, you're not forced to.",
+  "I've got my eye on you...",
+  "Would you rather play video games or do your school work? I know which one you chose.",
+  "Does anyone want to hop on some games?",
+  "I have a dream that every kid will be able to play video games in school.",
+  "Remember to vote for Game of the Week!",
+  "Did you vote yet?",
+  "There are many features you probably haven't heard of yet such as Game of the Week. Speaking of that, go check it out!",
+  "Are oranges called oranges because of the color orange or is it because they're orange? What am I talking about again?",
+  "Fun Fact: This text has a 1 in 1,000,000 chance of appearing! Edit: No it doesn't that's a lie.",
+  "Fun Fact: This text has a 1 in 23 chance of appearing! Edit: It really does and it's not a lie.",
+  "This text appearing 1 out of 23 times means there are 22 other quotes like this waiting to be discovered!",
+  ".(emit-eerf evah uoy sselun) krow ruoy oD",
+  "Yelvin is sigma.",
+  "Special thanks to you!",
+  "Go check out our oranges! Wait, I meant YouTube... Discord... or whatever.",
+  "Recommend some games you like using the request form!",
+  "Check out our YouTube!",
+  "Join our Discord!",
+  "Averageperson4 is average. NKC is better.",
+  "Who is APAP?",
+];
+
+function showRandomText() {
+  const chosen = randomTexts[Math.floor(Math.random() * randomTexts.length)];
+  document.getElementById("random-text").textContent = chosen;
+}
+
+// Show after unlocking:
+function checkPassword() {
+  const input = document.getElementById("passwordInput").value;
+  if (input === "lebronjames") {
+    document.getElementById("passwordScreen").style.display = "none";
+    document.getElementById("realContent").style.display = "flex";
+    showRandomText(); // ← ADD THIS
+  } else {
+    document.getElementById("error").style.display = "block";
+  }
+}
+</script>
+
 </body>
 </html>
