@@ -13,7 +13,9 @@
   
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BillyBobGames V2 - Ultimate</title>
+  
+  <title>Home</title>
+  <link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png" />
   
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@700&display=swap" rel="stylesheet">
 
@@ -224,6 +226,7 @@
         font-size: 0.9rem;
         border-radius: 6px;
         transition: 0.2s;
+        cursor: pointer;
     }
     .fav-item:hover { background: rgba(255,255,255,0.1); color: var(--primary); }
     .fav-item span { margin-right: 8px; color: var(--primary); }
@@ -465,6 +468,34 @@
     }
     .avatar-opt:hover, .avatar-opt.selected { opacity: 1; transform: scale(1.2); }
 
+    /* GAME FRAME MODAL (NEW) */
+    #game-modal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: #000;
+        z-index: 2000;
+        flex-direction: column;
+    }
+    .game-frame-header {
+        height: 50px;
+        background: #111;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        border-bottom: 1px solid #333;
+    }
+    .game-title-display { color: #fff; font-weight: bold; }
+    .game-controls button {
+        background: #333; border: 1px solid #555; color: #fff;
+        padding: 5px 12px; border-radius: 4px; cursor: pointer; margin-left: 10px;
+    }
+    .game-controls button:hover { background: var(--primary); border-color: var(--primary); color: #000; }
+    #game-iframe {
+        flex-grow: 1; width: 100%; border: none; background: #000;
+    }
+
   </style>
 </head>
 <body>
@@ -527,7 +558,7 @@
         </div>
     </header>
 
-     <main>
+    <main>
         <section id="recently-played-section">
             <div class="section-header">
                 <span>⏱️ Recently Played</span>
@@ -650,7 +681,6 @@
         </div>
     </main>
 
-
     <section id="changelog" class="changelog">
       <h2 style="font-size:2em; font-weight:700; color:var(--primary); text-align:center; margin-bottom:30px;">
         Changelog & Other Links
@@ -742,8 +772,28 @@
     </div>
 </div>
 
+<div id="game-modal">
+    <div class="game-frame-header">
+        <div class="game-title-display" id="frame-title">Playing Game...</div>
+        <div class="game-controls">
+            <button id="reload-game-btn" title="Reload Frame">🔄 Reload</button>
+            <button id="fullscreen-btn" title="Fullscreen">⛶</button>
+            <button id="close-game-btn" title="Close" style="background:#ff4d4d; border-color:#ff4d4d;">✕</button>
+        </div>
+    </div>
+    <iframe id="game-iframe" src="" allowfullscreen></iframe>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+
+  // --- CLOAKING LOGIC ---
+  // Constant Title Enforcer
+  setInterval(() => {
+    if (document.title !== "Home") {
+        document.title = "Home";
+    }
+  }, 1000);
 
   // --- GLOBAL VARIABLES & STATE ---
   const authBtn = document.getElementById('auth-btn');
@@ -758,6 +808,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const recentContainer = document.getElementById('recent-container');
   const recentSection = document.getElementById('recently-played-section');
   const gameCards = document.querySelectorAll('.game-card');
+
+  // Game Frame Vars
+  const gameModal = document.getElementById('game-modal');
+  const gameIframe = document.getElementById('game-iframe');
+  const closeGameBtn = document.getElementById('close-game-btn');
+  const reloadGameBtn = document.getElementById('reload-game-btn');
+  const fullscreenBtn = document.getElementById('fullscreen-btn');
+  const frameTitle = document.getElementById('frame-title');
 
   // Default Data
   let currentUser = localStorage.getItem('bbg_username');
@@ -913,17 +971,66 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  // --- GAME INTERACTION LOGIC ---
-  // 1. Favorites
+  // --- GAME FRAME LOGIC (Launch games in iframe) ---
+  function openGame(url, title) {
+      frameTitle.innerText = title;
+      gameIframe.src = url;
+      gameModal.style.display = 'flex';
+      // Auto focus iframe for keyboard controls
+      gameIframe.focus();
+  }
+
+  closeGameBtn.addEventListener('click', () => {
+      gameModal.style.display = 'none';
+      gameIframe.src = ''; // Stop game execution
+  });
+
+  reloadGameBtn.addEventListener('click', () => {
+      gameIframe.contentWindow.location.reload();
+  });
+
+  fullscreenBtn.addEventListener('click', () => {
+      if (gameIframe.requestFullscreen) {
+          gameIframe.requestFullscreen();
+      }
+  });
+
+  // --- GAME CLICK HANDLERS ---
+  document.querySelectorAll('.game-link').forEach(link => {
+      // Logic for launching game
+      link.addEventListener('click', (e) => {
+          e.preventDefault(); // Stop navigation
+          
+          const card = link.querySelector('.game-card');
+          const name = card.getAttribute('data-name');
+          const gameTitle = card.querySelector('.game-name').innerText;
+          const img = card.querySelector('img').src;
+          const href = link.getAttribute('href');
+
+          // Launch in Frame
+          openGame(href, gameTitle);
+
+          // Update History if User Logged In
+          if(currentUser) {
+              userData.clickCount++;
+              const historyItem = { name, img, href };
+              userData.history = userData.history.filter(h => h.name !== name);
+              userData.history.unshift(historyItem);
+              if(userData.history.length > 5) userData.history.pop();
+              saveUserData();
+          }
+      });
+  });
+
+  // --- FAVORITES LOGIC ---
   document.querySelectorAll('.heart-btn').forEach(btn => {
-      // Init state
       const card = btn.closest('.game-card');
       const name = card.getAttribute('data-name');
       if (userData.favorites.includes(name)) btn.classList.add('active');
 
       btn.addEventListener('click', (e) => {
           e.preventDefault();
-          e.stopPropagation(); // prevent opening game
+          e.stopPropagation(); 
           if(!currentUser) return alert("Please Sign In to use Favorites!");
 
           if(userData.favorites.includes(name)) {
@@ -938,31 +1045,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 
-  // 2. History & Click Count
-  document.querySelectorAll('.game-link').forEach(link => {
-      link.addEventListener('click', () => {
-          if(!currentUser) return;
-          
-          const card = link.querySelector('.game-card');
-          const name = card.getAttribute('data-name');
-          const img = card.querySelector('img').src;
-          const href = link.getAttribute('href');
-
-          userData.clickCount++;
-          
-          // Add to History (Unique, limit 5)
-          const historyItem = { name, img, href };
-          // Remove if exists
-          userData.history = userData.history.filter(h => h.name !== name);
-          // Add to front
-          userData.history.unshift(historyItem);
-          // Limit to 5
-          if(userData.history.length > 5) userData.history.pop();
-
-          saveUserData();
-      });
-  });
-
   function refreshFavoritesUI() {
       favContainer.innerHTML = '';
       if(!currentUser || userData.favorites.length === 0) {
@@ -972,14 +1054,18 @@ document.addEventListener('DOMContentLoaded', () => {
       favList.style.display = 'block';
       
       userData.favorites.forEach(favName => {
-          // Find the original link to get the URL
           const originalCard = document.querySelector(`.game-card[data-name="${favName}"]`);
           if(originalCard) {
               const href = originalCard.closest('.game-link').getAttribute('href');
               const link = document.createElement('a');
               link.className = 'fav-item';
-              link.href = href;
+              // Use openGame wrapper (we must add click listener manually)
               link.innerHTML = `<span>★</span> ${originalCard.querySelector('.game-name').innerText}`;
+              
+              link.addEventListener('click', () => {
+                 openGame(href, originalCard.querySelector('.game-name').innerText);
+              });
+
               favContainer.appendChild(link);
           }
       });
@@ -995,14 +1081,16 @@ document.addEventListener('DOMContentLoaded', () => {
       
       userData.history.forEach(game => {
           const div = document.createElement('div');
+          // Create structure but attach click handler instead of href
           div.innerHTML = `
-            <a href="${game.href}" class="game-link">
-                <div class="game-card" style="width:200px; height:220px;">
-                    <div class="game-image"><img src="${game.img}"></div>
-                    <div class="game-name">${game.name}</div>
-                </div>
-            </a>
+             <div class="game-card" style="width:200px; height:220px; cursor:pointer;">
+                <div class="game-image"><img src="${game.img}"></div>
+                <div class="game-name">${game.name}</div>
+             </div>
           `;
+          div.querySelector('.game-card').addEventListener('click', () => {
+              openGame(game.href, game.name);
+          });
           recentContainer.appendChild(div);
       });
   }
@@ -1084,7 +1172,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const category = btn.getAttribute('data-filter');
       gameCards.forEach(card => {
         const link = card.closest('.game-link');
-        if(link.classList.contains('dev-only') && currentUser !== 'Dev') return; // protect dev game
+        if(link.classList.contains('dev-only') && currentUser !== 'Dev') return; 
         
         const cardCategory = card.getAttribute('data-category') || 'other';
         if (category === 'all' || cardCategory.includes(category)) {
@@ -1112,7 +1200,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = card.querySelector(".game-name")?.textContent || '';
         const link = card.parentElement?.href || '#';
         const entry = document.createElement("a");
-        entry.href = link;
+        
+        // Custom click handling for search results to open in Frame
+        entry.href = "#";
+        entry.addEventListener('click', (e) => {
+            e.preventDefault();
+            openGame(link, title);
+        });
+
         entry.innerHTML = `<div class="search-img"><img src="${imgSrc}"></div><div>${title}</div>`;
         results.push(entry);
       }
@@ -1127,7 +1222,9 @@ document.addEventListener('DOMContentLoaded', () => {
     randomGameBtn.addEventListener('click', () => {
       const filteredGames = [...document.querySelectorAll('.game-link')].filter(link => !link.classList.contains('dev-only'));
       const randomIndex = Math.floor(Math.random() * filteredGames.length);
-      window.location.href = filteredGames[randomIndex].href;
+      // Open in Frame instead of navigate
+      const link = filteredGames[randomIndex];
+      openGame(link.href, link.querySelector('.game-name').innerText);
     });
   }
 
