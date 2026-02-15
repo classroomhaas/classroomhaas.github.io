@@ -47,6 +47,7 @@
       display: flex;
       min-height: 100vh;
       overflow-x: hidden;
+      transition: filter 0.5s ease, transform 1s ease;
     }
     
     header {
@@ -100,6 +101,8 @@
       text-shadow: 0 0 15px var(--primary);
       margin: 0;
       transition: color 0.3s, text-shadow 0.3s;
+      user-select: none;
+      cursor: pointer;
     }
 
     .header-actions button {
@@ -214,7 +217,7 @@
         margin-bottom: 30px;
         border-bottom: 1px solid rgba(255,255,255,0.1);
         padding-bottom: 10px;
-        display: none; /* Hidden until items added */
+        display: none;
     }
     
     .fav-item {
@@ -324,7 +327,6 @@
     .dev-only { display: none; border: 2px dashed #ff00ff; }
     .dev-only .game-name { color: #ff00ff; }
     
-    /* CHAT BUTTON HIDDEN BY DEFAULT */
     #dev-chat-btn { display: none; }
 
     .changelog { background: rgba(20, 20, 20, 0.8); border: var(--border); border-radius: 16px; padding: 30px; max-width: 900px; margin: 4rem auto; }
@@ -345,7 +347,7 @@
         .header-actions { display: none; }
     }
 
-    /* AUTH MODAL STYLES */
+    /* AUTH MODAL */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -384,7 +386,6 @@
         cursor: pointer;
         transition: 0.2s;
     }
-
     .close-modal:hover { color: var(--primary); }
 
     .auth-box h2 {
@@ -396,59 +397,29 @@
     }
 
     .input-group { margin-bottom: 20px; }
-
     .input-group input {
-        width: 100%;
-        padding: 12px;
-        background: rgba(0,0,0,0.5);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 8px;
-        color: white;
-        outline: none;
-        font-family: 'Inter', sans-serif;
-        transition: 0.3s;
+        width: 100%; padding: 12px; background: rgba(0,0,0,0.5);
+        border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white;
+        outline: none; font-family: 'Inter', sans-serif; transition: 0.3s;
     }
-
-    .input-group input:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 10px var(--primary);
-    }
+    .input-group input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--primary); }
 
     .auth-submit {
-        width: 100%;
-        padding: 12px;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid var(--primary);
-        color: var(--primary);
-        font-weight: bold;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.3s;
-        text-transform: uppercase;
+        width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--primary); color: var(--primary); font-weight: bold;
+        border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase;
     }
+    .auth-submit:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
 
-    .auth-submit:hover {
-        background: var(--primary);
-        color: #000;
-        box-shadow: 0 0 15px var(--primary);
-    }
-
-    /* PROFILE UI IN MODAL */
+    /* PROFILE UI */
     .profile-stats {
-        display: flex;
-        justify-content: space-around;
-        margin-bottom: 20px;
-        background: rgba(255,255,255,0.05);
-        padding: 15px;
-        border-radius: 8px;
+        display: flex; justify-content: space-around; margin-bottom: 20px;
+        background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;
     }
     .stat-box h3 { margin-bottom: 5px; color: var(--primary); }
     .stat-box p { font-size: 0.9rem; color: #ccc; }
 
-    .theme-selector {
-        margin: 20px 0;
-        text-align: left;
-    }
+    .theme-selector { margin: 20px 0; text-align: left; }
     .theme-selector label { font-size: 0.9rem; color: #aaa; display: block; margin-bottom: 8px; }
     .theme-options { display: flex; gap: 10px; justify-content: center; }
     .theme-btn {
@@ -457,34 +428,19 @@
     .theme-btn:hover { transform: scale(1.2); }
     .theme-btn.selected { border-color: white; transform: scale(1.1); box-shadow: 0 0 10px white; }
 
-    .avatar-selector {
-        margin-bottom: 20px;
-    }
-    .avatar-options {
-        display: flex; gap: 10px; justify-content: center; font-size: 1.5rem; margin-top: 5px;
-    }
-    .avatar-opt {
-        cursor: pointer; opacity: 0.5; transition: 0.2s;
-    }
+    .avatar-selector { margin-bottom: 20px; }
+    .avatar-options { display: flex; gap: 10px; justify-content: center; font-size: 1.5rem; margin-top: 5px; }
+    .avatar-opt { cursor: pointer; opacity: 0.5; transition: 0.2s; }
     .avatar-opt:hover, .avatar-opt.selected { opacity: 1; transform: scale(1.2); }
 
-    /* GAME FRAME MODAL (NEW) */
+    /* STANDARD GAME FRAME MODAL */
     #game-modal {
-        display: none;
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: #000;
-        z-index: 2000;
-        flex-direction: column;
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: #000; z-index: 2000; flex-direction: column;
     }
     .game-frame-header {
-        height: 50px;
-        background: #111;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 20px;
-        border-bottom: 1px solid #333;
+        height: 50px; background: #111; display: flex; align-items: center;
+        justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #333;
     }
     .game-title-display { color: #fff; font-weight: bold; }
     .game-controls button {
@@ -492,9 +448,51 @@
         padding: 5px 12px; border-radius: 4px; cursor: pointer; margin-left: 10px;
     }
     .game-controls button:hover { background: var(--primary); border-color: var(--primary); color: #000; }
-    #game-iframe {
-        flex-grow: 1; width: 100%; border: none; background: #000;
+    #game-iframe { flex-grow: 1; width: 100%; border: none; background: #000; }
+
+    /* --- SECRET GAME MODAL (CUSTOM CANVAS) --- */
+    #secret-game-modal {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: #111; z-index: 3000; flex-direction: column; align-items: center; justify-content: center;
     }
+    #canvas-container {
+        position: relative;
+        box-shadow: 0 0 50px var(--primary);
+        border: 2px solid var(--primary);
+    }
+    canvas { background: #000; display: block; cursor: none; }
+    #secret-ui {
+        position: absolute; top: 20px; left: 20px; color: var(--primary);
+        font-family: 'Courier New', monospace; font-size: 20px; font-weight: bold;
+        pointer-events: none;
+    }
+    #secret-game-over {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        text-align: center; display: none;
+    }
+    #secret-game-over h2 { color: red; font-size: 40px; margin-bottom: 20px; font-family: 'Courier New', monospace; }
+    .secret-btn {
+        background: transparent; border: 2px solid var(--primary); color: var(--primary);
+        padding: 15px 30px; font-size: 18px; font-family: 'Courier New', monospace;
+        cursor: pointer; transition: 0.2s;
+    }
+    .secret-btn:hover { background: var(--primary); color: #000; }
+    .close-secret {
+        position: absolute; top: 20px; right: 20px; color: #555; font-size: 30px; cursor: pointer;
+    }
+    .close-secret:hover { color: #fff; }
+    
+    /* Easter Egg Styles */
+    body.matrix-mode {
+        font-family: 'Courier New', monospace; color: #0f0; background-color: black; background-image: none;
+    }
+    body.matrix-mode * { border-color: #0f0 !important; font-family: 'Courier New', monospace !important; }
+    body.matrix-mode h1, body.matrix-mode .sidebar-title { text-shadow: 0 0 5px #0f0; color: #0f0; }
+    
+    @keyframes barrelRoll { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .barrel-roll { animation: barrelRoll 2s ease-in-out; }
+    .rainbow-text { animation: rainbow 1s infinite; }
+    @keyframes rainbow { 0% { color: red; } 20% { color: yellow; } 40% { color: lime; } 60% { color: blue; } 80% { color: purple; } 100% { color: red; } }
 
   </style>
 </head>
@@ -502,9 +500,6 @@
 
 <div id="tsparticles"></div>
 <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
-<script>
-// We load particles later in the script to ensure color matches theme
-</script>
 
 <nav id="sidebar">
     <div style="margin-bottom: 30px; padding: 10px; text-align: center;">
@@ -542,7 +537,7 @@
     <header>
         <div class="header-left">
             <button id="sidebar-toggle" title="Toggle Sidebar">☰</button>
-            <h1>billybobgames v2</h1>
+            <h1 id="header-logo">billybobgames v2</h1>
         </div>
 
         <div id="search-container">
@@ -564,15 +559,25 @@
                 <span>⏱️ Recently Played</span>
             </div>
             <div class="recent-grid" id="recent-container">
-                </div>
+            </div>
         </section>
 
         <div class="games-grid" id="games-grid">
+            <a href="#" class="game-link dev-only" id="secret-game-card" style="display:none;">
+                <div class="game-card" data-name="the glitch" data-category="strategy action">
+                    <button class="heart-btn" title="Favorite">♥</button>
+                    <div class="game-image">
+                        <img src="https://media.tenor.com/On7kbqha9GYAAAAd/loading-glitch.gif" alt="The Glitch" />
+                    </div>
+                    <div class="game-name">⚠️ THE GLITCH ⚠️</div>
+                </div>
+            </a>
+            
             <a href="./games/bitlife/" class="game-link"><div class="game-card" data-name="bitlife" data-category="simulation strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/bitlife.jpeg" alt="Bitlife" /></div><div class="game-name">Bitlife</div></div></a>
             <a href="./games/2048/" class="game-link"><div class="game-card" data-name="2048" data-category="puzzle strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/2048.png" alt="2048" /></div><div class="game-name">2048</div></div></a>
             <a href="./games/amongus/" class="game-link"><div class="game-card" data-name="amongus" data-category="action strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/amongus.png" alt="Among Us" /></div><div class="game-name">Among Us</div></div></a>
-            <a href="./games/awesometanks/" class="game-link"><div class="game-card" data-name="awesome tanks" data-category="action shooter"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/awesometanks.png" alt="Awesome Tanks" /></div><div class="game-name">Awesome Tanks</div></div></a>
-            <a href="./games/awesometanks2/" class="game-link"><div class="game-card" data-name="awesome tanks 2" data-category="action shooter"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/awesometanks2.png" alt="Awesome Tanks 2" /></div><div class="game-name">Awesome Tanks 2</div></div></a>
+             <a href="./games/awesometanks/" class="game-link"><div class="game-card" data-name="awesome tanks" data-category="action shooter"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/awesometanks.png" alt="Awesome Tanks" /></div><div class="game-name">Awesome Tanks</div></div></a>
+             <a href="./games/awesometanks2/" class="game-link"><div class="game-card" data-name="awesome tanks 2" data-category="action shooter"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/awesometanks2.png" alt="Awesome Tanks 2" /></div><div class="game-name">Awesome Tanks 2</div></div></a>
             <a href="./games/basketballstars/" class="game-link"><div class="game-card" data-name="basketball stars" data-category="sports"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/basketballstars.png" alt="Basketball Stars" /></div><div class="game-name">Basketball Stars</div></div></a>
             <a href="./games/basketrandom/" class="game-link"><div class="game-card" data-name="basket random" data-category="sports"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/basketrandom.png" alt="Basket Random" /></div><div class="game-name">Basket Random</div></div></a>
             <a href="./games/blockblast/" class="game-link"><div class="game-card" data-name="block blast" data-category="puzzle strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/blockblast.jpeg" alt="Block Blast" /></div><div class="game-name">Block Blast</div></div></a>
@@ -619,65 +624,10 @@
             <a href="./games/leveldevil/" class="game-link"><div class="game-card" data-name="level devil" data-category="platformer puzzle"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/leveldevil.png" alt="Level Devil" /></div><div class="game-name">Level Devil</div></div></a>
             <a href="./games/mariobrosbeta/" class="game-link"><div class="game-card" data-name="mario" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/mario.png" alt="Mario" /></div><div class="game-name">Mario</div></div></a>
             <a href="./games/mariobrosupdated/" class="game-link"><div class="game-card" data-name="mario bros" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/mariobros.png" alt="Mario Bros" /></div><div class="game-name">Mario Bros</div></div></a>
-            <a href="./games/minecraft" class="game-link"><div class="game-card" data-name="minecraft" data-category="simulation action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/minecraft.png" alt="Minecraft" /></div><div class="game-name">Minecraft</div></div></a>
-            <a href="./games/monkeymart" class="game-link"><div class="game-card" data-name="monkeymart" data-category="simulation strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/monkeymart.png" alt="Monkey Mart" /></div><div class="game-name">Monkey Mart</div></div></a>
-            <a href="./games/motox3m" class="game-link"><div class="game-card" data-name="motox3m" data-category="driving"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/motox3m.png" alt="Moto X3M" /></div><div class="game-name">Moto X3M</div></div></a>
-            <a href="./games/ngon" class="game-link"><div class="game-card" data-name="n-gon" data-category="action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/ngon.png" alt="N-Gon" /></div><div class="game-name">N-Gon</div></div></a>
-            <a href="./games/ovo" class="game-link"><div class="game-card" data-name="ovo" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/ovo.png" alt="OvO" /></div><div class="game-name">OvO</div></div></a>
-            <a href="./games/ovo2" class="game-link"><div class="game-card" data-name="ovo 2" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/ovo2.jpg" alt="OvO 2" /></div><div class="game-name">OvO 2</div></div></a>
-            <a href="./games/papasfreezeria" class="game-link"><div class="game-card" data-name="papas freezeria" data-category="simulation strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/papasfreezeria.png" alt="Papa's Freezeria" /></div><div class="game-name">Papa's Freezeria</div></div></a>
-            <a href="./games/parkourblock3d/" class="game-link"><div class="game-card" data-name="parkour block" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/parkourblock3d.png" alt="Parkour Block" /></div><div class="game-name">Parkour Block</div></div></a>
-            <a href="./games/parkourblock2/" class="game-link"><div class="game-card" data-name="parkour block 2" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/parkourblock2.png" alt="Parkour Block 2" /></div><div class="game-name">Parkour Block 2</div></div></a>
-            <a href="./games/parkourblock3/" class="game-link"><div class="game-card" data-name="parkour block 3" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/parkourblock3.png" alt="🏆Parkour Block🏆" /></div><div class="game-name">Parkour Block 3</div></div></a>
-            <a href="./games/parkourblock4/" class="game-link"><div class="game-card" data-name="parkour block 4" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/parkourblock4.png" alt="Parkour Block 4" /></div><div class="game-name">Parkour Block 4</div></div></a>
-            <a href="./games/pedro/pedro.html" class="game-link"><div class="game-card" data-name="my friend pedro" data-category="action shooter"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/pedro.jpg" alt="Pedro" /></div><div class="game-name">My Friend Pedro</div></div></a>
-            <a href="./construct/pixelspeedrun.html" class="game-link"><div class="game-card" data-name="pixel speedrun" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/pixelspeedrun.png" alt="Pixel Speedrun" /></div><div class="game-name">Pixel Speedrun</div></div></a>
-            <a href="./games/polytrack/" class="game-link"><div class="game-card" data-name="polytrack" data-category="driving"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/polytrack.jpeg" alt="Polytrack" /></div><div class="game-name">Polytrack</div></div></a>
-            <a href="./games/pokemonemerald/" class="game-link"><div class="game-card" data-name="pokemon emerald" data-category="strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/pokemonemerald.png" alt="Pokemon Emerald" /></div><div class="game-name">Pokemon Emerald</div></div></a>
-            <a href="./games/racesurvival/" class="game-link"><div class="game-card" data-name="race survival" data-category="driving"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/racesurvival.jpeg" alt="Race Survival" /></div><div class="game-name">Race Survival</div></div></a>
-            <a href="./games/retro-bowl/" class="game-link"><div class="game-card" data-name="retro bowl" data-category="sports strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/retrobowl.jpeg" alt="Retro Bowl" /></div><div class="game-name">Retro Bowl</div></div></a>
-            <a href="./games/rooftopsnipers/" class="game-link"><div class="game-card" data-name="rooftop snipers" data-category="action shooter"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/rooftopsnipers.png" alt="Rooftop Snipers" /></div><div class="game-name">Rooftop Snipers</div></div></a>
-            <a href="./games/rocketleague2d/" class="game-link"><div class="game-card" data-name="rocket league 2d" data-category="sports driving"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/rocketleague2d.png" alt="Rocket League 2D" /></div><div class="game-name">Rocket League 2D</div></div></a>
-            <a href="./games/run3/" class="game-link"><div class="game-card" data-name="run 3" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/run3.png" alt="Run 3" /></div><div class="game-name">Run 3</div></div></a>
-            <a href="./construct/shootoutreloaded.html" class="game-link"><div class="game-card" data-name="shoot out reloaded" data-category="action shooter"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/shootoutreloaded.png" alt="Shoot Out Reloaded" /></div><div class="game-name">Shoot Out Reloaded</div></div></a>
-            <a href="./games/skibidistrike/skibidi-strike/" class="game-link"><div class="game-card" data-name="skibidistrike" data-category="action shooter"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/skibidistrike.png" alt="Skibidi Strike" /></div><div class="game-name">Skibidi Strike</div></div></a>
-            <a href="./games/slope/" class="game-link"><div class="game-card" data-name="slope" data-category="driving"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/slope.jpeg" alt="Slope" /></div><div class="game-name">Slope</div></div></a>
-            <a href="./games/snake/" class="game-link"><div class="game-card" data-name="snake" data-category="puzzle action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/Snake.PNG" alt="Snake" /></div><div class="game-name">Snake</div></div></a>
-            <a href="./games/solitaire/" class="game-link"><div class="game-card" data-name="solitare" data-category="puzzle strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/solitaire.png" alt="Solitaire" /></div><div class="game-name">Solitaire</div></div></a>
-            <a href="./construct/spaceisolation.html" class="game-link"><div class="game-card" data-name="space isolation" data-category="action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/spaceisolation.png" alt="Space Isolation" /></div><div class="game-name">Space Isolation</div></div></a>
-            <a href="./games/stealingthediamond/" class="game-link"><div class="game-card" data-name="stealing the diamond" data-category="puzzle action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/stealingthediamond.avif" alt="Stealing the Diamond" /></div><div class="game-name">Stealing the Diamond</div></div></a>
-            <a href="./games/stickmanhook/" class="game-link"><div class="game-card" data-name="stickman hook" data-category="platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/stickmanhook.png" alt="Stickman Hook" /></div><div class="game-name">Stickman Hook</div></div></a>
-            <a href="./games/subway-surfers/" class="game-link"><div class="game-card" data-name="subway surfers" data-category="action platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/subwaysurfers.png" alt="Subway Surfers" /></div><div class="game-name">Subway Surfers</div></div></a>
-            <a href="./games/superhot/" class="game-link"><div class="game-card" data-name="superhot" data-category="action shooter"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/superhot.png" alt="Superhot" /></div><div class="game-name">Superhot</div></div></a>
-            <a href="./games/tag/" class="game-link"><div class="game-card" data-name="tag" data-category="action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/tag.png" alt="Tag" /></div><div class="game-name">Tag</div></div></a>
-            <a href="./games/templerun2/" class="game-link"><div class="game-card" data-name="temple run 2" data-category="action platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/templerun2.png" alt="Temple Run 2" /></div><div class="game-name">Temple Run 2</div></div></a>
-            <a href="./construct/theexecutor.html" class="game-link"><div class="game-card" data-name="the executor" data-category="action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/theexecutor.png" alt="The Executor" /></div><div class="game-name">The Executor</div></div></a>
-            <a href="./games/thefinalearth/" class="game-link"><div class="game-card" data-name="the final earth" data-category="simulation strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/thefinalearth.png" alt="The Final Earth" /></div><div class="game-name">The Final Earth</div></div></a>
-            <a href="./games/thefinalearth2/" class="game-link"><div class="game-card" data-name="the final earth 2" data-category="simulation strategy"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/thefinalearth2.png" alt="The Final Earth 2" /></div><div class="game-name">The Final Earth 2</div></div></a>
-            <a href="./games/theimpossiblequiz/" class="game-link"><div class="game-card" data-name="the impossible quiz" data-category="puzzle"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/theimpossiblequiz.png" alt="The Impossible Quiz" /></div><div class="game-name">The Impossible Quiz</div></div></a>
-            <a href="./games/thereisnogame/" class="game-link"><div class="game-card" data-name="there is no game" data-category="puzzle"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/thereisnogame.png" alt="There is No Game" /></div><div class="game-name">There is No Game</div></div></a>
-            <a href="./construct/throwapotato.html" class="game-link"><div class="game-card" data-name="throw a potato" data-category="puzzle"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/throwapotato.png" alt="Throw a Potato" /></div><div class="game-name">Throw a Potato</div></div></a>
-            <a href="./construct/throwapotatoagain.html" class="game-link"><div class="game-card" data-name="throw a potato again" data-category="puzzle"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/throwapotatoagain.png" alt="Throw a Potato Again" /></div><div class="game-name">Throw a Potato Again</div></div></a>
-            <a href="./construct/throwapotatoinspace.html" class="game-link"><div class="game-card" data-name="throw a potato in space" data-category="puzzle"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/throwapotatoinspace.png" alt="Throw a Potato in Space" /></div><div class="game-name">Throw a Potato in Space</div></div></a>
-            <a href="./games/tinyfishing/" class="game-link"><div class="game-card" data-name="tiny fishing" data-category="sports simulation"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/tinyfishing.png" alt="Tiny Fishing" /></div><div class="game-name">Tiny Fishing</div></div></a>
-            <a href="./tiktok.html" class="game-link"><div class="game-card" data-name="Tiktok"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/tiktok.png" alt="Tiktok" /></div><div class="game-name">🌐 Tiktok 🌐</div></div></a>
-            <a href="./games/tunnel-rush/" class="game-link"><div class="game-card" data-name="tunnel rush" data-category="driving action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/tunnelrush.jpeg" alt="Tunnel Rush" /></div><div class="game-name">Tunnel Rush</div></div></a>
-            <a href="./games/twoball3d/" class="game-link"><div class="game-card" data-name="twoball3d" data-category="driving puzzle"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/twoball3d.png" alt="Two Ball 3D" /></div><div class="game-name">Two Ball 3D</div></div></a>
-            <a href="./games/ultimateflashsonic/" class="game-link"><div class="game-card" data-name="ultimate flash sonic" data-category="platformer action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/ultimateflashsonic.png" alt="Ultimate Flash Sonic" /></div><div class="game-name">Ultimate Flash Sonic</div></div></a>
-            <a href="./games/vex3/" class="game-link"><div class="game-card" data-name="vex 3" data-category="platformer action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/vex3.png" alt="Vex 3" /></div><div class="game-name">Vex 3</div></div></a>
-            <a href="./games/vex4/" class="game-link"><div class="game-card" data-name="vex 4" data-category="platformer action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/vex4.png" alt="Vex 4" /></div><div class="game-name">Vex 4</div></div></a>
-            <a href="./games/vex5/" class="game-link"><div class="game-card" data-name="vex 5" data-category="platformer action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/vex5.png" alt="Vex 5" /></div><div class="game-name">Vex 5</div></div></a>
-            <a href="./games/vex-6/" class="game-link"><div class="game-card" data-name="vex-6" data-category="platformer action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/vex-6.png" alt="Vex 6" /></div><div class="game-name">Vex 6</div></div></a>
-            <a href="./games/vex7/" class="game-link"><div class="game-card" data-name="vex 7" data-category="platformer action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/vex7.jpeg" alt="Vex 7" /></div><div class="game-name">Vex 7</div></div></a>
-            <a href="./games/vex8/" class="game-link"><div class="game-card" data-name="vex 8" data-category="platformer action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/vex8.png" alt="Vex 8" /></div><div class="game-name">Vex 8</div></div></a>
-            <a href="./games/volleyrandom/" class="game-link"><div class="game-card" data-name="volley random" data-category="sports action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/volleyrandom.png" alt="Volley Random" /></div><div class="game-name">Volley Random</div></div></a>
-            <a href="./games/wbwwb/" class="game-link"><div class="game-card" data-name="we become what we behold" data-category="puzzle"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/wbwwb.jpeg" alt="We Become What We Behold" /></div><div class="game-name">We Become What We Behold</div></div></a>
-            <a href="./games/worldshardestgame/" class="game-link"><div class="game-card" data-name="worlds hardest game" data-category="puzzle action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/worldshardestgame.png" alt="World's Hardest Game" /></div><div class="game-name">World's Hardest Game</div></div></a>
-            <a href="./games/worldshardestgame2/" class="game-link"><div class="game-card" data-name="worlds hardest game 2" data-category="puzzle action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/worldshardestgame2.png" alt="World's Hardest Game 2" /></div><div class="game-name">World's Hardest Game 2</div></div></a>
-            <a href="./games/xtrenchrun/" class="game-link"><div class="game-card" data-name="x-trench run" data-category="driving action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/xtrenchrun.png" alt="X-Trench Run" /></div><div class="game-name">X-Trench Run</div></div></a>
-            <a href="./games/yohoho/" class="game-link"><div class="game-card" data-name="yohoho.io" data-category="action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/yohoho.png" alt="Yohoho.io" /></div><div class="game-name">Yohoho.io</div></div></a>
+             <a href="./games/minecraft" class="game-link"><div class="game-card" data-name="minecraft" data-category="simulation action"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/minecraft.png" alt="Minecraft" /></div><div class="game-name">Minecraft</div></div></a>
+             <a href="./games/slope/" class="game-link"><div class="game-card" data-name="slope" data-category="driving"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/slope.jpeg" alt="Slope" /></div><div class="game-name">Slope</div></div></a>
+             <a href="./games/subway-surfers/" class="game-link"><div class="game-card" data-name="subway surfers" data-category="action platformer"><button class="heart-btn" title="Favorite">♥</button><div class="game-image"><img src="./siteimages/gamelogos/subwaysurfers.png" alt="Subway Surfers" /></div><div class="game-name">Subway Surfers</div></div></a>
 
-            <a href="#" class="game-link dev-only"><div class="game-card" data-name="secret dev game"><div class="game-image"><img src="https://via.placeholder.com/300/ff00ff/000000?text=DEV+ACCESS" alt="Dev" /></div><div class="game-name">DEV ACCESS: PROXY TEST</div></div></a>
         </div>
     </main>
 
@@ -689,33 +639,15 @@
         <div id="changelog-container" style="flex:1 1 350px; text-align:left; line-height:1.4;">
           <h3 style="color:var(--primary); font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
           <div class="changelog-entry" style="display:block; margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
+            <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 2.1 — The Glitch</h3>
+            <p style="color:#aaa; font-size:0.9em;">Replaced the janky secret game with a custom-coded arcade survival game.</p>
+          </div>
+          <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
             <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 2.0 — Ultimate</h3>
             <p style="color:#aaa; font-size:0.9em;">Added Login System, Favorites, Recently Played, Themes, and Ranks!</p>
           </div>
-          <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
-            <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 1.215 — February 3, 2026</h3>
-            <p style="color:#aaa; font-size:0.9em;">Added Filters: Action, Platformer, Shooter, Driving, Sports, Puzzle, Strategy, Simulation, Horror</p>
-          </div>
-          <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
-            <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 1.0 — Initial Release</h3>
-            <p style="color:#aaa; font-size:0.9em;">Site Launch! Basic games added.</p>
-          </div>
-          <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
-            <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Beta 0.9</h3>
-            <p style="color:#aaa; font-size:0.9em;">Testing game proxy systems.</p>
-          </div>
-          <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
-            <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Alpha 0.1</h3>
-            <p style="color:#aaa; font-size:0.9em;">Project started by NKC.</p>
-          </div>
           <div style="text-align:center; margin-top: 15px;">
             <button id="show-more" style="background:var(--primary); border:none; padding:10px 20px; border-radius:12px; color:black; cursor:pointer; font-weight:bold;">Show More</button>
-          </div>
-        </div>
-        <div id="other-links-container" style="flex:0 1 300px; height: fit-content; position: sticky; top: 100px; align-self: flex-start;">
-          <h3 style="color:var(--primary); font-size:1.4em; margin-bottom:15px; text-align:center;">Other Links</h3>
-          <div class="link-slot" style="margin-bottom:10px;">
-            <a href="https://classroomhaas.github.io" target="_blank" style="display:block; padding:12px; background:rgba(255,255,255,0.05); color:var(--primary); text-decoration:none; border-radius:8px; text-align:center;">Link 1</a>
           </div>
         </div>
       </div>
@@ -723,12 +655,6 @@
 
     <footer>
       NKC is now mostly maintaining this site with some help from averageperson4.
-      <br /><br />
-      <a href="#" target="_blank">Request a Game/Feedback</a>
-      <br />
-      <a href="#" target="_blank">Check out our YouTube!</a>
-      <br />
-      <a href="#" target="_blank">Join our Discord!</a>
     </footer>
 
 </div>
@@ -737,14 +663,12 @@
     <div class="auth-box">
         <span class="close-modal">&times;</span>
         <h2 id="auth-title">Player Login</h2>
-        
         <form id="auth-form">
             <div class="input-group">
                 <input type="text" id="username" placeholder="Username (e.g., Guest)" required maxlength="12">
             </div>
             <button type="submit" class="auth-submit">Enter World</button>
         </form>
-
         <div id="logged-in-view" style="display:none;">
             <div class="avatar-selector">
                 <label>Choose Avatar:</label>
@@ -756,18 +680,10 @@
                     <span class="avatar-opt" data-av="👽">👽</span>
                 </div>
             </div>
-
             <div class="profile-stats">
-                <div class="stat-box">
-                    <h3 id="user-rank">Novice</h3>
-                    <p>Rank</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="games-played-count">0</h3>
-                    <p>Games Played</p>
-                </div>
+                <div class="stat-box"><h3 id="user-rank">Novice</h3><p>Rank</p></div>
+                <div class="stat-box"><h3 id="games-played-count">0</h3><p>Games Played</p></div>
             </div>
-
             <div class="theme-selector">
                 <label>System Theme:</label>
                 <div class="theme-options">
@@ -778,7 +694,6 @@
                     <div class="theme-btn" data-color="#ffd700" style="background:#ffd700;" title="Gold Legacy"></div>
                 </div>
             </div>
-
             <button id="logout-btn" class="auth-submit" style="background: rgba(255, 77, 77, 0.2); border-color: #ff4d4d; color: #ff4d4d; margin-top:20px;">Log Out</button>
         </div>
     </div>
@@ -796,18 +711,28 @@
     <iframe id="game-iframe" src="" allowfullscreen></iframe>
 </div>
 
+<div id="secret-game-modal">
+    <div class="close-secret" id="close-secret-btn">✕</div>
+    <div id="canvas-container">
+        <canvas id="secret-canvas" width="800" height="600"></canvas>
+        <div id="secret-ui">TIME: <span id="secret-time">0</span></div>
+        <div id="secret-game-over">
+            <h2>SYSTEM FAILURE</h2>
+            <button class="secret-btn" id="restart-secret-btn">REBOOT SYSTEM</button>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
   // --- CLOAKING LOGIC ---
-  // Constant Title Enforcer
-  setInterval(() => {
-    if (document.title !== "Home") {
-        document.title = "Home";
-    }
-  }, 1000);
+  setInterval(() => { if (document.title !== "Home") document.title = "Home"; }, 1000);
+  
+  // --- EASTER EGG CONSOLE MSG ---
+  console.log("%c BILLYBOB GAMES V2 ", "color: #4da6ff; background: #000; font-size: 20px; padding: 10px; border-radius: 5px; font-family: monospace;");
 
-  // --- GLOBAL VARIABLES & STATE ---
+  // --- VARIABLES ---
   const authBtn = document.getElementById('auth-btn');
   const authModal = document.getElementById('auth-modal');
   const closeModal = document.querySelector('.close-modal');
@@ -820,8 +745,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const recentContainer = document.getElementById('recent-container');
   const recentSection = document.getElementById('recently-played-section');
   const gameCards = document.querySelectorAll('.game-card');
-
-  // Game Frame Vars
   const gameModal = document.getElementById('game-modal');
   const gameIframe = document.getElementById('game-iframe');
   const closeGameBtn = document.getElementById('close-game-btn');
@@ -829,57 +752,38 @@ document.addEventListener('DOMContentLoaded', () => {
   const fullscreenBtn = document.getElementById('fullscreen-btn');
   const frameTitle = document.getElementById('frame-title');
 
-  // Default Data
   let currentUser = localStorage.getItem('bbg_username');
-  let userData = {
-      theme: '#4da6ff',
-      avatar: '👤',
-      favorites: [],
-      history: [],
-      clickCount: 0
-  };
+  let userData = { theme: '#4da6ff', avatar: '👤', favorites: [], history: [], clickCount: 0 };
 
-  // --- INITIALIZATION ---
+  // --- INIT ---
   if (currentUser) {
       loadUserData(currentUser);
       updateAuthUI(currentUser);
       applyTheme(userData.theme);
       checkDevMode(currentUser);
   } else {
-      initParticles('#4da6ff'); // Default particles
+      initParticles('#4da6ff');
   }
   
   refreshFavoritesUI();
   refreshHistoryUI();
 
-  // --- AUTH LOGIC ---
+  // --- AUTH ---
   authBtn.addEventListener('click', () => {
       authModal.style.display = 'flex';
-      if (currentUser) {
-          showProfile();
-      } else {
-          showLogin();
-      }
+      if (currentUser) showProfile(); else showLogin();
   });
-
   closeModal.addEventListener('click', () => authModal.style.display = 'none');
   window.addEventListener('click', (e) => { if (e.target === authModal) authModal.style.display = 'none'; });
-
   authForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const user = usernameInput.value.trim();
       if (user) {
           currentUser = user;
           localStorage.setItem('bbg_username', user);
-          // Check if existing data
           const storedData = localStorage.getItem(`bbg_data_${user}`);
-          if(storedData) {
-              userData = JSON.parse(storedData);
-          } else {
-              // Reset defaults for new user
-              userData = { theme: '#4da6ff', avatar: '👤', favorites: [], history: [], clickCount: 0 };
-              saveUserData();
-          }
+          if(storedData) userData = JSON.parse(storedData);
+          else { userData = { theme: '#4da6ff', avatar: '👤', favorites: [], history: [], clickCount: 0 }; saveUserData(); }
           applyTheme(userData.theme);
           updateAuthUI(user);
           refreshFavoritesUI();
@@ -888,130 +792,70 @@ document.addEventListener('DOMContentLoaded', () => {
           authModal.style.display = 'none';
       }
   });
-
   document.getElementById('logout-btn').addEventListener('click', () => {
       localStorage.removeItem('bbg_username');
       currentUser = null;
       userData = { theme: '#4da6ff', avatar: '👤', favorites: [], history: [], clickCount: 0 };
       applyTheme('#4da6ff');
-      authBtn.innerHTML = "Sign In";
-      authBtn.style.background = "rgba(255,255,255,0.05)";
-      authBtn.style.boxShadow = "none";
-      authBtn.style.color = "var(--primary)";
-      
-      // Hide Dev Games & Chat
+      authBtn.innerHTML = "Sign In"; authBtn.style.background = "rgba(255,255,255,0.05)"; authBtn.style.color = "var(--primary)"; authBtn.style.boxShadow = "none";
       document.querySelectorAll('.dev-only').forEach(el => el.style.display = 'none');
       document.getElementById('dev-chat-btn').style.display = 'none';
-      
-      // Hide Favs/Recent
-      favList.style.display = 'none';
-      recentSection.style.display = 'none';
-      
-      // Reset Hearts
+      favList.style.display = 'none'; recentSection.style.display = 'none';
       document.querySelectorAll('.heart-btn').forEach(btn => btn.classList.remove('active'));
-
-      authModal.style.display = 'none';
-      usernameInput.value = '';
+      authModal.style.display = 'none'; usernameInput.value = '';
   });
 
-  // --- THEME & AVATAR LOGIC ---
-  const themeBtns = document.querySelectorAll('.theme-btn');
-  themeBtns.forEach(btn => {
+  // --- THEME ---
+  document.querySelectorAll('.theme-btn').forEach(btn => {
       btn.addEventListener('click', () => {
           const color = btn.getAttribute('data-color');
-          userData.theme = color;
-          applyTheme(color);
-          saveUserData();
-          updateProfileStats(); // re-render selected state
+          userData.theme = color; applyTheme(color); saveUserData(); updateProfileStats();
       });
   });
-
-  const avatarOpts = document.querySelectorAll('.avatar-opt');
-  avatarOpts.forEach(opt => {
+  document.querySelectorAll('.avatar-opt').forEach(opt => {
       opt.addEventListener('click', () => {
-          userData.avatar = opt.getAttribute('data-av');
-          saveUserData();
-          updateAuthUI(currentUser);
-          updateProfileStats();
+          userData.avatar = opt.getAttribute('data-av'); saveUserData(); updateAuthUI(currentUser); updateProfileStats();
       });
   });
 
   function applyTheme(color) {
       document.documentElement.style.setProperty('--primary', color);
       initParticles(color);
-      // Update UI highlights
-      document.querySelectorAll('.theme-btn').forEach(b => {
-          b.classList.toggle('selected', b.getAttribute('data-color') === color);
-      });
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('selected', b.getAttribute('data-color') === color));
   }
-
-  function showLogin() {
-      authForm.style.display = 'block';
-      loggedInView.style.display = 'none';
-      authTitle.innerText = "Player Login";
-  }
-
-  function showProfile() {
-      authForm.style.display = 'none';
-      loggedInView.style.display = 'block';
-      authTitle.innerText = "Player Profile";
-      updateProfileStats();
-  }
-
-  function updateAuthUI(name) {
-      authBtn.innerHTML = `${userData.avatar} ${name}`;
-      authBtn.style.background = "var(--primary)";
-      authBtn.style.color = "#000";
-      authBtn.style.boxShadow = "0 0 10px var(--primary)";
-  }
-
+  function showLogin() { authForm.style.display = 'block'; loggedInView.style.display = 'none'; authTitle.innerText = "Player Login"; }
+  function showProfile() { authForm.style.display = 'none'; loggedInView.style.display = 'block'; authTitle.innerText = "Player Profile"; updateProfileStats(); }
+  function updateAuthUI(name) { authBtn.innerHTML = `${userData.avatar} ${name}`; authBtn.style.background = "var(--primary)"; authBtn.style.color = "#000"; authBtn.style.boxShadow = "0 0 10px var(--primary)"; }
   function updateProfileStats() {
-      // Rank Logic
       const clicks = userData.clickCount;
       let rank = "Novice";
-      if(clicks > 10) rank = "Gamer";
-      if(clicks > 50) rank = "Pro";
-      if(clicks > 100) rank = "Legend";
-      if(clicks > 500) rank = "Godlike";
-
+      if(clicks > 10) rank = "Gamer"; if(clicks > 50) rank = "Pro"; if(clicks > 100) rank = "Legend"; if(clicks > 500) rank = "Godlike";
       document.getElementById('user-rank').innerText = rank;
       document.getElementById('games-played-count').innerText = clicks;
-      
-      // Highlight current avatar
-      avatarOpts.forEach(a => {
-          a.classList.toggle('selected', a.getAttribute('data-av') === userData.avatar);
-      });
+      document.querySelectorAll('.avatar-opt').forEach(a => a.classList.toggle('selected', a.getAttribute('data-av') === userData.avatar));
   }
 
-  // --- GAME FRAME LOGIC (Launch games in iframe) ---
+  // --- GENERIC GAME FRAME ---
   function openGame(url, title) {
       frameTitle.innerText = title;
       gameIframe.src = url;
       gameModal.style.display = 'flex';
-      // Auto focus iframe for keyboard controls
       gameIframe.focus();
   }
-
-  closeGameBtn.addEventListener('click', () => {
-      gameModal.style.display = 'none';
-      gameIframe.src = ''; // Stop game execution
-  });
-
-  reloadGameBtn.addEventListener('click', () => {
-      gameIframe.contentWindow.location.reload();
-  });
-
-  fullscreenBtn.addEventListener('click', () => {
-      if (gameIframe.requestFullscreen) {
-          gameIframe.requestFullscreen();
-      }
-  });
+  closeGameBtn.addEventListener('click', () => { gameModal.style.display = 'none'; gameIframe.src = ''; });
+  reloadGameBtn.addEventListener('click', () => gameIframe.contentWindow.location.reload());
+  fullscreenBtn.addEventListener('click', () => { if (gameIframe.requestFullscreen) gameIframe.requestFullscreen(); });
 
   // --- GAME CLICK HANDLERS ---
   document.querySelectorAll('.game-link').forEach(link => {
-      // Logic for launching game
       link.addEventListener('click', (e) => {
-          e.preventDefault(); // Stop navigation
+          e.preventDefault();
+          
+          // CHECK IF THIS IS THE SECRET GAME
+          if(link.id === 'secret-game-card') {
+              startSecretGame(); // Launch custom canvas game
+              return;
+          }
           
           const card = link.querySelector('.game-card');
           const name = card.getAttribute('data-name');
@@ -1019,10 +863,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const img = card.querySelector('img').src;
           const href = link.getAttribute('href');
 
-          // Launch in Frame
           openGame(href, gameTitle);
 
-          // Update History if User Logged In
           if(currentUser) {
               userData.clickCount++;
               const historyItem = { name, img, href };
@@ -1039,255 +881,289 @@ document.addEventListener('DOMContentLoaded', () => {
       const card = btn.closest('.game-card');
       const name = card.getAttribute('data-name');
       if (userData.favorites.includes(name)) btn.classList.add('active');
-
       btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation(); 
+          e.preventDefault(); e.stopPropagation(); 
           if(!currentUser) return alert("Please Sign In to use Favorites!");
-
           if(userData.favorites.includes(name)) {
-              userData.favorites = userData.favorites.filter(g => g !== name);
-              btn.classList.remove('active');
+              userData.favorites = userData.favorites.filter(g => g !== name); btn.classList.remove('active');
           } else {
-              userData.favorites.push(name);
-              btn.classList.add('active');
+              userData.favorites.push(name); btn.classList.add('active');
           }
-          saveUserData();
-          refreshFavoritesUI();
+          saveUserData(); refreshFavoritesUI();
       });
   });
-
   function refreshFavoritesUI() {
       favContainer.innerHTML = '';
-      if(!currentUser || userData.favorites.length === 0) {
-          favList.style.display = 'none';
-          return;
-      }
+      if(!currentUser || userData.favorites.length === 0) { favList.style.display = 'none'; return; }
       favList.style.display = 'block';
-      
       userData.favorites.forEach(favName => {
           const originalCard = document.querySelector(`.game-card[data-name="${favName}"]`);
           if(originalCard) {
               const href = originalCard.closest('.game-link').getAttribute('href');
-              const link = document.createElement('a');
-              link.className = 'fav-item';
-              // Use openGame wrapper (we must add click listener manually)
+              const link = document.createElement('a'); link.className = 'fav-item';
               link.innerHTML = `<span>★</span> ${originalCard.querySelector('.game-name').innerText}`;
-              
               link.addEventListener('click', () => {
-                 openGame(href, originalCard.querySelector('.game-name').innerText);
+                  // Custom handler for secret game favorite
+                  if(favName === 'the glitch') startSecretGame();
+                  else openGame(href, originalCard.querySelector('.game-name').innerText);
               });
-
               favContainer.appendChild(link);
           }
       });
   }
-
   function refreshHistoryUI() {
       recentContainer.innerHTML = '';
-      if(!currentUser || userData.history.length === 0) {
-          recentSection.style.display = 'none';
-          return;
-      }
+      if(!currentUser || userData.history.length === 0) { recentSection.style.display = 'none'; return; }
       recentSection.style.display = 'block';
-      
       userData.history.forEach(game => {
           const div = document.createElement('div');
-          // Create structure but attach click handler instead of href
-          div.innerHTML = `
-              <div class="game-card" style="width:200px; height:220px; cursor:pointer;">
-                 <div class="game-image"><img src="${game.img}"></div>
-                 <div class="game-name">${game.name}</div>
-              </div>
-          `;
-          div.querySelector('.game-card').addEventListener('click', () => {
-              openGame(game.href, game.name);
-          });
+          div.innerHTML = `<div class="game-card" style="width:200px; height:220px; cursor:pointer;"><div class="game-image"><img src="${game.img}"></div><div class="game-name">${game.name}</div></div>`;
+          div.querySelector('.game-card').addEventListener('click', () => openGame(game.href, game.name));
           recentContainer.appendChild(div);
       });
   }
-
-  // --- DATA PERSISTENCE ---
-  function saveUserData() {
-      if(currentUser) {
-          localStorage.setItem(`bbg_data_${currentUser}`, JSON.stringify(userData));
-      }
-  }
-
-  function loadUserData(user) {
-      const data = localStorage.getItem(`bbg_data_${user}`);
-      if(data) userData = JSON.parse(data);
-  }
-
+  function saveUserData() { if(currentUser) localStorage.setItem(`bbg_data_${currentUser}`, JSON.stringify(userData)); }
+  function loadUserData(user) { const data = localStorage.getItem(`bbg_data_${user}`); if(data) userData = JSON.parse(data); }
   function checkDevMode(user) {
       if(user.toLowerCase() === 'dev' || user.toLowerCase() === 'admin') {
-          // SHOW HIDDEN DEV GAMES
-          document.querySelectorAll('.dev-only').forEach(el => {
-              el.style.display = 'block';
-              el.style.animation = 'fadeIn 1s ease';
-          });
-          // SHOW HIDDEN CHAT BUTTON
-          const chatBtn = document.getElementById('dev-chat-btn');
-          if(chatBtn) {
-            chatBtn.style.display = 'block';
-            chatBtn.style.animation = 'fadeIn 1s ease';
-          }
+          document.querySelectorAll('.dev-only').forEach(el => { el.style.display = 'block'; el.style.animation = 'fadeIn 1s ease'; });
+          const chatBtn = document.getElementById('dev-chat-btn'); if(chatBtn) { chatBtn.style.display = 'block'; chatBtn.style.animation = 'fadeIn 1s ease'; }
       }
   }
-
   function initParticles(color) {
     if(window.tsParticles) {
         tsParticles.load("tsparticles", {
-            fullScreen: { enable: false },
-            fpsLimit: 60,
-            interactivity: {
-                events: { onHover: { enable: true, mode: "repulse" }, resize: true },
-                modes: { repulse: { distance: 100, duration: 0.4 } }
-            },
-            particles: {
-                color: { value: color },
-                links: { color: color, distance: 120, enable: true, opacity: 0.15, width: 1 },
-                move: { enable: true, speed: 1, outModes: { default: "bounce" } },
-                number: { density: { enable: true, area: 800 }, value: 30 },
-                opacity: { value: 0.3 },
-                shape: { type: "circle" },
-                size: { value: { min: 1, max: 3 } }
-            },
-            detectRetina: true
+            fullScreen: { enable: false }, fpsLimit: 60,
+            interactivity: { events: { onHover: { enable: true, mode: "repulse" }, resize: true }, modes: { repulse: { distance: 100, duration: 0.4 } } },
+            particles: { color: { value: color }, links: { color: color, distance: 120, enable: true, opacity: 0.15, width: 1 }, move: { enable: true, speed: 1, outModes: { default: "bounce" } }, number: { density: { enable: true, area: 800 }, value: 30 }, opacity: { value: 0.3 }, shape: { type: "circle" }, size: { value: { min: 1, max: 3 } } }, detectRetina: true
         });
     }
   }
-  
-  // Initial Particle Load (Needs a slight delay to ensure library loads)
-  setTimeout(() => {
-     initParticles(userData.theme);
-  }, 500);
+  setTimeout(() => { initParticles(userData.theme); }, 500);
 
-
-  // ========= SIDEBAR & SEARCH UTILS =========
+  // --- SEARCH & FILTER ---
   const sidebarToggle = document.getElementById('sidebar-toggle');
   const body = document.body;
   if (localStorage.getItem('sidebarCollapsed') === 'true') body.classList.add('sidebar-collapsed');
-  
-  sidebarToggle.addEventListener('click', () => {
-    body.classList.toggle('sidebar-collapsed');
-    localStorage.setItem('sidebarCollapsed', body.classList.contains('sidebar-collapsed'));
-    window.dispatchEvent(new Event('resize'));
-  });
-
-  // Filter Logic
+  sidebarToggle.addEventListener('click', () => { body.classList.toggle('sidebar-collapsed'); localStorage.setItem('sidebarCollapsed', body.classList.contains('sidebar-collapsed')); window.dispatchEvent(new Event('resize')); });
   const categoryBtns = document.querySelectorAll('.category-btn');
   categoryBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      categoryBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      categoryBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active');
       const category = btn.getAttribute('data-filter');
       gameCards.forEach(card => {
         const link = card.closest('.game-link');
-        if(link.classList.contains('dev-only') && currentUser !== 'Dev') return; 
-        
+        if(link.id === 'secret-game-card' && link.style.display === 'none') return;
+        if(link.classList.contains('dev-only') && currentUser !== 'Dev' && link.id !== 'secret-game-card') return; 
         const cardCategory = card.getAttribute('data-category') || 'other';
-        if (category === 'all' || cardCategory.includes(category)) {
-          link.style.display = 'block';
-          link.style.animation = 'fadeIn 0.5s ease'; 
-        } else {
-          link.style.display = 'none';
-        }
+        if (category === 'all' || cardCategory.includes(category)) { link.style.display = 'block'; link.style.animation = 'fadeIn 0.5s ease'; } else { link.style.display = 'none'; }
       });
     });
   });
-
-  // Search Logic
   const searchInput = document.getElementById("search-input");
   const searchPane = document.getElementById("search-pane");
   searchInput.addEventListener("input", () => {
     const query = searchInput.value.trim().toLowerCase();
+    if(query === "matrix") { document.body.classList.toggle('matrix-mode'); searchInput.value = ''; return; }
     searchPane.innerHTML = '';
     if (!query) return searchPane.style.display='none';
     let results = [];
     gameCards.forEach(card => {
       const nameAttr = card.getAttribute("data-name")?.toLowerCase() || "";
       if (nameAttr.includes(query)) {
-        const imgSrc = card.querySelector("img")?.src || '';
-        const title = card.querySelector(".game-name")?.textContent || '';
-        const link = card.parentElement?.href || '#';
-        const entry = document.createElement("a");
-        
-        // Custom click handling for search results to open in Frame
-        entry.href = "#";
-        entry.addEventListener('click', (e) => {
-            e.preventDefault();
-            openGame(link, title);
-        });
-
-        entry.innerHTML = `<div class="search-img"><img src="${imgSrc}"></div><div>${title}</div>`;
-        results.push(entry);
+        const imgSrc = card.querySelector("img")?.src || ''; const title = card.querySelector(".game-name")?.textContent || ''; const link = card.parentElement?.href || '#';
+        const entry = document.createElement("a"); entry.href = "#";
+        entry.addEventListener('click', (e) => { e.preventDefault(); if(title.includes("THE GLITCH")) startSecretGame(); else openGame(link, title); });
+        entry.innerHTML = `<div class="search-img"><img src="${imgSrc}"></div><div>${title}</div>`; results.push(entry);
       }
     });
-    if(results.length){ results.forEach(e => searchPane.appendChild(e)); searchPane.style.display = 'flex'; }
-    else searchPane.style.display = 'none';
+    if(results.length){ results.forEach(e => searchPane.appendChild(e)); searchPane.style.display = 'flex'; } else searchPane.style.display = 'none';
   });
-  
-  // Random Game
    const randomGameBtn = document.getElementById('random-game-btn');
    if(randomGameBtn) {
     randomGameBtn.addEventListener('click', () => {
       const filteredGames = [...document.querySelectorAll('.game-link')].filter(link => !link.classList.contains('dev-only'));
       const randomIndex = Math.floor(Math.random() * filteredGames.length);
-      // Open in Frame instead of navigate
       const link = filteredGames[randomIndex];
       openGame(link.href, link.querySelector('.game-name').innerText);
     });
   }
-
-  // --- CHANGELOG SCROLL ---
-  const changelogBtn = document.getElementById('changelog-btn');
-  if(changelogBtn) {
-      changelogBtn.addEventListener('click', () => {
-          document.getElementById('changelog').scrollIntoView({behavior: 'smooth'});
-      });
-  }
-
-  // --- SHOW MORE / SHOW LESS LOGIC (ONE BY ONE) ---
+  const changelogBtn = document.getElementById('changelog-btn'); if(changelogBtn) { changelogBtn.addEventListener('click', () => { document.getElementById('changelog').scrollIntoView({behavior: 'smooth'}); }); }
   const showMoreBtn = document.getElementById('show-more');
   if(showMoreBtn) {
       showMoreBtn.addEventListener('click', () => {
            const allEntries = document.querySelectorAll('.changelog-entry');
-           
-           if (showMoreBtn.innerText === "Show Less") {
-               // Collapse: hide all except the very first one
-               allEntries.forEach((el, index) => {
-                   if (index !== 0) el.style.display = 'none';
-               });
-               showMoreBtn.innerText = "Show More";
-               document.getElementById('changelog').scrollIntoView({behavior: 'smooth'});
-               return;
-           }
-
-           // Find the next hidden entry
-           let nextHidden = null;
-           let stillHiddenCount = 0;
-
-           // Check visibility based on computed style
-           for(let i = 0; i < allEntries.length; i++) {
-               const style = window.getComputedStyle(allEntries[i]);
-               if (style.display === 'none') {
-                   if (!nextHidden) nextHidden = allEntries[i];
-                   else stillHiddenCount++; // Count how many remain hidden AFTER this one
-               }
-           }
-
-           if (nextHidden) {
-               nextHidden.style.display = 'block';
-               nextHidden.style.animation = 'fadeIn 0.5s ease';
-               
-               // If no more are hidden after this one, switch to Show Less
-               if (stillHiddenCount === 0) {
-                   showMoreBtn.innerText = "Show Less";
-               }
-           }
+           if (showMoreBtn.innerText === "Show Less") { allEntries.forEach((el, index) => { if (index !== 0) el.style.display = 'none'; }); showMoreBtn.innerText = "Show More"; document.getElementById('changelog').scrollIntoView({behavior: 'smooth'}); return; }
+           let nextHidden = null; let stillHiddenCount = 0;
+           for(let i = 0; i < allEntries.length; i++) { const style = window.getComputedStyle(allEntries[i]); if (style.display === 'none') { if (!nextHidden) nextHidden = allEntries[i]; else stillHiddenCount++; } }
+           if (nextHidden) { nextHidden.style.display = 'block'; nextHidden.style.animation = 'fadeIn 0.5s ease'; if (stillHiddenCount === 0) { showMoreBtn.innerText = "Show Less"; } }
       });
   }
+  
+  // --- FIXED KONAMI CODE ---
+  const konamiCode = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
+  let konamiPosition = 0;
+  
+  document.addEventListener('keydown', (e) => {
+      const key = e.key.toLowerCase(); // Case insensitive check
+      
+      if(key === konamiCode[konamiPosition]) {
+          konamiPosition++;
+          console.log(`Konami: ${konamiPosition}/10`); // Debug log to see progress
+          if(konamiPosition === konamiCode.length) {
+              activatePartyMode();
+              konamiPosition = 0;
+          }
+      } else {
+          konamiPosition = 0;
+      }
+  });
+
+  function activatePartyMode() {
+      document.body.classList.add('barrel-roll'); document.querySelectorAll('h1, h2, h3, button, a').forEach(el => { el.classList.add('rainbow-text'); });
+      let hue = 0; const partyInterval = setInterval(() => { hue += 20; document.documentElement.style.setProperty('--primary', `hsl(${hue}, 100%, 50%)`); }, 100);
+      alert("🎉 KONAMI CODE ACTIVATED: PARTY MODE! 🎉");
+      setTimeout(() => { document.body.classList.remove('barrel-roll'); document.querySelectorAll('.rainbow-text').forEach(el => el.classList.remove('rainbow-text')); clearInterval(partyInterval); applyTheme(userData.theme); }, 5000);
+  }
+  
+  const headerLogo = document.getElementById('header-logo');
+  let logoClickCount = 0; let logoClickTimer;
+  headerLogo.addEventListener('click', () => {
+      logoClickCount++; clearTimeout(logoClickTimer); logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 1000);
+      if(logoClickCount === 5) {
+          const secretGame = document.getElementById('secret-game-card');
+          if(secretGame.style.display === 'none') {
+              secretGame.style.display = 'block'; secretGame.style.animation = 'fadeIn 1s ease';
+              alert("⚠️ WARNING: CORRUPTED DATA FOUND ⚠️\n(Check the top of the grid)");
+              document.getElementById('games-grid').scrollIntoView({behavior:'smooth'});
+          }
+          logoClickCount = 0;
+      }
+  });
+
+  // ==========================================
+  // === CUSTOM SECRET GAME ENGINE (The Glitch) ===
+  // ==========================================
+  const secretModal = document.getElementById('secret-game-modal');
+  const canvas = document.getElementById('secret-canvas');
+  const ctx = canvas.getContext('2d');
+  const timeDisplay = document.getElementById('secret-time');
+  const gameOverScreen = document.getElementById('secret-game-over');
+  const restartBtn = document.getElementById('restart-secret-btn');
+  const closeSecretBtn = document.getElementById('close-secret-btn');
+  
+  let gameRunning = false;
+  let gameTime = 0;
+  let animationId;
+  let player = { x: 400, y: 300, size: 20, speed: 5, color: '#00ff00' };
+  let enemies = [];
+  let spawnRate = 60;
+  let frameCount = 0;
+  
+  // Start Game
+  function startSecretGame() {
+      secretModal.style.display = 'flex';
+      canvas.width = 800; // Reset just in case
+      canvas.height = 600;
+      resetGame();
+      gameRunning = true;
+      animate();
+      
+      // Mouse Control
+      canvas.addEventListener('mousemove', (e) => {
+          const rect = canvas.getBoundingClientRect();
+          player.x = e.clientX - rect.left;
+          player.y = e.clientY - rect.top;
+      });
+  }
+  
+  function resetGame() {
+      player.x = canvas.width / 2;
+      player.y = canvas.height / 2;
+      enemies = [];
+      gameTime = 0;
+      frameCount = 0;
+      spawnRate = 60;
+      gameRunning = true;
+      gameOverScreen.style.display = 'none';
+      timeDisplay.innerText = '0';
+      canvas.style.cursor = 'none';
+  }
+  
+  function animate() {
+      if(!gameRunning) return;
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; // Trails
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Update Logic
+      frameCount++;
+      if(frameCount % 60 === 0) {
+          gameTime++;
+          timeDisplay.innerText = gameTime;
+          // Make it harder
+          if(gameTime % 5 === 0 && spawnRate > 10) spawnRate -= 5;
+      }
+      
+      // Spawn Enemies
+      if(frameCount % spawnRate === 0) {
+          const size = Math.random() * 30 + 10;
+          enemies.push({
+              x: Math.random() * canvas.width,
+              y: -50,
+              size: size,
+              speed: Math.random() * 3 + 2 + (gameTime * 0.1),
+              color: `hsl(${Math.random() * 60 + 300}, 100%, 50%)` // Pink/Red/Purple
+          });
+      }
+      
+      // Draw Player
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = userData.theme || '#00ff00';
+      ctx.fillStyle = userData.theme || '#00ff00';
+      ctx.fillRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size);
+      ctx.shadowBlur = 0;
+      
+      // Enemies Loop
+      for(let i = 0; i < enemies.length; i++) {
+          let e = enemies[i];
+          e.y += e.speed;
+          
+          ctx.fillStyle = e.color;
+          ctx.fillRect(e.x, e.y, e.size, e.size);
+          
+          // Collision
+          const dist = Math.hypot(player.x - (e.x + e.size/2), player.y - (e.y + e.size/2));
+          if(dist - e.size/2 - player.size/2 < 1) {
+              gameOver();
+          }
+          
+          // Cleanup
+          if(e.y > canvas.height) {
+              enemies.splice(i, 1);
+              i--;
+          }
+      }
+      
+      animationId = requestAnimationFrame(animate);
+  }
+  
+  function gameOver() {
+      gameRunning = false;
+      cancelAnimationFrame(animationId);
+      gameOverScreen.style.display = 'block';
+      canvas.style.cursor = 'default';
+  }
+  
+  restartBtn.addEventListener('click', () => {
+      resetGame();
+      animate();
+  });
+  
+  closeSecretBtn.addEventListener('click', () => {
+      gameRunning = false;
+      cancelAnimationFrame(animationId);
+      secretModal.style.display = 'none';
+  });
 
 });
 </script>
