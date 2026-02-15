@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -546,10 +547,12 @@
         </div>
 
         <div class="header-actions">
+            <button id="mute-button">Mute Site 🔊</button>
             <button id="smart-proxy-btn">Smart Proxy</button>
             <button id="random-game-btn">🎲 Random</button>
             <button id="changelog-btn">Logs</button>
             <button id="auth-btn">Sign In</button>
+             
         </div>
     </header>
 
@@ -1169,3 +1172,42 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
+<script>
+  // Function to apply the mute setting to all media elements
+  function applyMuteState() {
+    // Get the current mute state from localStorage, default to 'false' if not set
+    const isMuted = localStorage.getItem('siteMuted') === 'true';
+
+    // Select all audio and video elements on the page
+    document.querySelectorAll('audio, video').forEach(element => {
+      element.muted = isMuted;
+    });
+
+    // Update the button text based on the mute state
+    const muteButton = document.getElementById('mute-button');
+    if (muteButton) {
+      muteButton.textContent = isMuted ? '🔇' : '🔊';
+    }
+  }
+
+  // Function to toggle the mute state
+  function toggleMute() {
+    const isMuted = localStorage.getItem('siteMuted') === 'true';
+    // Toggle the state and save it to localStorage
+    localStorage.setItem('siteMuted', (!isMuted).toString());
+    // Apply the new state
+    applyMuteState();
+  }
+
+  // Run when the page loads
+  window.onload = () => {
+    applyMuteState();
+
+    // Add event listener to the mute button
+    const muteButton = document.getElementById('mute-button');
+    if (muteButton) {
+      muteButton.addEventListener('click', toggleMute);
+    }
+  };
+</script>
