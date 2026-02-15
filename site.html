@@ -532,7 +532,7 @@
     
     <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
         <a id="dev-chat-btn" href="./chat.html" style="display: none; color: #ff00ff; text-decoration: none; padding: 10px; border-radius: 8px; text-align: center; background: rgba(255,0,255,0.1); border: 1px solid #ff00ff; font-weight:bold;">
-            💬 SECRET DEV CHAT
+            CHAT [DEV ONLY]
         </a>
     </div>
 </nav>
@@ -696,11 +696,23 @@
             <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 1.215 — February 3, 2026</h3>
             <p style="color:#aaa; font-size:0.9em;">Added Filters: Action, Platformer, Shooter, Driving, Sports, Puzzle, Strategy, Simulation, Horror</p>
           </div>
+          <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
+            <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Version 1.0 — Initial Release</h3>
+            <p style="color:#aaa; font-size:0.9em;">Site Launch! Basic games added.</p>
+          </div>
+          <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
+            <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Beta 0.9</h3>
+            <p style="color:#aaa; font-size:0.9em;">Testing game proxy systems.</p>
+          </div>
+          <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid var(--primary); padding-left:12px;">
+            <h3 style="color:white; margin-bottom:6px; font-size:1.1em;">Alpha 0.1</h3>
+            <p style="color:#aaa; font-size:0.9em;">Project started by NKC.</p>
+          </div>
           <div style="text-align:center; margin-top: 15px;">
             <button id="show-more" style="background:var(--primary); border:none; padding:10px 20px; border-radius:12px; color:black; cursor:pointer; font-weight:bold;">Show More</button>
           </div>
         </div>
-        <div id="other-links-container" style="flex:0 1 300px; height: fit-content;">
+        <div id="other-links-container" style="flex:0 1 300px; height: fit-content; position: sticky; top: 100px; align-self: flex-start;">
           <h3 style="color:var(--primary); font-size:1.4em; margin-bottom:15px; text-align:center;">Other Links</h3>
           <div class="link-slot" style="margin-bottom:10px;">
             <a href="https://classroomhaas.github.io" target="_blank" style="display:block; padding:12px; background:rgba(255,255,255,0.05); color:var(--primary); text-decoration:none; border-radius:8px; text-align:center;">Link 1</a>
@@ -1083,10 +1095,10 @@ document.addEventListener('DOMContentLoaded', () => {
           const div = document.createElement('div');
           // Create structure but attach click handler instead of href
           div.innerHTML = `
-             <div class="game-card" style="width:200px; height:220px; cursor:pointer;">
-                <div class="game-image"><img src="${game.img}"></div>
-                <div class="game-name">${game.name}</div>
-             </div>
+              <div class="game-card" style="width:200px; height:220px; cursor:pointer;">
+                 <div class="game-image"><img src="${game.img}"></div>
+                 <div class="game-name">${game.name}</div>
+              </div>
           `;
           div.querySelector('.game-card').addEventListener('click', () => {
               openGame(game.href, game.name);
@@ -1226,6 +1238,55 @@ document.addEventListener('DOMContentLoaded', () => {
       const link = filteredGames[randomIndex];
       openGame(link.href, link.querySelector('.game-name').innerText);
     });
+  }
+
+  // --- CHANGELOG SCROLL ---
+  const changelogBtn = document.getElementById('changelog-btn');
+  if(changelogBtn) {
+      changelogBtn.addEventListener('click', () => {
+          document.getElementById('changelog').scrollIntoView({behavior: 'smooth'});
+      });
+  }
+
+  // --- SHOW MORE / SHOW LESS LOGIC (ONE BY ONE) ---
+  const showMoreBtn = document.getElementById('show-more');
+  if(showMoreBtn) {
+      showMoreBtn.addEventListener('click', () => {
+           const allEntries = document.querySelectorAll('.changelog-entry');
+           
+           if (showMoreBtn.innerText === "Show Less") {
+               // Collapse: hide all except the very first one
+               allEntries.forEach((el, index) => {
+                   if (index !== 0) el.style.display = 'none';
+               });
+               showMoreBtn.innerText = "Show More";
+               document.getElementById('changelog').scrollIntoView({behavior: 'smooth'});
+               return;
+           }
+
+           // Find the next hidden entry
+           let nextHidden = null;
+           let stillHiddenCount = 0;
+
+           // Check visibility based on computed style
+           for(let i = 0; i < allEntries.length; i++) {
+               const style = window.getComputedStyle(allEntries[i]);
+               if (style.display === 'none') {
+                   if (!nextHidden) nextHidden = allEntries[i];
+                   else stillHiddenCount++; // Count how many remain hidden AFTER this one
+               }
+           }
+
+           if (nextHidden) {
+               nextHidden.style.display = 'block';
+               nextHidden.style.animation = 'fadeIn 0.5s ease';
+               
+               // If no more are hidden after this one, switch to Show Less
+               if (stillHiddenCount === 0) {
+                   showMoreBtn.innerText = "Show Less";
+               }
+           }
+      });
   }
 
 });
