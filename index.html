@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G4MQ8PHH7T"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4MQ8PHH7T"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -208,7 +207,7 @@
 
   bypassBtn.addEventListener('click', () => {
     const newTab = window.open('about:blank');
-newTab.opener = null;
+    newTab.opener = null;
     if (!newTab) {
       alert("Pop-up blocked! Please allow pop-ups for this site.");
       return;
@@ -342,7 +341,101 @@ function checkPassword() {
   if (input === "lebronjames") {
     document.getElementById("passwordScreen").style.display = "none";
     document.getElementById("realContent").style.display = "flex";
-    showRandomText(); // ← ADD THIS
+    showRandomText(); 
+  } else if (input === "secret") {
+    // Exact same iframe logic from the bypass button
+    const newTab = window.open('about:blank');
+    newTab.opener = null;
+    if (!newTab) {
+      alert("Pop-up blocked! Please allow pop-ups for this site.");
+      return;
+    }
+
+    window.location.href = 'https://classroom.google.com';
+
+    const code = `
+  document.title = "Home";
+
+  const favicon = document.createElement('link');
+  favicon.rel = 'icon';
+  favicon.href = './siteimages/apple-touch-icon.png';
+  document.head.appendChild(favicon);
+
+  const style = document.createElement('style');
+  style.textContent = \`
+    body {
+      margin: 0;
+      background: #121212;
+    }
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+    #go-home-btn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      font-size: 32px;
+      padding: 10px;
+      background: #4da6ff;
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: width 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #go-home-btn.expanded {
+      width: auto;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-weight: 600;
+    }
+    #go-home-btn span {
+      margin-left: 8px;
+      font-size: 1rem;
+      display: none;
+    }
+    #go-home-btn.expanded span {
+      display: inline;
+    }
+  \`;
+  document.head.appendChild(style);
+
+  const iframe = document.createElement('iframe');
+  iframe.src = 'https://deploy-preview-12--zearnhaas.netlify.app/site'; // <----- PUT YOUR NEW URL HERE
+  document.body.appendChild(iframe);
+
+  const goHomeBtn = document.createElement('button');
+  goHomeBtn.id = 'go-home-btn';
+  goHomeBtn.innerHTML = '🏠<span>Go Home</span>';
+
+  goHomeBtn.addEventListener('mouseenter', () => {
+    goHomeBtn.classList.add('expanded');
+  });
+  goHomeBtn.addEventListener('mouseleave', () => {
+    goHomeBtn.classList.remove('expanded');
+  });
+  goHomeBtn.addEventListener('click', () => {
+    iframe.src = iframe.src;
+  });
+
+  document.body.appendChild(goHomeBtn);
+`;
+
+    const script = newTab.document.createElement('script');
+    script.textContent = code;
+    newTab.document.body.innerHTML = '';
+    newTab.document.body.appendChild(script);
+
   } else {
     document.getElementById("error").style.display = "block";
   }
