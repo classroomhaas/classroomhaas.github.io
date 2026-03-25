@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://redball4unblock.github.io/sitemap.xml
