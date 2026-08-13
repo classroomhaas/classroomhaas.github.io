@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4MQ8PHH7T"></script>
   <script>
@@ -19,7 +19,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
     
     * { 
       box-sizing: border-box; 
@@ -29,7 +29,7 @@
     
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #181818;
+      background: #000000;
       color: #e0e0e0;
       overflow: hidden;
       height: 100vh;
@@ -49,14 +49,14 @@
       pointer-events: none;
     }
 
-    /* --- GLASSY PASSWORD SCREEN --- */
+    /* --- LIQUID GLASS PASSWORD SCREEN --- */
     #passwordScreen {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: rgba(18, 18, 18, 0.6);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -66,13 +66,14 @@
     }
 
     .glass-card {
-      background: rgba(40, 40, 40, 0.55);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 10, 12, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(24px) saturate(150%);
+      -webkit-backdrop-filter: blur(24px) saturate(150%);
       padding: 40px 45px;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.05);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -83,70 +84,73 @@
 
     #passwordScreen h2 {
       font-family: 'Poppins', sans-serif;
+      font-weight: 300;
       font-size: 2rem;
       margin-bottom: 24px;
-      color: #00aaff;
-      text-shadow: 0 0 8px #00aaff, 0 0 16px rgba(0, 170, 255, 0.6);
+      color: #ffffff;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
     }
 
     #passwordScreen input {
       width: 100%;
-      padding: 12px 18px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
+      padding: 14px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
       font-size: 1rem;
-      background: rgba(20, 20, 20, 0.6);
+      background: rgba(0, 0, 0, 0.4);
       color: #ffffff;
       outline: none;
       transition: all 0.3s ease;
       text-align: center;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
     }
 
     #passwordScreen input:focus {
-      border-color: #00aaff;
-      box-shadow: 0 0 12px rgba(0, 170, 255, 0.4);
-      background: rgba(10, 10, 10, 0.8);
+      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(20, 20, 25, 0.5);
     }
 
     #passwordScreen button {
-      margin-top: 18px;
+      margin-top: 20px;
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       font-size: 1rem;
-      font-weight: bold;
-      background: #00aaff;
-      border: none;
-      border-radius: 12px;
+      font-weight: 400;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
       color: white;
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(0, 170, 255, 0.4);
       transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     #passwordScreen button:hover {
-      background: #0088cc;
-      box-shadow: 0 0 20px rgba(0, 170, 255, 0.8);
+      background: rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
     }
 
     #passwordScreen #error {
-      color: #ff4d4d;
-      margin-top: 14px;
+      color: #ff6b6b;
+      margin-top: 16px;
       font-size: 0.9rem;
-      font-weight: 500;
+      font-weight: 400;
       display: none;
     }
 
     /* Abandoned Notice Style */
     #abandonedNotice {
       display: none;
-      color: #ff4d4d;
+      color: #ff6b6b;
       font-size: 1.05rem;
-      line-height: 1.5;
-      font-weight: 500;
+      line-height: 1.6;
+      font-weight: 300;
     }
 
-    /* --- GLASS MAIN CONTENT --- */
+    /* --- LIQUID GLASS MAIN CONTENT --- */
     #realContent {
       position: relative;
       z-index: 10;
@@ -154,22 +158,23 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: rgba(35, 35, 35, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 45px 50px;
-      border-radius: 24px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      background: rgba(10, 10, 12, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(24px) saturate(150%);
+      -webkit-backdrop-filter: blur(24px) saturate(150%);
+      padding: 50px 60px;
+      border-radius: 32px;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.05);
     }
 
     #title {
       font-family: 'Poppins', sans-serif;
-      font-weight: 700;
+      font-weight: 300;
       font-size: 3.5rem;
-      color: #00aaff;
-      text-shadow: 0 0 10px #00aaff, 0 0 20px rgba(0, 170, 255, 0.6);
-      margin-bottom: 1.5rem;
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      margin-bottom: 2rem;
       letter-spacing: -0.5px;
     }
 
@@ -180,23 +185,25 @@
     }
 
     button#bypass-button {
-      background: #00aaff;
-      border: none;
-      border-radius: 12px;
-      padding: 14px 36px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 16px 40px;
       font-size: 1.1rem;
-      font-weight: bold;
+      font-weight: 400;
       color: white;
       cursor: pointer;
       transition: all 0.3s ease;
       min-width: 180px;
-      box-shadow: 0 0 15px rgba(0, 170, 255, 0.3);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
 
     button#bypass-button:hover {
-      background: #0088cc;
-      box-shadow: 0 0 20px rgba(0, 170, 255, 0.8);
+      background: rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
     }
 
     .no-fix-box {
@@ -208,35 +215,35 @@
 
     .no-fix-box a {
       font-size: 0.95rem;
-      color: #ccc;
+      color: #999;
       text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s ease;
+      font-weight: 400;
+      transition: color 0.3s ease;
     }
 
     .no-fix-box a:hover {
-      color: #00aaff;
-      text-decoration: underline;
+      color: #ffffff;
     }
 
     .no-fix-box div {
       font-size: 0.75rem;
-      color: #888;
-      margin-top: 2px;
+      color: #666;
+      margin-top: 4px;
     }
 
     #random-text {
-      margin-top: 25px;
+      margin-top: 35px;
       font-size: 0.9rem;
-      color: #aaa;
+      color: #888;
       text-align: center;
       max-width: 400px;
-      line-height: 1.4;
+      line-height: 1.5;
+      font-weight: 300;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.96); }
-      to { opacity: 1; transform: scale(1); }
+      from { opacity: 0; transform: scale(0.96); filter: blur(5px); }
+      to { opacity: 1; transform: scale(1); filter: blur(0); }
     }
   </style>
 </head>
@@ -282,12 +289,12 @@
     fullScreen: { enable: false },
     fpsLimit: 60,
     particles: {
-      color: { value: "#4da6ff" },
+      color: { value: "#ffffff" },
       links: {
-        color: "#4da6ff",
+        color: "#ffffff",
         distance: 120,
         enable: true,
-        opacity: 0.2,
+        opacity: 0.05,
         width: 1
       },
       collisions: { enable: false },
@@ -296,13 +303,13 @@
         enable: true,
         outModes: { default: "bounce" },
         random: false,
-        speed: 1,
+        speed: 0.4,
         straight: false
       },
-      number: { density: { enable: true, area: 800 }, value: 40 },
-      opacity: { value: 0.3 },
+      number: { density: { enable: true, area: 800 }, value: 30 },
+      opacity: { value: 0.1 },
       shape: { type: "circle" },
-      size: { value: { min: 1, max: 4 } }
+      size: { value: { min: 1, max: 3 } }
     },
     detectRetina: true
   });
@@ -333,7 +340,7 @@
   style.textContent = \`
     body {
       margin: 0;
-      background: #121212;
+      background: #000000;
     }
     iframe {
       width: 100vw;
@@ -342,33 +349,40 @@
     }
     #go-home-btn {
       position: fixed;
-      top: 15px;
-      right: 15px;
-      font-size: 32px;
-      padding: 10px;
-      background: #4da6ff;
-      border: none;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      padding: 12px;
+      background: rgba(20, 20, 25, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 50%;
       color: #fff;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      transition: width 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+      transition: all 0.3s ease;
       overflow: hidden;
       white-space: nowrap;
-      width: 48px;
-      height: 48px;
+      width: 54px;
+      height: 54px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+    #go-home-btn:hover {
+      background: rgba(40, 40, 45, 0.8);
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+    }
     #go-home-btn.expanded {
       width: auto;
-      border-radius: 8px;
-      padding: 0 14px;
-      font-weight: 600;
+      border-radius: 16px;
+      padding: 0 20px;
+      font-weight: 300;
+      font-family: sans-serif;
     }
     #go-home-btn span {
-      margin-left: 8px;
+      margin-left: 12px;
       font-size: 1rem;
       display: none;
     }
@@ -469,7 +483,7 @@
   style.textContent = \`
     body {
       margin: 0;
-      background: #121212;
+      background: #000000;
     }
     iframe {
       width: 100vw;
@@ -478,33 +492,40 @@
     }
     #go-home-btn {
       position: fixed;
-      top: 15px;
-      right: 15px;
-      font-size: 32px;
-      padding: 10px;
-      background: #4da6ff;
-      border: none;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      padding: 12px;
+      background: rgba(20, 20, 25, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 50%;
       color: #fff;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      transition: width 0.3s ease, border-radius 0.3s ease, padding 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+      transition: all 0.3s ease;
       overflow: hidden;
       white-space: nowrap;
-      width: 48px;
-      height: 48px;
+      width: 54px;
+      height: 54px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+    #go-home-btn:hover {
+      background: rgba(40, 40, 45, 0.8);
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+    }
     #go-home-btn.expanded {
       width: auto;
-      border-radius: 8px;
-      padding: 0 14px;
-      font-weight: 600;
+      border-radius: 16px;
+      padding: 0 20px;
+      font-weight: 300;
+      font-family: sans-serif;
     }
     #go-home-btn span {
-      margin-left: 8px;
+      margin-left: 12px;
       font-size: 1rem;
       display: none;
     }
