@@ -40,7 +40,6 @@
       user-select: none;
     }
 
-    /* Background Particle Canvas */
     #tsparticles {
       position: fixed;
       top: 0; left: 0;
@@ -77,8 +76,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      max-width: 380px;
+      max-width: 420px;
       width: 90%;
+      text-align: center;
     }
 
     #passwordScreen h2 {
@@ -135,6 +135,15 @@
       font-size: 0.9rem;
       font-weight: 500;
       display: none;
+    }
+
+    /* Abandoned Notice Style */
+    #abandonedNotice {
+      display: none;
+      color: #ff4d4d;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      font-weight: 500;
     }
 
     /* --- GLASS MAIN CONTENT --- */
@@ -238,10 +247,17 @@
 <!-- Glassy Password Screen -->
 <div id="passwordScreen">
   <div class="glass-card">
-    <h2>Enter Password</h2>
-    <input type="password" id="passwordInput" placeholder="Password" />
-    <button onclick="checkPassword()">Enter</button>
-    <p id="error">Incorrect password</p>
+    <div id="loginForm">
+      <h2>Enter Password</h2>
+      <input type="password" id="passwordInput" placeholder="Password" />
+      <button onclick="checkPassword()">Enter</button>
+      <p id="error">Incorrect password</p>
+    </div>
+
+    <!-- Abandoned Message -->
+    <div id="abandonedNotice">
+      This site has been abandoned. It isn't being used anymore and there is no way to get onto it.
+    </div>
   </div>
 </div>
 
@@ -400,11 +416,10 @@
     "Would you rather play video games or do your school work? I know which one you chose.",
     "Does anyone want to hop on some games?",
     "I have a dream that every kid will be able to play video games in school.",
-    "Are oranges called oranges because of the color orange or is it because they're orange? What am I talking about again?",
     "Fun Fact: This text has a 1 in 1,000,000 chance of appearing! Edit: No it doesn't that's a lie.",
-    "Fun Fact: This text has a 1 in 14 chance of appearing! Edit: It really does and it's not a lie.",
-    "This text appearing 1 out of 14 times means there are 13 other quotes like this waiting to be discovered!",
-    ".(emit eerf evah uoy sselun) krow ruoy oD",
+    "Fun Fact: This text has a 1 in 12 chance of appearing! Edit: It really does and it's not a lie.",
+    "This text appearing 1 out of 12 times means there are 11 other quotes like this waiting to be discovered!",
+    ".(emit-eerf evah uoy sselun) krow ruoy oD",
     "Special thanks to you!",
     "Recommend some games you like using the request form!",
   ];
@@ -414,13 +429,25 @@
     document.getElementById("random-text").textContent = chosen;
   }
 
+  // --- PASSWORD & ABANDONED LOGIC ---
+  let isAbandonedState = false;
+  let blindBuffer = "";
+
+  function unlockSite() {
+    document.getElementById("passwordScreen").style.display = "none";
+    document.getElementById("realContent").style.display = "flex";
+    showRandomText();
+  }
+
   function checkPassword() {
     const input = document.getElementById("passwordInput").value;
     if (input === "lebronjames") {
-      document.getElementById("passwordScreen").style.display = "none";
-      document.getElementById("realContent").style.display = "flex";
-      showRandomText(); 
+      // Trigger "abandoned" state
+      isAbandonedState = true;
+      document.getElementById("loginForm").style.display = "none";
+      document.getElementById("abandonedNotice").style.display = "block";
     } else if (input === "secret") {
+      // Bypass route directly
       const newTab = window.open('about:blank');
       newTab.opener = null;
       if (!newTab) {
@@ -517,6 +544,23 @@
       document.getElementById("error").style.display = "block";
     }
   }
+
+  // --- BLIND KEYBOARD LISTENER ---
+  window.addEventListener('keydown', function(e) {
+    if (!isAbandonedState) return;
+
+    if (e.key === 'Enter') {
+      if (blindBuffer === 'lebronjames') {
+        unlockSite();
+      } else {
+        blindBuffer = ""; // Reset on incorrect submission
+      }
+    } else if (e.key === 'Backspace') {
+      blindBuffer = blindBuffer.slice(0, -1); // Support character deletion
+    } else if (e.key.length === 1) {
+      blindBuffer += e.key; // Capture standard keys
+    }
+  });
 </script>
 
 </body>
