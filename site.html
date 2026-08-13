@@ -3,27 +3,48 @@
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4MQ8PHH7T"></script>
   <script src="/ruffle/ruffle.js"></script>
-  
+
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-G4MQ8PHH7T');
   </script>
-  
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Zearn</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+    :root {
+      /* ---- token system ---- */
+      --bg: #08080a;
+      --bg-radial: #0e0e12;
+      --glass: rgba(255,255,255,0.045);
+      --glass-strong: rgba(255,255,255,0.075);
+      --border: rgba(255,255,255,0.09);
+      --border-strong: rgba(255,255,255,0.18);
+      --text: #f2f2f4;
+      --text-dim: #8b8b93;
+      --text-faint: #5c5c63;
+      --accent: #c9cbd6;
+      --accent-soft: rgba(201,203,214,0.14);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 8px;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #2b2b2b;
-      color: #e0e0e0;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      background-image: radial-gradient(ellipse 900px 500px at 50% -10%, var(--bg-radial), var(--bg) 65%);
+      color: var(--text-dim);
       position: relative;
     }
-    
+
     /* --- HEADER STYLES --- */
     header {
       position: fixed;
@@ -31,14 +52,16 @@
       left: 50%;
       transform: translateX(-50%);
       width: calc(100% - 22px);
-      background: rgba(58, 58, 58, 0.95); 
-      backdrop-filter: blur(10px); 
-      -webkit-backdrop-filter: blur(10px);
+      max-width: 1200px;
+      background: rgba(14,14,17,0.62);
+      backdrop-filter: blur(18px) saturate(140%);
+      -webkit-backdrop-filter: blur(18px) saturate(140%);
       z-index: 200;
-      padding: 15px 20px;   
-      border-radius: 14px;
+      padding: 14px 18px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
       box-sizing: border-box;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
     }
 
     .header-container {
@@ -52,28 +75,31 @@
     }
 
     .header-container h1 {
-      margin: 0 10px;
-      color: #00aaff;
-      font-size: 1.8em;
-      text-shadow: 0 0 6px #00aaff, 0 0 12px rgba(0,170,255,0.8);
+      margin: 0 14px;
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 1.5em;
+      letter-spacing: 0.01em;
     }
 
     .header-container button {
-      background: #00aaff;
-      border: none;
+      background: var(--glass);
+      border: 1px solid var(--border);
       padding: 7px 14px;
-      border-radius: 12px;
-      color: white;
+      border-radius: 999px;
+      color: var(--text-dim);
       cursor: pointer;
-      font-weight: bold;
-      font-size: 0.85em;
-      transition: 0.3s;
+      font-weight: 500;
+      font-size: 0.82em;
+      transition: 0.2s ease;
       white-space: nowrap;
     }
 
     .header-container button:hover {
-      background: #0088cc;
-      box-shadow: 0 0 12px #00aaff;
+      background: var(--glass-strong);
+      border-color: var(--border-strong);
+      color: var(--text);
     }
 
     /* --- SEARCH BAR --- */
@@ -86,97 +112,106 @@
 
     #search-input {
       width: 170px;
-      padding: 6px 10px;
-      font-size: 0.88rem;
-      border: none;
-      border-radius: 8px;
-      background: #2b2b2b;
-      color: white;
-      box-shadow: 0 0 6px rgba(77,166,255,0.3);
+      padding: 7px 12px;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
     }
+
+    #search-input::placeholder { color: var(--text-faint); }
+    #search-input:focus { outline: none; border-color: var(--border-strong); background: rgba(255,255,255,0.05); }
 
     #search-pane {
       position: absolute;
-      top: calc(100% + 6px);
+      top: calc(100% + 8px);
       left: 0;
       max-width: 90vw;
       width: 260px;
       max-height: 300px;
       overflow-y: auto;
-      background: rgba(30,30,30,0.95);
-      border: 1px solid #4da6ff;
-      border-radius: 10px;
+      background: rgba(12,12,15,0.9);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
       padding: 0.5rem;
       display: none;
       flex-direction: column;
       z-index: 300;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
     }
-    
+
     #search-pane a {
       text-decoration: none;
-      color: white;
+      color: var(--text);
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      margin: 0.4rem 0;
+      margin: 0.35rem 0;
+      padding: 4px 6px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s ease;
     }
 
+    #search-pane a:hover { background: var(--glass); }
+
     #search-pane .search-img {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 6px;
       overflow: hidden;
       flex-shrink: 0;
+      border: 1px solid var(--border);
     }
 
     #search-pane .search-img img { width: 100%; height: 100%; object-fit: cover; }
-    #search-pane .search-name { font-size: 0.9rem; white-space: nowrap; }
+    #search-pane .search-name { font-size: 0.88rem; white-space: nowrap; }
 
     /* --- FILTER BAR STYLES --- */
     #filter-container {
-      display: none; /* CHANGED: Hidden by default */
+      display: none;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       padding-top: 12px;
-      margin-top: 5px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
       overflow-x: auto;
       white-space: nowrap;
-      padding-bottom: 5px; 
-      scrollbar-width: none; 
+      padding-bottom: 4px;
+      scrollbar-width: none;
     }
-    
-    /* Class to show the filters via JavaScript */
+
     #filter-container.active-filter-bar {
       display: flex;
-      animation: fadeIn 0.4s ease;
+      animation: fadeIn 0.3s ease;
     }
 
-    #filter-container::-webkit-scrollbar { display: none; } 
+    #filter-container::-webkit-scrollbar { display: none; }
 
     .filter-btn {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid #00aaff;
-      padding: 6px 14px;
-      border-radius: 15px;
-      color: #00aaff;
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 6px 13px;
+      border-radius: 999px;
+      color: var(--text-dim);
       cursor: pointer;
-      font-weight: bold;
-      font-size: 0.85rem;
-      transition: 0.3s;
+      font-weight: 500;
+      font-size: 0.8rem;
+      transition: 0.2s ease;
       flex-shrink: 0;
     }
 
     .filter-btn:hover {
-      background: #00aaff;
-      color: white;
-      box-shadow: 0 0 10px #00aaff;
+      border-color: var(--border-strong);
+      color: var(--text);
     }
 
     .filter-btn.active {
-      background: #00aaff;
-      color: white;
-      box-shadow: 0 0 15px #00aaff;
+      background: var(--accent-soft);
+      border-color: var(--border-strong);
+      color: var(--text);
     }
 
     /* --- MAIN & GRID --- */
@@ -186,86 +221,83 @@
       padding: 0 1rem;
       position: relative;
       z-index: 10;
-      margin-top: 180px; 
+      margin-top: 150px;
     }
 
     .games-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.1rem;
       margin-top: 2rem;
     }
 
     a.game-link { text-decoration: none; color: inherit; display: block; }
 
     .game-card {
-      background: #404040;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
       text-align: center;
-      height: 300px;
+      height: 280px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
     }
 
     .game-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      transform: translateY(-3px);
+      border-color: var(--border-strong);
+      background: var(--glass-strong);
     }
 
-    .game-image { flex-grow: 1; overflow: hidden; }
-    .game-image img { width: 100%; height: 100%; object-fit: cover; }
-    
+    .game-image { flex-grow: 1; overflow: hidden; filter: saturate(0.92); }
+    .game-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+    .game-card:hover .game-image img { transform: scale(1.04); }
+
     .game-name {
-      font-weight: 600;
-      color: #ffffff;
-      background: #333;
-      padding: 0.5rem;
-      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text);
+      background: rgba(255,255,255,0.03);
+      border-top: 1px solid var(--border);
+      padding: 0.6rem;
+      font-size: 0.92rem;
     }
 
     /* --- CHANGELOG & FOOTER --- */
-    .changelog {
-      max-width: 900px;
-      margin: 3rem auto;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 1rem;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    }
     #changelog {
-      position: relative; 
-      z-index: 10;        
-      background: rgba(43, 43, 43, 0.9); 
-      padding: 40px 20px;
+      position: relative;
+      z-index: 10;
+      padding: 60px 20px 20px;
     }
-    
+
     footer {
       text-align: center;
       padding: 2rem 1rem;
-      color: #ccc;
-      font-size: 0.9rem;
+      color: var(--text-faint);
+      font-size: 0.85rem;
       position: relative;
       z-index: 10;
     }
+
+    footer a { color: var(--text-dim); text-decoration: none; border-bottom: 1px solid var(--border); transition: color 0.2s ease, border-color 0.2s ease; }
+    footer a:hover { color: var(--text); border-color: var(--border-strong); }
 
     /* --- PARTICLES & ANIMATION --- */
     #tsparticles {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      z-index: 0; pointer-events: none; background: #2b2b2b;
+      z-index: 0; pointer-events: none; background: var(--bg);
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     /* --- RESPONSIVE --- */
     @media (max-width: 900px) {
-      main { margin-top: 220px; } 
+      main { margin-top: 210px; }
     }
   </style>
 </head>
@@ -279,16 +311,16 @@ tsParticles.load("tsparticles", {
     fpsLimit: 60,
     interactivity: {
         events: { onHover: { enable: true, mode: "repulse" }, resize: true },
-        modes: { repulse: { distance: 100, duration: 0.4 } }
+        modes: { repulse: { distance: 80, duration: 0.4 } }
     },
     particles: {
-        color: { value: "#4da6ff" },
-        links: { color: "#4da6ff", distance: 120, enable: true, opacity: 0.2, width: 1 },
-        move: { enable: true, speed: 1, outModes: { default: "bounce" } },
-        number: { density: { enable: true, area: 800 }, value: 40 },
-        opacity: { value: 0.3 },
+        color: { value: "#ffffff" },
+        links: { color: "#ffffff", distance: 130, enable: true, opacity: 0.06, width: 1 },
+        move: { enable: true, speed: 0.5, outModes: { default: "bounce" } },
+        number: { density: { enable: true, area: 900 }, value: 32 },
+        opacity: { value: 0.12 },
         shape: { type: "circle" },
-        size: { value: { min: 1, max: 4 } }
+        size: { value: { min: 1, max: 2.5 } }
     },
     detectRetina: true
 });
@@ -307,7 +339,7 @@ tsParticles.load("tsparticles", {
     <button id="toggle-filter-btn">Filters</button>
     <button id="random-game-btn">🎲 Random Game 🎲</button>
   </div>
-  
+
   <div id="filter-container">
     <button class="filter-btn active" data-filter="all">All</button>
     <button class="filter-btn" data-filter="action">Action</button>
@@ -438,49 +470,45 @@ tsParticles.load("tsparticles", {
   </div>
 </main>
 
-<section id="changelog" style="color:white; margin-top:60px; font-family:'Poppins', sans-serif;">
-  <h2 style="font-size:2em; font-weight:700; color:#00aaff; text-shadow:0 0 8px #00aaff; text-align:center; margin-bottom:30px;">
-    Changelog & Other Links
+<section id="changelog" style="color:var(--text-dim); margin-top:60px; font-family:'Space Grotesk', sans-serif;">
+  <h2 style="font-size:1.8em; font-weight:600; color:var(--text); text-align:center; margin-bottom:30px; letter-spacing:0.01em;">
+    Changelog &amp; Other Links
   </h2>
-  <div style="display:flex; justify-content:center; gap:40px; flex-wrap:wrap;">
-    
-    <div id="changelog-container" style="flex:1 1 350px; max-width:700px; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:left; font-size:0.95em; line-height:1.4;">
-      <h3 style="color:#00aaff; font-size:1.4em; text-align:center; margin-bottom:15px;">Changelog</h3>
+  <div style="display:flex; justify-content:center; gap:24px; flex-wrap:wrap;">
 
-      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
-        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.216 — March 24, 2026</h3>
+    <div id="changelog-container" style="flex:1 1 350px; max-width:700px; background:var(--glass); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:left; font-size:0.92em; line-height:1.5; font-family:'Inter', sans-serif;">
+      <h3 style="color:var(--text); font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1.2em; text-align:center; margin-bottom:16px;">Changelog</h3>
+
+      <div class="changelog-entry" style="margin-bottom:20px; border-left:1px solid var(--border-strong); padding-left:14px;">
+        <h3 style="color:var(--text); margin-bottom:6px; font-size:1.05em; font-weight:600; font-family:'Space Grotesk', sans-serif;">Version 1.216 — March 24, 2026</h3>
         <p>Added 2 games:</p>
         <p> - 2 Minute Football</p>
         <p> - Slither.io</p>
       </div>
-      
-      <div class="changelog-entry" style="margin-bottom:20px; border-left:3px solid #00aaff; padding-left:12px;">
-        <h3 style="color:#00aaff; margin-bottom:6px; font-size:1.2em;">Version 1.215 — February 3, 2026</h3>
+
+      <div class="changelog-entry" style="margin-bottom:20px; border-left:1px solid var(--border-strong); padding-left:14px;">
+        <h3 style="color:var(--text); margin-bottom:6px; font-size:1.05em; font-weight:600; font-family:'Space Grotesk', sans-serif;">Version 1.215 — February 3, 2026</h3>
         <p>Added Filters</p>
       </div>
-      
+
       <div style="text-align:center; margin-top:10px;">
-        <button id="show-more" style="background:#00aaff; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s;">Show More</button>
+        <button id="show-more" style="background:var(--glass-strong); border:1px solid var(--border); padding:9px 18px; border-radius:999px; color:var(--text); cursor:pointer; font-weight:500; font-size:0.88em; transition:0.2s;">Show More</button>
       </div>
     </div>
-    
-    <div id="other-links-container" style="flex:0 1 300px; max-width:350px; background:rgba(20,20,20,0.9); border-radius:18px; padding:20px; box-shadow:0 0 20px rgba(0,170,255,0.3); text-align:center; height: fit-content;">
-      <h3 style="color:#00aaff; font-size:1.4em; margin-bottom:15px;">Other Links</h3>
-      
-      <div class="link-slot" style="margin-bottom:15px;">
-        <a href="https://classroomhaas.github.io" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Link 1</a>
+
+    <div id="other-links-container" style="flex:0 1 300px; max-width:350px; background:var(--glass); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:center; height: fit-content;">
+      <h3 style="color:var(--text); font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1.2em; margin-bottom:16px;">Other Links</h3>
+
+      <div class="link-slot" style="margin-bottom:12px;">
+        <a href="https://classroomhaas.github.io" target="_blank" style="display:block; padding:11px 20px; background:rgba(255,255,255,0.03); border:1px solid var(--border); color:var(--text-dim); text-decoration:none; border-radius:999px; font-weight:500; font-family:'Inter', sans-serif; font-size:0.9em; transition:0.2s;">Link 1</a>
       </div>
-      
-      <div class="link-slot" style="margin-bottom:15px;">
-        <a href="https://zearnhaas.netlify.app/" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 1</a>
+
+      <div class="link-slot" style="margin-bottom:12px;">
+        <a href="https://zearnhaas.netlify.app/" target="_blank" style="display:block; padding:11px 20px; background:rgba(255,255,255,0.03); border:1px solid var(--border); color:var(--text-dim); text-decoration:none; border-radius:999px; font-weight:500; font-family:'Inter', sans-serif; font-size:0.9em; transition:0.2s;">Backup 1</a>
       </div>
-      
-      <div class="link-slot" style="margin-bottom:15px;">
-        <a href="https://boilafiles.netlify.app/" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 2</a>
-      </div>
-      
+
       <div class="link-slot">
-        <a href="https://zearnhaas.github.io" target="_blank" style="display:block; padding:12px 20px; background:rgba(0,170,255,0.1); color:#00aaff; text-decoration:none; border-radius:12px; font-weight:bold; transition:0.3s;">Backup 3 (OLD)</a>
+        <a href="https://zearnhaas.github.io" target="_blank" style="display:block; padding:11px 20px; background:rgba(255,255,255,0.03); border:1px solid var(--border); color:var(--text-dim); text-decoration:none; border-radius:999px; font-weight:500; font-family:'Inter', sans-serif; font-size:0.9em; transition:0.2s;">Backup 3 (OLD)</a>
       </div>
     </div>
 
@@ -488,19 +516,19 @@ tsParticles.load("tsparticles", {
 </section>
 
 <footer>
-  NKC is now mostly maintaining this site with some help from averageperson4.
+  Welcome back everyone!
   <br /><br />
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSehIZWpUlPu8cv4Ew4hIhjYopDhIsQwGViUc1NYf9YrvBGecA/viewform?usp=dialog" target="_blank" style="color: #4da6ff; text-decoration: underline;">
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSehIZWpUlPu8cv4Ew4hIhjYopDhIsQwGViUc1NYf9YrvBGecA/viewform?usp=dialog" target="_blank">
     Request a Game/Feedback
   </a>
   <br />
- <!-- <a href="./chat.html" style="color: #4da6ff; text-decoration: underline;">Chat (WIP)</a>
+ <!-- <a href="./chat.html">Chat (WIP)</a>
   <br /> -->
-  <a href="https://www.youtube.com/@billybobgamesv2" target="_blank" style="color: #4da6ff; text-decoration: underline;">
+  <a href="https://www.youtube.com/@billybobgamesv2" target="_blank">
     Check out our YouTube!
   </a>
   <br />
-  <a href="https://discord.gg/qG7x2QWEXA" target="_blank" style="color: #4da6ff; text-decoration: underline;">
+  <a href="https://discord.gg/qG7x2QWEXA" target="_blank">
     Join our Discord!
   </a>
 </footer>
@@ -513,16 +541,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterContainer = document.getElementById('filter-container');
 
   toggleFilterBtn.addEventListener('click', () => {
-    // Toggles the visibility class
     filterContainer.classList.toggle('active-filter-bar');
-    
-    // Optional: Changes button color when bar is open
+
     if(filterContainer.classList.contains('active-filter-bar')){
-      toggleFilterBtn.style.background = "#0088cc";
-      toggleFilterBtn.style.boxShadow = "0 0 12px #00aaff";
+      toggleFilterBtn.style.background = "rgba(255,255,255,0.09)";
+      toggleFilterBtn.style.borderColor = "rgba(255,255,255,0.22)";
     } else {
-      toggleFilterBtn.style.background = "#00aaff";
-      toggleFilterBtn.style.boxShadow = "none";
+      toggleFilterBtn.style.background = "";
+      toggleFilterBtn.style.borderColor = "";
     }
   });
 
@@ -577,8 +603,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let shown = 1;
   const showLessBtn = document.createElement('button');
   showLessBtn.textContent = 'Show Less';
-  showLessBtn.style.cssText = `background:#444; border:none; padding:10px 20px; border-radius:12px; color:white; cursor:pointer; font-weight:bold; font-size:0.95em; transition:0.3s; display:none; margin-left:10px;`;
-  
+  showLessBtn.style.cssText = `background:rgba(255,255,255,0.03); border:1px solid var(--border); padding:9px 18px; border-radius:999px; color:var(--text-dim); cursor:pointer; font-weight:500; font-size:0.88em; transition:0.2s; display:none; margin-left:10px;`;
+
   if(showMoreBtn) {
     showMoreBtn.parentNode.appendChild(showLessBtn);
     entries.forEach((entry,index) => { if(index > 0) entry.style.display='none'; });
@@ -604,11 +630,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ========= PROXY BUTTONS =========
-  const proxyUrl = './proxy.html'; 
+  const proxyUrl = './proxy.html';
   const smartProxyBtn = document.getElementById('smart-proxy-btn');
   const proxyHomeBtn = document.getElementById('proxy-home-btn');
   if(smartProxyBtn) smartProxyBtn.addEventListener('click', () => window.location.href = proxyUrl);
-  if(proxyHomeBtn) proxyHomeBtn.addEventListener('click', () => 
+  if(proxyHomeBtn) proxyHomeBtn.addEventListener('click', () =>
     window.open("https://docs.google.com/forms/d/e/1FAIpQLSeEDxNxyOYUb0g0hH12EijhNAXDRmr0k0JrtdThVjpFIcbfyg/viewform?usp=dialog", "_blank")
   );
 
@@ -635,11 +661,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const category = btn.getAttribute('data-filter');
 
       gameCardsForFilter.forEach(card => {
-        const link = card.closest('.game-link'); 
+        const link = card.closest('.game-link');
         const cardCategory = card.getAttribute('data-category') || 'other';
         if (category === 'all' || cardCategory.includes(category)) {
           link.style.display = 'block';
-          link.style.animation = 'fadeIn 0.5s ease'; 
+          link.style.animation = 'fadeIn 0.5s ease';
         } else {
           link.style.display = 'none';
         }
