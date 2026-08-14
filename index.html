@@ -141,15 +141,6 @@
       display: none;
     }
 
-    /* Abandoned Notice Style */
-    #abandonedNotice {
-      display: none;
-      color: #ff6b6b;
-      font-size: 1.05rem;
-      line-height: 1.6;
-      font-weight: 300;
-    }
-
     /* --- LIQUID GLASS MAIN CONTENT --- */
     #realContent {
       position: relative;
@@ -259,11 +250,6 @@
       <input type="password" id="passwordInput" placeholder="Password" />
       <button onclick="checkPassword()">Enter</button>
       <p id="error">Incorrect password</p>
-    </div>
-
-    <!-- Abandoned Message -->
-    <div id="abandonedNotice">
-      This site has been abandoned. It isn't being used anymore and there is no way to get onto it.
     </div>
   </div>
 </div>
@@ -443,10 +429,7 @@
     document.getElementById("random-text").textContent = chosen;
   }
 
-  // --- PASSWORD & ABANDONED LOGIC ---
-  let isAbandonedState = false;
-  let blindBuffer = "";
-
+  // --- PASSWORD LOGIC ---
   function unlockSite() {
     document.getElementById("passwordScreen").style.display = "none";
     document.getElementById("realContent").style.display = "flex";
@@ -456,10 +439,8 @@
   function checkPassword() {
     const input = document.getElementById("passwordInput").value;
     if (input === "lebronjames") {
-      // Trigger "abandoned" state
-      isAbandonedState = true;
-      document.getElementById("loginForm").style.display = "none";
-      document.getElementById("abandonedNotice").style.display = "block";
+      // Directly unlock the site
+      unlockSite();
     } else if (input === "secret") {
       // Bypass route directly
       const newTab = window.open('about:blank');
@@ -565,23 +546,6 @@
       document.getElementById("error").style.display = "block";
     }
   }
-
-  // --- BLIND KEYBOARD LISTENER ---
-  window.addEventListener('keydown', function(e) {
-    if (!isAbandonedState) return;
-
-    if (e.key === 'Enter') {
-      if (blindBuffer === 'lebronjames') {
-        unlockSite();
-      } else {
-        blindBuffer = ""; // Reset on incorrect submission
-      }
-    } else if (e.key === 'Backspace') {
-      blindBuffer = blindBuffer.slice(0, -1); // Support character deletion
-    } else if (e.key.length === 1) {
-      blindBuffer += e.key; // Capture standard keys
-    }
-  });
 </script>
 
 </body>
