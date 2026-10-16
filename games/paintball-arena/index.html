@@ -58,7 +58,7 @@ body.play>canvas{cursor:none}
 <button onmousedown="event.preventDefault()" onclick="pauseGame()" style="position:absolute;bottom:14px;left:calc(50% - 55px);pointer-events:auto;margin:0;padding:6px 14px;font-size:13px;opacity:.85">☰ Menu (Esc)</button><div id="ban"></div><div id="dmg"></div><div id="dead"></div><div id="sb"></div></div>
 <div id="menu" class="ov">
 <div id="main" class="pn"><h1>PAINTBALL ARENA</h1><label>Your name<input id="pn" maxlength="12"></label>
-<button class="big pri" onclick="show('play')">▶ PLAY (Practice vs bots)</button><button class="big" onclick="show('mpm')">🌐 Multiplayer (PeerJS)</button><button class="big" onclick="show('locker')">Weapon Locker</button><button class="big" onclick="show('cust')">Customization</button>
+<button class="big pri" onclick="show('play')">▶ PLAY (Practice vs bots)</button><button class="big" onclick="show('mpm')">🌐 Multiplayer</button><button class="big" onclick="show('locker')">Weapon Locker</button><button class="big" onclick="show('cust')">Customization</button>
 <button class="big" onclick="show('settings')">Settings</button><button class="big" onclick="show('stats')">Statistics &amp; Credits</button>
 <div class="sm">WASD move · Mouse aim · LMB shoot · RMB zoom · Space jump · Shift sprint · R reload · 1-5 weapons · Tab scoreboard</div><div class="sm" style="margin-top:14px;opacity:.4;font-size:11px">&copy; BillyBobGamesV2 2026</div></div>
 <div id="play" class="pn"><h2>Match Setup</h2>
@@ -241,7 +241,7 @@ function start(o){o=o||{};try{if(!AC)AC=new(window.AudioContext||window.webkitAu
  ren.shadowMap.enabled=S.q>0;sun.castShadow=S.q>0;size();
  if(EG)scene.remove(EG);EG=new THREE.Group();scene.add(EG);build(mp);if(M.mode=='ctf')mkFlags();if(M.mode=='koth')mkZone();
  for(const p of PR){p.on=0;p.m.visible=false}for(const p of PT){p.life=0;p.m.visible=false}for(const s of SP)s.visible=false;$('feed').innerHTML='';
- E=[];const nm=NAMES.slice().sort(()=>R()-.5);if(o.ro){o.ro.forEach((r,i)=>{const e=mkEnt(r[0],r[1],i==o.id);if(i==o.id)P=e;E.push(e)})}else{const ff=M.mode=='ffa',K=o.nb!=null?o.nb+MP.conns.filter(c=>c.lid!=null&&c.open).length:(ff?n-1:n*2-1);P=mkEnt(0,nm2(),1);E.push(P);for(let i=0;i<K;i++)E.push(mkEnt(ff?i+1:(i%2?0:1),nm[i]))}E.forEach((e,i)=>e.id=i);
+ E=[];const nm=NAMES.slice().sort(()=>R()-.5);if(o.ro){o.ro.forEach((r,i)=>{const e=mkEnt(r[0],r[1],i==o.id);if(i==o.id)P=e;E.push(e)})}else{const ff=M.mode=='ffa',TL=!ff&&o.tl,K=TL?o.tl.length:o.nb!=null?o.nb+MP.conns.filter(c=>c.lid!=null&&c.open).length:(ff?n-1:n*2-1);P=mkEnt(TL?o.pt:0,nm2(),1);E.push(P);for(let i=0;i<K;i++)E.push(mkEnt(ff?i+1:(TL?o.tl[i]:(i%2?0:1)),nm[i]))}E.forEach((e,i)=>e.id=i);
  for(const e of E)spawn(e);equip(S.eq);K={};trig=0;ads=0;state='play';$('menu').style.display='none';$('hud').style.display='block';
  $('xh').style.setProperty('--xs',S.xs+'px');$('sb').style.display='none';$('fps').style.display=S.fp?'block':'none';
  const b=$('ban');b.textContent='FIGHT!';b.className='';void b.offsetWidth;b.className='on';jingle([392,523,659,784]);lockPtr()}
@@ -332,27 +332,37 @@ function cList(){const L=CAT[cTb],k=CK[cTb];$('citems').innerHTML='<div class="s
 function cPick(i){const L=CAT[cTb],k=CK[cTb],pr=L[i][L[i].length-1];if(!S.ow[k].includes(i)){if(S.coins<pr)return $('cmsg').textContent='Not enough coins';S.coins-=pr;S.ow[k].push(i);$('cmsg').textContent='Purchased '+L[i][0]}else $('cmsg').textContent='';S.ap[cTb]=S.ap[cTb]==i&&i?0:i;save();try{pvBuild()}catch(e){}cList()}
 function cReset(){S.ap=[0,0,0];save();try{pvBuild()}catch(e){}cList()}
 function coverPt(b,t){let best=null,bd=18;for(const k of M.boxes){if(k.h<1.3||Math.max(k.x1-k.x0,k.z1-k.z0)>20)continue;const cx=(k.x0+k.x1)/2,cz=(k.z0+k.z1)/2,d=Math.hypot(cx-b.x,cz-b.z);if(d<bd){const ux=cx-t.x,uz=cz-t.z,ul=Math.hypot(ux,uz)||1,hw=Math.max(k.x1-k.x0,k.z1-k.z0)/2+1.3;best={x:cx+ux/ul*hw,z:cz+uz/ul*hw};bd=d}}return best}
-function rematch(){start({nb:effBots()});MP.conns.forEach(c=>{if(c.open&&c.hello){c.eid=null;hData(c,c.hello)}})}
+function rematch(){start(startOpts());MP.conns.forEach(c=>{if(c.open&&c.hello){c.eid=null;hData(c,c.hello)}})}
 function uiApply(){$('hud').style.zoom=S.ui;$('menu').style.zoom=S.ui;document.body.classList.toggle('cb',!!S.cb);document.body.classList.toggle('rm',!!S.rm)}
 $('us').oninput=e=>{S.ui=+e.target.value;uiApply();save()};$('cbx').onchange=e=>{S.cb=e.target.checked?1:0;uiApply();save()};$('rm').onchange=e=>{S.rm=e.target.checked?1:0;uiApply();save()};uiApply();
 /* ---------- friend room lobby ---------- */
 const lmsg=t=>$('lmsg').textContent=t;
 function lfill(){$('lmp').value=$('mp').value;$('lmd').value=$('md').value;$('ldf').value=$('df').value;$('lsz').innerHTML=$('sz').innerHTML;$('lln').innerHTML=$('ln').innerHTML;$('lsz').value=$('sz').value;$('lln').value=$('ln').value;$('lszl').textContent=$('szl').textContent;$('llnl').textContent=$('lnl').textContent}
-function hostLobby(){MP.lid=0;$('lmp').innerHTML=$('mp').innerHTML;$('lmd').innerHTML=$('md').innerHTML;$('ldf').innerHTML=$('df').innerHTML;lfill();lmsg('Ready when you are!');lobbyBc()}
+function hostLobby(){MP.lid=0;MP.pt={};MP.bt=[];MP.tw=null;MP.nb=null;$('lmp').innerHTML=$('mp').innerHTML;$('lmd').innerHTML=$('md').innerHTML;$('ldf').innerHTML=$('df').innerHTML;lfill();lmsg('Ready when you are!');lobbyBc()}
 function lset(){const mc=$('md').value!==$('lmd').value;$('mp').value=$('lmp').value;$('df').value=$('ldf').value;if(mc){$('md').value=$('lmd').value;mdDesc()}else{$('sz').value=$('lsz').value;$('ln').value=$('lln').value}lfill();lobbyBc()}
 function lobbyAdd(c,m){const cap=$('md').value=='ffa'?+$('sz').value:+$('sz').value*2;if(MP.conns.filter(x=>x.lid!=null).length+1>=cap){c.send({t:'full'});setTimeout(()=>c.close(),300);return}
  let n=String(m.n||'Player').replace(/[^\w ]/g,'').slice(0,12)||'Player';if(n==nm2()||MP.conns.some(x=>x.nm==n))n=n.slice(0,10)+(10+R()*90|0);c.nm=n;c.lid=(MP.lid=(MP.lid||0)+1);MP.msg=n+' joined!';lobbyBc();lmsg(MP.msg)}
-function lobbyBc(){const pl=[[0,nm2(),1]].concat(MP.conns.filter(c=>c.lid!=null&&c.open).map(c=>[c.lid,c.nm,0])),st=['mp','md','df','sz','ln'].map(i=>$(i).selectedOptions[0].text).concat('Bots: '+effBots());
- MP.conns.forEach(c=>{if(c.open&&c.lid!=null)c.send({t:'L',pl,st,me:c.lid,code:MP.code,link:MP.link,msg:MP.msg||''})});renderLobby({pl,st,me:0,code:MP.code,link:MP.link})}
+function lobbyBc(){const ff=$('md').value=='ffa',T=teams(),ls=MP.conns.filter(c=>c.lid!=null&&c.open),pl=[[0,nm2(),1,ff?-1:T.out[0]]].concat(ls.map(c=>[c.lid,c.nm,0,ff?-1:T.out[c.lid]])),bl=ff?T.bt.map(()=>-1):T.bt,st=['mp','md','df','sz','ln'].map(i=>$(i).selectedOptions[0].text);
+ MP.conns.forEach(c=>{if(c.open&&c.lid!=null)c.send({t:'L',pl,bl,st,me:c.lid,code:MP.code,link:MP.link,msg:MP.msg||''})});renderLobby({pl,bl,st,me:0,code:MP.code,link:MP.link})}
 function clobby(d){MP.lobby=1;MP.on=1;MP.link=d.link;renderLobby(d)}
-function renderLobby(d){show('lobby');const h=MP.host;$('lcode').textContent=d.code;$('llink').textContent=d.link;$('lsetH').style.display=h?'block':'none';$('lsetC').style.display=h?'none':'block';$('lsetC').textContent=d.st.join(' | ');$('lcnt').textContent='('+d.pl.length+')';
- $('lpl').innerHTML=d.pl.map(p=>`<div style="display:flex;align-items:center;gap:8px;margin:6px 0"><span style="width:22px">${p[2]?'&#128081;':''}</span><b style="flex:1;text-align:left;${p[0]==d.me?'color:#ffd23f':''}">${p[1]}${p[0]==d.me?' (you)':''}</b>${h&&!p[2]?`<button onclick="lkick(${p[0]},0)">Kick</button><button class="pri" onclick="lkick(${p[0]},1)">Ban</button>`:''}</div>`).join('');$('lstart').style.display=h?'block':'none';if(h)$('lbn').textContent=effBots()+' (max '+Math.max(0,capN()-humansN())+')';if(!h)lmsg(d.msg||'Waiting for the host to start...')}
+function renderLobby(d){show('lobby');const h=MP.host;$('lcode').textContent=d.code;$('llink').textContent=d.link;$('lsetH').style.display=h?'block':'none';$('lsetC').style.display=h?'none':'block';$('lsetC').textContent=d.st.join(' | ');$('lcnt').textContent='('+d.pl.length+' players, '+d.bl.length+' bots)';
+ const tb=(t,on)=>t<0?'':on?`<button style="background:${t?'var(--red)':'#2e7bff'}" onclick="${on}">${t?'Red':'Blue'}</button>`:`<span style="padding:6px 12px;border-radius:10px;background:${t?'var(--red)':'#2e7bff'}">${t?'Red':'Blue'}</span>`,
+ row=(l,n,me,t,on,x)=>`<div style="display:flex;align-items:center;gap:8px;margin:6px 0"><span style="width:22px">${l}</span><b style="flex:1;text-align:left;${me?'color:#ffd23f':''}">${n}${me?' (you)':''}</b>${tb(t,h?on:'')}${x}</div>`;
+ $('lpl').innerHTML=d.pl.map(p=>row(p[2]?'&#128081;':'',p[1],p[0]==d.me,p[3],`ltm('p',${p[0]})`,h&&!p[2]?`<button onclick="lkick(${p[0]},0)">Kick</button><button class="pri" onclick="lkick(${p[0]},1)">Ban</button>`:'')).join('')+d.bl.map((t,i)=>row('&#129302;','Bot '+(i+1),0,t,`ltm('b',${i})`,h?`<button onclick="lrm(${i})">&times;</button>`:'')).join('');
+ $('lstart').style.display=h?'block':'none';if(h)$('lbn').textContent=effBots()+' (max '+Math.max(0,capN()-humansN())+')';if(!h)lmsg(d.msg||'Waiting for the host to start...')}
 function lkick(id,ban){const c=MP.conns.find(x=>x.lid===id);if(!c)return;if(ban){MP.bans.add(c.peer);MP.bans.add(c.nm.toLowerCase())}try{c.send({t:ban?'ban':'kick'})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},300);MP.conns=MP.conns.filter(x=>x!==c);lobbyBc();lmsg((ban?'Banned ':'Kicked ')+c.nm)}
 function copyLink(){try{navigator.clipboard.writeText(MP.link||$('llink').textContent);lmsg('Invite link copied!')}catch(e){lmsg('Select the link and copy it')}}
 const capN=()=>$('md').value=='ffa'?+$('sz').value:+$('sz').value*2,humansN=()=>1+MP.conns.filter(c=>c.lid!=null&&c.open).length,effBots=()=>{const free=Math.max(0,capN()-humansN());return MP.nb==null?free:Math.min(MP.nb,free)};
 function lbots(d){MP.nb=Math.max(0,Math.min(capN()-humansN(),effBots()+d));lobbyBc()}
+function teams(){const ids=[0].concat(MP.conns.filter(c=>c.lid!=null&&c.open).map(c=>c.lid)),nb=effBots(),out={},bt=[],cnt=[0,0];
+ ids.forEach(i=>{const t=MP.pt[i];if(t===0||t===1){out[i]=t;cnt[t]++}});for(let i=0;i<nb;i++){const t=MP.bt[i];if(t===0||t===1){bt[i]=t;cnt[t]++}}
+ ids.forEach(i=>{if(out[i]===undefined){const t=cnt[0]<=cnt[1]?0:1;out[i]=t;cnt[t]++}});for(let i=0;i<nb;i++)if(bt[i]===undefined){const t=cnt[0]<=cnt[1]?0:1;bt[i]=t;cnt[t]++}
+ return{out,bt}}
+function startOpts(){const ff=$('md').value=='ffa',o={nb:effBots()};if(!ff){const T=teams(),ids=MP.conns.filter(c=>c.lid!=null&&c.open).map(c=>c.lid);o.pt=T.out[0];o.tl=ids.map(i=>T.out[i]).concat(T.bt);MP.tw=T.out}else MP.tw=null;return o}
+function ltm(k,i){const T=teams();MP.pt=T.out;MP.bt=T.bt.slice();if(k=='p')MP.pt[i]=1-T.out[i];else MP.bt[i]=1-T.bt[i];lobbyBc()}
+function lrm(i){const T=teams();MP.pt=T.out;MP.bt=T.bt.slice();MP.bt.splice(i,1);MP.nb=MP.bt.length;lobbyBc()}
 function leaveLobby(){leaveMP();show('mpm')}
-function startGame(){if(!MP.host||!MP.lobby)return;if(humansN()+effBots()<2)return lmsg('Add a bot or wait for a player first');MP.lobby=0;start({nb:effBots()});MP.conns.forEach(c=>{if(c.open&&c.hello&&c.lid!=null){c.eid=null;hData(c,c.hello)}});$('inv').innerHTML='Room code: <b>'+MP.code+'</b><br>Invite link:<br>'+MP.link}
+function startGame(){if(!MP.host||!MP.lobby)return;if(humansN()+effBots()<2)return lmsg('Add a bot or wait for a player first');const o=startOpts();if(o.tl){const k=[0,0];k[o.pt]++;o.tl.forEach(t=>k[t]++);if(!k[0]||!k[1])return lmsg('Each team needs at least one player')}MP.lobby=0;start(o);MP.conns.forEach(c=>{if(c.open&&c.hello&&c.lid!=null){c.eid=null;hData(c,c.hello)}});$('inv').innerHTML='Room code: <b>'+MP.code+'</b><br>Invite link:<br>'+MP.link}
 /* ---------- pause, pointer lock, ICE ---------- */
 const ICE={config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},{urls:'turn:openrelay.metered.ca:443?transport=tcp',username:'openrelayproject',credential:'openrelayproject'}]}};
 function lockPtr(){const plain=()=>{try{const r=cv.requestPointerLock();if(r&&r.catch)r.catch(()=>{})}catch(e){}};try{const r=cv.requestPointerLock({unadjustedMovement:true});if(r&&r.catch)r.catch(plain)}catch(e){plain()}}
@@ -375,7 +385,7 @@ function mkGun2(w){const g=new THREE.Group(),st=(c,r,m)=>new THREE.MeshStandardM
  FL=add(new THREE.SphereGeometry(.08,8,6),new THREE.MeshBasicMaterial({color:0xffee88}),0,.02,-L/2-.36);FL.visible=false;return g}
 function mkTag(e){if(!e.sp){const c=document.createElement('canvas');c.width=256;c.height=64;e.cx=c.getContext('2d');e.tcv=new THREE.CanvasTexture(c);e.sp=new THREE.Sprite(new THREE.SpriteMaterial({map:e.tcv,transparent:true}));e.sp.scale.set(2,.5,1);e.sp.position.y=2.45;e.mesh.add(e.sp)}
  const g=e.cx;g.clearRect(0,0,256,64);g.font='700 34px system-ui,sans-serif';g.textAlign='center';g.lineWidth=6;g.strokeStyle='#000c';g.fillStyle=M.mode=='ffa'?'#fff':e.team?RT1:'#8fbcff';g.strokeText(e.name,128,44);g.fillText(e.name,128,44);e.tcv.needsUpdate=true;e.tn=e.name}
-const mpErr=e=>e.type=='peer-unavailable'?'Room not found — check the code.':/network|socket|server/.test(e.type)?'Cannot reach the PeerJS server. Online play only works when this file is opened from your own computer or site, not inside the hosted preview.':e.type=='unavailable-id'?'Code clash — press Host again.':'Error: '+e.type;
+const mpErr=e=>e.type=='peer-unavailable'?'Room not found — check the code.':/network|socket|server/.test(e.type)?'Cannot reach the multiplayer server. Online play only works when this file is opened from your own computer or site, not inside the hosted preview.':e.type=='unavailable-id'?'Code clash — press Host again.':'Error: '+e.type;
 if(!S.name)S.name='Player'+(100+R()*900|0);$('pn').value=S.name;$('pn').oninput=()=>{S.name=$('pn').value.replace(/[^\w ]/g,'').slice(0,12);save()};
 /* ---------- HP, cosmetics, minimap ---------- */
 const nm2=()=>($('pn').value.replace(/[^\w ]/g,'').trim().slice(0,12)||'Player');let mmT=0,nt=0;const mmc=$('mm').getContext('2d');
@@ -394,13 +404,13 @@ function rmesh(e,dt){const m=e.mesh,a=Math.min(1,dt*12),dx=e.x-m.position.x,dz=e
 function updR(e,dt){e.inv-=dt;if(!e.alive){e.rs-=dt;if(e.rs<=0){spawn(e);e.c&&e.c.open&&e.c.send({t:'sp',x:e.x,z:e.z,yw:e.yaw})}return}if(e.rl>0){e.rl-=dt;if(e.rl<=0){e.rl=0;e.ammo=W[e.w||0].mag}}}
 function snap(){bc({t:'S',tm:M.t,s:M.s,ms:M.ms,e:E.map(e=>[e.name,+e.x.toFixed(2),+e.y.toFixed(2),+e.z.toFixed(2),+(e.isP?yaw:e.yaw).toFixed(2),e.hp|0,e.alive?1:0,e.k,e.d,e.as,e.sc,Math.round(e.pp||0),e.isP?S.ap:e.ap||0])})}
 function net(dt){nt-=dt;if(nt>0)return;if(MP.host){nt=.066;snap()}else if(MP.cl){nt=.05;if(clk-(MP.lp||-9)>2){MP.lp=clk;send({t:'p',ts:performance.now()})}send({t:'s',x:P.x,y:P.y,z:P.z,yw:yaw,w:S.eq})}}
-function hostMP(){if(!window.Peer)return mpm('PeerJS could not load (network blocked?).');leaveMP();mpm('Connecting…');const code=Math.random().toString(36).slice(2,7).toUpperCase(),p=MP.peer=new Peer('pbarena-'+code,ICE);
+function hostMP(){if(!window.Peer)return mpm('Multiplayer could not load (network blocked?).');leaveMP();mpm('Connecting…');const code=Math.random().toString(36).slice(2,7).toUpperCase(),p=MP.peer=new Peer('pbarena-'+code,ICE);
  p.on('open',()=>{MP.on=MP.host=1;MP.lobby=1;MP.code=code;MP.link=location.href.split(/[?#]/)[0]+'?join='+code;MP.bans=new Set();hostLobby()});
  p.on('connection',c=>{MP.conns.push(c);c.on('data',m=>hData(c,m));c.on('close',()=>drop(c));c.on('error',()=>drop(c))});
  p.on('error',e=>mpm(mpErr(e)));p.on('disconnected',()=>{try{p.reconnect()}catch(e){}})}
 function drop(c){MP.conns=MP.conns.filter(x=>x!==c);if(MP.lobby){lobbyBc();return}const b=E[c.eid];if(b&&b.isR){b.isR=0;b.c=null;b.name='Bot'+c.eid;b.ap=[0,0,0]}}
 function hData(c,m){if(!m||typeof m!='object')return;if(m.t=='p')return c.send({t:'q',ts:m.ts});const r=E[c.eid],num=v=>typeof v=='number'&&isFinite(v);
- if(m.t=='h'&&c.eid==null){c.hello=m;if(MP.bans&&(MP.bans.has(c.peer)||MP.bans.has(String(m.n||'').replace(/[^\w ]/g,'').slice(0,12).toLowerCase()))){c.send({t:'ban'});setTimeout(()=>c.close(),300);return}if(MP.lobby)return lobbyAdd(c,m);const hc=t=>E.filter(e=>e.team==t&&(e.isP||e.isR)).length,tm=hc(0)<=hc(1)?0:1,b=E.find(e=>e.team==tm&&!e.isP&&!e.isR)||E.find(e=>!e.isP&&!e.isR);if(!b){c.send({t:'full'});return c.close()}
+ if(m.t=='h'&&c.eid==null){c.hello=m;if(MP.bans&&(MP.bans.has(c.peer)||MP.bans.has(String(m.n||'').replace(/[^\w ]/g,'').slice(0,12).toLowerCase()))){c.send({t:'ban'});setTimeout(()=>c.close(),300);return}if(MP.lobby)return lobbyAdd(c,m);const hc=t=>E.filter(e=>e.team==t&&(e.isP||e.isR)).length,tm=MP.tw&&MP.tw[c.lid]!==undefined?MP.tw[c.lid]:hc(0)<=hc(1)?0:1,b=E.find(e=>e.team==tm&&!e.isP&&!e.isR)||E.find(e=>!e.isP&&!e.isR);if(!b){c.send({t:'full'});return c.close()}
   b.isR=1;b.c=c;b.name=String(m.n||'Player').replace(/[^\w ]/g,'').slice(0,12)||'Player';if(E.some(e=>e!==b&&e.name==b.name))b.name=b.name.slice(0,10)+(10+R()*90|0);b.ap=okAp(m.ap)?m.ap.map(x=>x|0):[0,0,0];setAp(b,b.ap);b.w=0;b.lt=performance.now();c.eid=E.indexOf(b);spawn(b);
   c.send({t:'w',id:c.eid,mi:MAPS.indexOf(M.map),len:M.t,df:M.df,md:M.mode,e:E.map(e=>[e.team,e.name])});return}
  if(!r||!r.isR)return;
@@ -408,7 +418,7 @@ function hData(c,m){if(!m||typeof m!='object')return;if(m.t=='p')return c.send({
   r.vx=(m.x-r.x)/Math.max(dt,.03);r.vz=(m.z-r.z)/Math.max(dt,.03);r.x=Math.max(1-H,Math.min(H-1,m.x));r.z=Math.max(1-H,Math.min(H-1,m.z));r.y=Math.max(0,Math.min(8,m.y));r.yaw=m.yw;if(m.w!==r.w&&m.w>=0&&m.w<5){r.w=m.w|0;r.ammo=W[r.w].mag;r.rl=0}}
  else if(m.t=='r'){if(r.alive&&!r.rl&&r.ammo<W[r.w].mag)r.rl=W[r.w].rl}
  else if(m.t=='f'){const w=W[r.w],l=Math.hypot(m.dx,m.dy,m.dz);if(!r.alive||FZ()||r.rl>0||r.ammo<=0||![m.dx,m.dy,m.dz].every(num)||l<.5||l>1.5||clk-(r.lf||0)<(w.burst?.05:.8/w.rof))return;r.lf=clk;r.ammo--;if(r.ammo<=0)r.rl=w.rl;fire(r,r.x,r.y+1.45,r.z,m.dx,m.dy,m.dz,w,w.sp,M.mode=='ffa'?(num(m.c)?m.c|0:0):r.team?TRC:0x2e7bff)}}
-function joinMP(){if(!window.Peer)return mpm('PeerJS could not load.');leaveMP();const code=$('jc').value.trim().toUpperCase();if(!/^[A-Z0-9]{5}$/.test(code))return mpm('Enter the 5-character room code.');mpm('Connecting…');
+function joinMP(){if(!window.Peer)return mpm('Multiplayer could not load.');leaveMP();const code=$('jc').value.trim().toUpperCase();if(!/^[A-Z0-9]{5}$/.test(code))return mpm('Enter the 5-character room code.');mpm('Connecting…');
  const p=MP.peer=new Peer(undefined,ICE);p.on('open',()=>{const c=MP.hc=p.connect('pbarena-'+code);c.on('open',()=>c.send({t:'h',n:nm2(),ap:S.ap}));c.on('data',cData);c.on('close',lost);c.on('error',lost)});
  p.on('error',e=>{mpm(mpErr(e));if(!MP.on)leaveMP()})}
 function lost(){if(!MP.peer)return;if(!MP.on){leaveMP();return mpm('Could not connect.')}leaveMP();state='menu';document.exitPointerLock();$('hud').style.display='none';show('mpm');mpm('Disconnected from host (no auto-reconnect).')}

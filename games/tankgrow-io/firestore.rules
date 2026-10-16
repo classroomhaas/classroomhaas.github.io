@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {uid}
+    // Fields:
+    //   - uid: string (required) - The user's unique ID.
+    //   - email: string (optional) - The user's email address.
+    //   - currency: number (required, >= 0) - The amount of currency the user has.
+    //   - unlockedSkins: list (required) - List of skin IDs the user has unlocked.
+    //   - lastUpdated: timestamp (optional) - When the profile was last updated.
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'currency', 'unlockedSkins']) &&
+             data.uid == request.auth.uid &&
+             data.currency is number && data.currency >= 0 &&
+             data.unlockedSkins is list &&
+             data.keys().hasOnly(['uid', 'email', 'currency', 'unlockedSkins', 'lastUpdated']);
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+    }
+
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}

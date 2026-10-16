@@ -1,0 +1,5 @@
+{
+  "name": "TankGrow.io",
+  "description": "A fast-paced tank arena game with multiple modes: Classic FFA, Battle Royale, Team Deathmatch, King of the Hill, Capture the Flag, and Bounty Hunter. Track and reclaim bounties to dominate.",
+  "requestFramePermissions": []
+}

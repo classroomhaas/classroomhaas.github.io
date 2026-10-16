@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user progress, currency, and unlocked skins.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The user's unique ID." },
+        "email": { "type": "string", "description": "The user's email address." },
+        "currency": { "type": "number", "description": "The amount of currency the user has." },
+        "unlockedSkins": { 
+          "type": "array", 
+          "items": { "type": "string" },
+          "description": "List of skin IDs the user has unlocked." 
+        },
+        "lastUpdated": { "type": "string", "format": "date-time", "description": "When the profile was last updated." }
+      },
+      "required": ["uid", "currency", "unlockedSkins"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "UserProfile",
+      "description": "User profile document."
+    }
+  }
+}
