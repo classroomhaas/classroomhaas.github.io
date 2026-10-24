@@ -22,7 +22,7 @@ input,select{font:inherit;width:100%;background:#0e0e16;border:1px solid var(--l
 input:focus,select:focus{border-color:var(--ac)}
 input.code{text-align:center;letter-spacing:10px;font-size:26px;font-weight:700;text-transform:uppercase}
 .row{display:flex;gap:10px}.row>*{flex:1}
-.chip{display:flex;justify-content:space-between;align-items:center;background:#0e0e16;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;animation:in .25s}
+.chip{display:flex;justify-content:space-between;align-items:center;background:#0e0e16;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;transition:transform .2s,border-color .2s}
 .chip small{color:var(--mu)}.x{cursor:pointer;color:var(--mu);padding:0 4px}
 .big{font-size:54px;font-weight:800;text-align:center;letter-spacing:-1px;margin:18px 0;line-height:1.1}
 .role{min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;user-select:none}
@@ -39,6 +39,35 @@ input.code{text-align:center;letter-spacing:10px;font-size:26px;font-weight:700;
 .tm{font-size:60px;font-weight:800;text-align:center;font-variant-numeric:tabular-nums;margin:14px 0}.tm.up{color:var(--ac);animation:pl 1s infinite}@keyframes pl{50%{opacity:.4}}
 .mini{width:auto;padding:6px 10px;margin:0 0 0 6px;font-size:12px;border-radius:9px;color:var(--mu)}.mini.bn{color:var(--ac);border-color:#4a1d2b}span.pk{border:1px solid var(--ac);background:#2a1220}
 .chatlog{max-height:190px;overflow-y:auto;margin-bottom:10px}.msg{padding:8px 12px;background:#0e0e16;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;font-size:14px;word-break:break-word}.msg b{display:block;color:var(--mu);font-size:12px;margin-bottom:1px}.msg.me{border-color:#4a1d2b;background:#1d0f17}
+
+button{position:relative;overflow:hidden;transition:transform .15s,border-color .2s,background .2s,box-shadow .25s,filter .2s}
+.rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.22);transform:scale(0);animation:rip .6s ease-out;pointer-events:none}
+@keyframes rip{to{transform:scale(2.4);opacity:0}}
+@media(hover:hover){button:hover{transform:translateY(-2px);box-shadow:0 10px 22px -12px rgba(255,59,92,.5)}
+button.pri:hover{filter:brightness(1.1);box-shadow:0 14px 30px -8px var(--ac)}button.ghost:hover,button.back:hover{box-shadow:none;transform:none;color:var(--tx)}
+.chip:hover{border-color:#3a3a52;transform:translateX(3px)}.role:hover{border-color:var(--ac);box-shadow:0 0 34px -10px var(--ac)}}
+button:active{transform:scale(.96)!important}
+input:focus,select:focus{box-shadow:0 0 0 3px rgba(255,59,92,.18)}
+.sel{animation:selp .35s}@keyframes selp{40%{transform:scale(1.04)}}
+.role{position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s}
+.role.flip{animation:flip .85s cubic-bezier(.2,.8,.2,1) both}
+@keyframes flip{0%{transform:perspective(900px) rotateY(92deg) scale(.88);opacity:0}40%{opacity:1}100%{transform:none}}
+.role.flip .big,.role.flip .lbl,.role.flip p{animation:fadeup .55s .5s both}
+.role.flip::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.2) 50%,transparent 70%);transform:translateX(-100%);animation:sheen 1s .35s;pointer-events:none}
+@keyframes sheen{to{transform:translateX(100%)}}@keyframes fadeup{from{opacity:0;transform:translateY(10px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.4)}100%{opacity:1;transform:none}}
+#app.enter>*:not(.role){animation:rise .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*40ms)}
+#app.enter .rv{animation:pop .8s cubic-bezier(.2,1.4,.4,1) .35s both}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;animation-delay:0s!important}}
+.role .lbl{display:block}
+select{-webkit-appearance:none;appearance:none;background:#0e0e16 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%238a8aa0' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center;padding-right:36px;cursor:pointer}
+.set select{width:auto;min-width:96px}
+.set input[type=checkbox]{-webkit-appearance:none;appearance:none;width:46px;height:26px;border-radius:99px;background:#252534;position:relative;cursor:pointer;border:0;padding:0;flex:none;transition:background .25s}
+.set input[type=checkbox]::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.set input[type=checkbox]:checked{background:linear-gradient(135deg,var(--ac),var(--ac2))}
+.set input[type=checkbox]:checked::after{transform:translateX(20px)}
+.set>span{line-height:1.35}
 </style></head><body><div id="app"></div>
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
@@ -88,7 +117,8 @@ ${S.screen==='online'?`<div class="set"><span>Public room<br><small style="color
 <div style="color:var(--mu);font-size:13px;margin:4px 0 8px">Word packs</div>${Object.keys(WORDS).map(c=>`<button class="pk ${ST.packs.includes(c)?'on':''}" onclick="togPack(this,'${c}')">${c}</button>`).join('')}</div>`;
 function togPack(b,c){const i=ST.packs.indexOf(c);if(i>=0){if(ST.packs.length>1){ST.packs.splice(i,1);b.classList.remove('on')}}else{ST.packs.push(c);b.classList.add('on')}cfgSync()}
 /* ---------- screens ---------- */
-function render(){const a=document.activeElement,keep=a&&a.id==='ci',ss=keep?a.selectionStart:0;$.innerHTML=V[S.screen]();const i=$.querySelector('[autofocus]');if(i)i.focus();const ci=document.getElementById('ci');if(ci&&keep){ci.focus();try{ci.setSelectionRange(ss,ss)}catch(x){}}const cl=document.getElementById('cl');if(cl)cl.scrollTop=cl.scrollHeight}
+function render(){const a=document.activeElement,keep=a&&a.id==='ci',ss=keep?a.selectionStart:0;$.innerHTML=V[S.screen]();enterFx();const i=$.querySelector('[autofocus]');if(i)i.focus();const ci=document.getElementById('ci');if(ci&&keep){ci.focus();try{ci.setSelectionRange(ss,ss)}catch(x){}}const cl=document.getElementById('cl');if(cl)cl.scrollTop=cl.scrollHeight;if(S.flip)S.flipUntil=Date.now()+1500;S.flip=false}
+function softRender(){const w=(S.flipUntil||0)-Date.now();if(w>0){clearTimeout(S._rt);S._rt=setTimeout(()=>{if(S.screen==='online')render()},w+30)}else render()}
 const V={
 home:()=>`<h1><span>IMPOSTER</span></h1><p class="sub">One of you doesn’t know the word. Find them before they blend in.</p>
 <button class="pri" onclick="go('ppnames')">Pass &amp; Play</button>
@@ -102,8 +132,8 @@ ${S.names.map((n,i)=>`<div class="chip">${esc(n)}<span class="x" onclick="S.name
 <div class="err">${S.err}</div>${settings()}
 <button class="pri" ${S.names.length<3?'disabled':''} onclick="ppStart()">Start Game</button>`,
 pppass:()=>`<div style="text-align:center;margin-top:60px"><p class="sub">Pass the phone to</p><div class="big">${esc(S.names[PP.i])}</div>
-<p class="sub">${PP.i+1} of ${S.names.length}</p></div><button class="pri" style="margin-top:40px" onclick="go('ppreveal')">I’m ${esc(S.names[PP.i])} — show my role</button>`,
-ppreveal:()=>{const imp=PP.imps.includes(PP.i);return`<div class="card role"><span class="lbl">${esc(S.names[PP.i])}, your secret</span>${roleBody(imp,PP)}</div>
+<p class="sub">${PP.i+1} of ${S.names.length}</p></div><button class="pri" style="margin-top:40px" onclick="go('ppreveal',{flip:true})">I’m ${esc(S.names[PP.i])} — show my role</button>`,
+ppreveal:()=>{const imp=PP.imps.includes(PP.i);return`<div class="card role ${S.flip?'flip':''}"><span class="lbl">${esc(S.names[PP.i])}, your secret</span>${roleBody(imp,PP)}</div>
 <button class="pri" onclick="ppNext()">${PP.i+1<S.names.length?'Hide &amp; pass on':'Hide &amp; start'}</button>`},
 ppdiscuss:()=>`<div style="text-align:center;margin-top:40px"><span class="lbl sub">Round on</span><h2>Discussion</h2><p class="sub"><b style="color:var(--tx)">${esc(S.names[PP.start])}</b> goes first. Each player gives one clue about the word, then debate and vote out loud.</p></div>
 <div class="card"><p class="sub" style="margin:0;text-align:center">Category: <b style="color:var(--tx)">${esc(PP.cat)}</b> · ${PP.imps.length} imposter${PP.imps.length>1?'s':''}</p></div>${ST.timer?'<div class="tm" id="tm"></div>':''}
@@ -124,17 +154,17 @@ if(g.phase==='lobby')return hdr+`<p class="sub" style="text-align:center;margin:
 <div class="card">${P.map(p=>`<div class="chip"><span><span class="dot"></span>${esc(p.name)}${p.id===g.host?' <small>host</small>':''}${p.id===ON.id?' <small>you</small>':''}</span>${pCtl(p,host)}</div>`).join('')}</div>
 ${host?`${settings()}<button class="pri" ${P.length<3?'disabled':''} onclick="onStart()">${P.length<3?'Need 3+ players':'Start game'}</button>`:`${cfgView(g.cfg,P.length)}<p class="sub" style="text-align:center">Waiting for the host to start…</p>`}`;
 const imp=(g.imps||[]).includes(ON.id);
-if(g.phase==='role')return hdr+`<div class="card role" onclick="togPeek()">${S.peek?roleBody(imp,g)+'<p class="sub">Tap to hide</p>':`<div class="lbl">Tap to reveal your secret</div><div class="big" style="font-size:38px">🤫</div>`}</div>
+if(g.phase==='role')return hdr+`<div class="card role ${S.flip?'flip':''}" onclick="togPeek()">${S.peek?roleBody(imp,g)+'<p class="sub">Tap to hide</p>':`<div class="lbl">Tap to reveal your secret</div><div class="big" style="font-size:38px">🤫</div>`}</div>
 <p class="sub" style="text-align:center">${P.filter(p=>p.seen===g.round).length} of ${P.length} have viewed their role</p>${host?`<button class="pri" ${P.every(p=>p.seen===g.round)?'':'disabled'} onclick="onDisc()">Start discussion</button>`:'<p class="sub" style="text-align:center">Waiting for host to begin discussion…</p>'}`;
 if(g.phase==='discuss')return hdr+`<div style="text-align:center;margin-top:20px"><h2>Discussion</h2><p class="sub"><b style="color:var(--tx)">${esc(nameOf(g.start))}</b> goes first. One clue each, then vote.</p></div>
-<div class="card role" style="min-height:110px" onclick="S.peek=!S.peek;render()">${S.peek?(imp&&!g.blind?'<div class="big imp" style="font-size:30px;margin:0">IMPOSTER</div>':`<div class="big" style="font-size:30px;margin:0">${esc(imp?g.dword:g.word)}</div>`):'<span class="lbl">Tap to peek at your secret</span>'}</div>
+<div class="card role ${S.flip?'flip':''}" style="min-height:110px" onclick="togPeek()">${S.peek?(imp&&!g.blind?'<div class="big imp" style="font-size:30px;margin:0">IMPOSTER</div>':`<div class="big" style="font-size:30px;margin:0">${esc(imp?g.dword:g.word)}</div>`):'<span class="lbl">Tap to peek at your secret</span>'}</div>
 ${g.endsAt?'<div class="tm" id="tm"></div>':''}${host?`<button class="pri" onclick="onSet({phase:'vote'})">Call the vote</button>`:'<p class="sub" style="text-align:center">Host will call the vote…</p>'}${chatBox()}`;
 const votes=P.filter(p=>p.vote&&p.vote.r===g.round);
 if(g.phase==='guess')return hdr+(g.caught===ON.id?`<h2>You were caught!</h2><p class="sub">Guess the secret word to steal the win.</p><input id="gs" placeholder="Your guess" autofocus onkeydown="if(event.key==='Enter')onGuess()"><button class="pri" onclick="onGuess()">Submit guess</button>`:`<div style="text-align:center;margin-top:40px"><h2>${esc(nameOf(g.caught))} was caught</h2><p class="sub">They’re guessing the word…</p></div>`);
 if(g.phase==='vote')return hdr+`<h2>Who’s the imposter?</h2><p class="sub">${votes.length} of ${P.length} voted</p><div class="bar"><i style="width:${votes.length/P.length*100}%"></i></div><div style="height:16px"></div>
 ${P.filter(p=>p.id!==ON.id).map(p=>`<button class="${me&&me.vote&&me.vote.r===g.round&&me.vote.to===p.id?'sel':''}" onclick="onVote('${p.id}')">${esc(p.name)}</button>`).join('')}`;
 const {t,caught}=tally();const win=caught&&!(g.guess&&g.guess.trim().toLowerCase()===String(g.word).toLowerCase());
-return hdr+`<div style="text-align:center;margin-top:10px"><p class="sub">The imposter${g.imps.length>1?'s were':' was'}</p><div class="big imp" style="font-size:${g.imps.length>1?34:54}px">${g.imps.map(i=>esc(nameOf(i))).join(' &amp; ')}</div><p class="sub">Word: <b style="color:var(--tx)">${esc(g.word)}</b></p>${g.blind?`<p class="sub">Imposter’s word: <b style="color:var(--tx)">${esc(g.dword)}</b></p>`:''}
+return hdr+`<div style="text-align:center;margin-top:10px"><p class="sub">The imposter${g.imps.length>1?'s were':' was'}</p><div class="big imp rv" style="font-size:${g.imps.length>1?34:54}px">${g.imps.map(i=>esc(nameOf(i))).join(' &amp; ')}</div><p class="sub">Word: <b style="color:var(--tx)">${esc(g.word)}</b></p>${g.blind?`<p class="sub">Imposter’s word: <b style="color:var(--tx)">${esc(g.dword)}</b></p>`:''}
 <div class="card" style="color:${win?'var(--ok)':'var(--ac)'};font-weight:700">${win?'Caught! Crew wins 🎉':(caught?'Imposter steals the win 😈':'Escaped! Imposter wins 😈')}${g.guess?`<div style="font-size:14px;color:var(--mu);font-weight:400;margin-top:6px">Imposter guessed “${esc(g.guess)}”</div>`:''}</div></div>
 <div class="card">${P.map(p=>`<div class="chip"><span>${esc(p.name)}</span><span style="display:flex;align-items:center"><small>${t[p.id]||0} vote${(t[p.id]||0)===1?'':'s'}</small>${pCtl(p,host)}</span></div>`).join('')}</div>
 ${host?`<button class="pri" onclick="onStart()">Play again</button><button onclick="onLobby()">Back to lobby</button>`:'<p class="sub" style="text-align:center">Waiting for host…</p>'}`}
@@ -145,7 +175,7 @@ function addName(){const el=document.getElementById('nm'),v=el.value.trim();if(!
 if(S.names.some(n=>n.toLowerCase()===v.toLowerCase())){S.err='That name is taken';return render()}S.names.push(v);S.err='';render()}
 function ppStart(){const d=draw(),n=S.names.length,idx=[...Array(n).keys()].sort(()=>Math.random()-.5);PP={...d,i:0,imps:idx.slice(0,nImps(n)),start:Math.floor(Math.random()*n),blind:ST.blind,hints:ST.hints,guess:ST.guess&&!ST.blind};go('pppass',{gdone:false,gres:''})}
 function ppRes(){const im=PP.imps.map(i=>esc(S.names[i])).join(' &amp; '),multi=PP.imps.length>1;
-return`<div style="text-align:center;margin-top:30px"><p class="sub">The imposter${multi?'s were':' was'}</p><div class="big imp" style="font-size:${multi?34:54}px">${im}</div>
+return`<div style="text-align:center;margin-top:30px"><p class="sub">The imposter${multi?'s were':' was'}</p><div class="big imp rv" style="font-size:${multi?34:54}px">${im}</div>
 ${PP.guess&&!S.gdone?`<div class="card" style="text-align:left"><p class="sub" style="margin:0 0 12px">If caught, the imposter gets one guess at the word.</p><input id="gs" placeholder="Imposter’s guess" autofocus onkeydown="if(event.key==='Enter')ppGuess()"><button class="pri" style="margin:0" onclick="ppGuess()">Submit guess</button><button class="ghost" style="margin:8px 0 0" onclick="ppGuess(1)">Skip</button></div>`:`${S.gres?`<p style="font-weight:700;color:${S.gres==='ok'?'var(--ac)':'var(--ok)'}">${S.gres==='ok'?'Correct guess — the imposter steals the win!':'Wrong guess — the crew wins!'}</p>`:''}<p class="sub">The word was</p><div class="big" style="font-size:38px">${esc(PP.word)}</div>${PP.blind?`<p class="sub">Imposter’s word was <b style="color:var(--tx)">${esc(PP.dword)}</b></p>`:''}`}</div>`}
 function ppGuess(skip){let r='';if(!skip){const v=(document.getElementById('gs').value||'').trim().toLowerCase();r=v===PP.word.toLowerCase()?'ok':'no'}S.gdone=true;S.gres=r;render()}
 function ppNext(){PP.i++;if(PP.i>=S.names.length)PP.end=ST.timer?Date.now()+ST.timer*1000:0;go(PP.i<S.names.length?'pppass':'ppdiscuss')}
@@ -192,9 +222,9 @@ else if(m.t==='kick')kickedOut(m.ban?'You were banned from that lobby':'You were
 else if(m.t==='closed')kickedOut('The host closed the lobby');
 else{clearTimeout(to);const msg={banned:'You’ve been banned from this lobby',late:'That game has already started',full:'That lobby is full',dup:'Someone in that lobby already has that name'}[m.t];if(msg)fail(msg)}});
 conn.on('close',()=>{if(ON.joined)kickedOut('Lost connection to the host')})})}
-function tick(){const g=ON.game;if(!g)return;if(g.phase!==lastPhase+g.round){S.peek=false;lastPhase=g.phase+g.round}
+function tick(){const g=ON.game;if(!g)return;if(g.phase+g.round!==lastPhase){S.peek=false;lastPhase=g.phase+g.round}
 if(g.phase==='vote'&&g.host===ON.id&&ON.players.length&&ON.players.every(p=>p.vote&&p.vote.r===g.round)){const c=tally().caught;onSet(g.gOn&&c?{phase:'guess',caught:c}:{phase:'result'})}
-if(S.screen==='online')render()}
+if(S.screen==='online')softRender()}
 function onVote(to){const g=ON.game;if(g.host===ON.id){const me=ON.players.find(p=>p.id===ON.id);if(g.phase==='vote'&&me){me.vote={r:g.round,to};bcast()}}else if(ON.conn)ON.conn.send({t:'vote',to})}
 function onGuess(){const v=document.getElementById('gs').value.trim()||'—';if(ON.game.host===ON.id)onSet({phase:'result',guess:v});else if(ON.conn)ON.conn.send({t:'guess',text:v})}
 function removeP(id,ban){const c=ON.conns[id],p=ON.players.find(x=>x.id===id);if(!p)return;if(ban)ON.game.bans=[...(ON.game.bans||[]),p.name.toLowerCase()];
@@ -220,7 +250,7 @@ conn.on('open',()=>conn.send({t:'info'}));
 conn.on('data',m=>{if(m&&m.t==='info'&&m.phase==='lobby'){rooms.push({...m,code});rooms.sort((a,b)=>a.code<b.code?-1:1);S.rooms=[...rooms];if(S.screen==='search')render()}})}
 setTimeout(finish,5000)});
 setTimeout(finish,12000)}
-function togPeek(){S.peek=!S.peek;const g=ON.game;if(S.peek&&g.phase==='role'){if(g.host===ON.id){const me=ON.players.find(p=>p.id===ON.id);if(me){me.seen=g.round;bcast();return}}else if(ON.conn)ON.conn.send({t:'seen'})}render()}
+function togPeek(){S.peek=!S.peek;S.flip=S.peek;if(!S.peek)S.flipUntil=0;const g=ON.game;if(S.peek&&g.phase==='role'){if(g.host===ON.id){const me=ON.players.find(p=>p.id===ON.id);if(me){me.seen=g.round;bcast();return}}else if(ON.conn)ON.conn.send({t:'seen'})}render()}
 function addChat(id,x){const p=ON.players.find(q=>q.id===id);if(!p||!x)return;ON.typAt[id]=0;ON.chat.push({id,n:p.name,x:x.slice(0,200)});if(ON.chat.length>100)ON.chat.shift();bcast();pushTyping()}
 function onChat(){const el=document.getElementById('ci'),v=(el?el.value:'').trim();if(!v)return;S.draft='';if(ON.game.host===ON.id)addChat(ON.id,v);else if(ON.conn)ON.conn.send({t:'chat',text:v});render();const e=document.getElementById('ci');if(e)e.focus()}
 const chatBox=()=>`<div class="card" style="margin-top:14px"><div class="lbl" style="margin-bottom:10px">Chat</div><div id="cl" class="chatlog">${ON.chat.length?ON.chat.map(m=>`<div class="msg ${m.id===ON.id?'me':''}"><b>${esc(m.n)}</b>${esc(m.x)}</div>`).join(''):'<p class="sub" style="margin:0 0 4px;font-size:13px">No messages yet. Don’t say the word outright!</p>'}</div><div id="ty" style="height:18px;color:var(--mu);font-size:12px;margin:-4px 0 6px">${typText()}</div><div class="row"><input id="ci" placeholder="Discuss the word…" maxlength="200" autocomplete="off" value="${esc(S.draft||'')}" oninput="S.draft=this.value;onTyping()" onkeydown="if(event.key==='Enter')onChat()"><button style="flex:0 0 76px;margin:0 0 10px" onclick="onChat()">Send</button></div></div>`;
@@ -244,6 +274,10 @@ const pCtl=(p,host)=>host&&p.id!==ON.id?`<span><button class="mini" onclick="onK
 function tally(){const g=ON.game,t={};ON.players.filter(p=>p.vote&&p.vote.r===g.round).forEach(p=>t[p.vote.to]=(t[p.vote.to]||0)+1);const mx=Math.max(0,...Object.values(t)),top=Object.keys(t).filter(k=>t[k]===mx);return{t,top,caught:top.length===1&&g.imps.includes(top[0])?top[0]:null}}
 setInterval(()=>{const el=document.getElementById('tm');if(!el)return;const end=S.screen==='ppdiscuss'?PP.end:(ON.game&&ON.game.endsAt);if(!end)return;const l=Math.max(0,Math.ceil((end-Date.now())/1000));el.textContent=l?Math.floor(l/60)+':'+String(l%60).padStart(2,'0'):'Time’s up!';el.classList.toggle('up',!l);
 if(!l&&S.screen==='online'&&ON.game.phase==='discuss'&&ON.game.host===ON.id&&!ON._adv){ON._adv=1;onSet({phase:'vote'})}},500);
+let lastKey='';
+function enterFx(){const k=S.screen+(S.screen==='online'&&ON.game?ON.game.phase+ON.game.round:'');if(k===lastKey)return;lastKey=k;$.classList.remove('enter');void $.offsetWidth;
+[...$.children].forEach((e,i)=>e.style.setProperty('--i',Math.min(i,10)));window.scrollTo(0,0);$.classList.add('enter');setTimeout(()=>$.classList.remove('enter'),1400)}
+document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('button');if(!b||b.disabled)return;const r=b.getBoundingClientRect(),d=Math.max(r.width,r.height),x=document.createElement('span');x.className='rip';x.style.cssText=`width:${d}px;height:${d}px;left:${e.clientX-r.left-d/2}px;top:${e.clientY-r.top-d/2}px`;b.appendChild(x);setTimeout(()=>x.remove(),600)});
 /* ---------- init ---------- */
 render();
 </script></body></html>
