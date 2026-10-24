@@ -52,11 +52,14 @@ const WORDS={
 "Tech":["Robot","Drone","Satellite","Laptop","Headphones","Router","Smartwatch","Printer","Microchip","Joystick","Webcam","Battery","Hologram","Password","Keyboard"],
 "Music":["Drums","Violin","Choir","Karaoke","Saxophone","Concert","Microphone","Orchestra","Harmonica","Opera","Banjo","Metronome","Festival","Vinyl","Trumpet"],
 "Household":["Toaster","Couch","Vacuum","Bathtub","Ladder","Doorbell","Blender","Pillow","Fridge","Curtain","Broom","Lamp","Closet","Kettle","Doormat"]};
-const ST={timer:120,imps:1,guess:false,packs:Object.keys(WORDS)};
+const ST={timer:120,imps:1,guess:false,blind:false,hints:true,pub:false,packs:Object.keys(WORDS)};
 const $=document.getElementById('app');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
-function draw(){const c=pick(ST.packs.length?ST.packs:Object.keys(WORDS));return{cat:c,word:pick(WORDS[c])}}
+function draw(){const c=pick(ST.packs.length?ST.packs:Object.keys(WORDS)),w=pick(WORDS[c]);return{cat:c,word:w,dword:pick(WORDS[c].filter(x=>x!==w))}}
+const roleBody=(imp,o)=>{if(o.blind)return`<div class="lbl">The word is</div><div class="big">${esc(imp?o.dword:o.word)}</div>${o.hints?`<p class="sub">Category: ${esc(o.cat)}</p>`:''}`;
+if(imp)return`<div class="big imp">IMPOSTER</div><p class="sub">${o.hints?`Hint: the category is ${esc(o.cat)}.`:'No hints. Blend in.'}</p>`;
+return`<div class="lbl">The word is</div><div class="big">${esc(o.word)}</div><p class="sub">Category: ${esc(o.cat)}</p>`};
 const pc=()=>S.screen==='online'?ON.players.length:S.names.length,maxImps=n=>Math.max(1,Math.floor((n-1)/2)),nImps=n=>Math.min(ST.imps,maxImps(n)),fmt=s=>s?s/60+' min':'Off';
 let S={screen:'home',names:[],cat:'Random',err:'',peek:false};
 let PP={},ON={db:null,id:'p'+Math.random().toString(36).slice(2,8),code:'',game:null,players:[],name:'',unsubs:[]};
@@ -64,6 +67,9 @@ function go(s,extra){S={...S,screen:s,err:'',peek:false,...extra};render()}
 const settings=()=>`<div class="card"><div class="set"><span>Discussion timer</span><select onchange="ST.timer=+this.value;cfgSync()">${[0,60,120,180,300].map(t=>`<option value="${t}" ${t===ST.timer?'selected':''}>${fmt(t)}</option>`).join('')}</select></div>
 <div class="set"><span>Imposters<br><small style="color:var(--mu)">2 needs 5+ players, 3 needs 7+</small></span><select onchange="ST.imps=+this.value;cfgSync()">${[1,2,3].filter(k=>k<=maxImps(pc())).map(k=>`<option ${k===nImps(pc())?'selected':''}>${k}</option>`).join('')}</select></div>
 <div class="set"><span>Imposter guesses the word<br><small style="color:var(--mu)">last chance if caught</small></span><input type="checkbox" ${ST.guess?'checked':''} onchange="ST.guess=this.checked;cfgSync()"></div>
+<div class="set"><span>Game mode<br><small style="color:var(--mu)">Blind: imposters get a different word and don’t know it</small></span><select onchange="ST.blind=this.value==='1';cfgSync()"><option value="0" ${ST.blind?'':'selected'}>Classic</option><option value="1" ${ST.blind?'selected':''}>Blind</option></select></div>
+<div class="set"><span>Hints<br><small style="color:var(--mu)">Imposters see the category</small></span><input type="checkbox" ${ST.hints?'checked':''} onchange="ST.hints=this.checked;cfgSync()"></div>
+${S.screen==='online'?`<div class="set"><span>Public room<br><small style="color:var(--mu)">${ON.pubNote||(ST.pub?'Listed in Search for rooms':'Join by code only')}</small></span><input type="checkbox" ${ST.pub?'checked':''} onchange="setPub(this.checked)"></div>`:''}
 <div style="color:var(--mu);font-size:13px;margin:4px 0 8px">Word packs</div>${Object.keys(WORDS).map(c=>`<button class="pk ${ST.packs.includes(c)?'on':''}" onclick="togPack(this,'${c}')">${c}</button>`).join('')}</div>`;
 function togPack(b,c){const i=ST.packs.indexOf(c);if(i>=0){if(ST.packs.length>1){ST.packs.splice(i,1);b.classList.remove('on')}}else{ST.packs.push(c);b.classList.add('on')}cfgSync()}
 /* ---------- screens ---------- */
@@ -82,7 +88,7 @@ ${S.names.map((n,i)=>`<div class="chip">${esc(n)}<span class="x" onclick="S.name
 <button class="pri" ${S.names.length<3?'disabled':''} onclick="ppStart()">Start Game</button>`,
 pppass:()=>`<div style="text-align:center;margin-top:60px"><p class="sub">Pass the phone to</p><div class="big">${esc(S.names[PP.i])}</div>
 <p class="sub">${PP.i+1} of ${S.names.length}</p></div><button class="pri" style="margin-top:40px" onclick="go('ppreveal')">I’m ${esc(S.names[PP.i])} — show my role</button>`,
-ppreveal:()=>{const imp=PP.imps.includes(PP.i);return`<div class="card role"><span class="lbl">${esc(S.names[PP.i])}, you are</span>${imp?`<div class="big imp">IMPOSTER</div><p class="sub">Blend in. Don’t get caught.</p>`:`<div class="lbl" style="margin-top:14px">The word is</div><div class="big">${esc(PP.word)}</div><p class="sub">Category: ${esc(PP.cat)}</p>`}</div>
+ppreveal:()=>{const imp=PP.imps.includes(PP.i);return`<div class="card role"><span class="lbl">${esc(S.names[PP.i])}, your secret</span>${roleBody(imp,PP)}</div>
 <button class="pri" onclick="ppNext()">${PP.i+1<S.names.length?'Hide &amp; pass on':'Hide &amp; start'}</button>`},
 ppdiscuss:()=>`<div style="text-align:center;margin-top:40px"><span class="lbl sub">Round on</span><h2>Discussion</h2><p class="sub"><b style="color:var(--tx)">${esc(S.names[PP.start])}</b> goes first. Each player gives one clue about the word, then debate and vote out loud.</p></div>
 <div class="card"><p class="sub" style="margin:0;text-align:center">Category: <b style="color:var(--tx)">${esc(PP.cat)}</b> · ${PP.imps.length} imposter${PP.imps.length>1?'s':''}</p></div>${ST.timer?'<div class="tm" id="tm"></div>':''}
@@ -93,24 +99,27 @@ ppresult:()=>`${ppRes()}
 onhome:()=>`<button class="back" onclick="go('home')">← Back</button><h2>Play online</h2><p class="sub">Enter your name, then create a lobby or join with a code.</p>
 <input id="nm" placeholder="Your name" maxlength="14" value="${esc(ON.name)}" autofocus>
 <button class="pri" onclick="onCreate()">Create lobby</button>
-<div class="card"><input id="cd" class="code" placeholder="CODE" maxlength="4"><button onclick="onJoin()" style="margin:0">Join lobby</button></div><div class="err">${S.err}</div>`,
+<div class="card"><input id="cd" class="code" placeholder="CODE" maxlength="4"><button onclick="onJoin()" style="margin:0">Join lobby</button></div><button class="ghost" style="border:1px dashed var(--line)" onclick="onSearch()">Search for rooms</button><div class="err">${S.err}</div>`,
+search:()=>`<button class="back" onclick="go('onhome')">← Back</button><h2>Public rooms</h2><p class="sub">Joining as <b style="color:var(--tx)">${esc(ON.name)}</b></p>
+${(S.rooms||[]).map(roomCard).join('')}${S.scanning?'<p class="sub" style="text-align:center">Searching…</p>':(S.rooms||[]).length?'':'<div class="card"><p class="sub" style="margin:0;text-align:center">No public rooms right now.</p></div>'}
+<div class="err">${S.err}</div><button ${S.scanning?'disabled':''} onclick="onSearch(1)">Refresh</button>`,
 online:()=>{const g=ON.game,P=ON.players,host=g&&g.host===ON.id,me=P.find(p=>p.id===ON.id);if(!g)return'<p class="sub">Connecting…</p>';
 const hdr=`<div style="display:flex;justify-content:space-between;align-items:center"><span class="lbl sub" style="font-size:13px">LOBBY ${ON.code}</span><button class="back" onclick="onLeave()">Leave</button></div>`;
 if(g.phase==='lobby')return hdr+`<p class="sub" style="text-align:center;margin:10px 0 0">Share this code</p><div class="code-show">${ON.code}</div>
 <div class="card">${P.map(p=>`<div class="chip"><span><span class="dot"></span>${esc(p.name)}${p.id===g.host?' <small>host</small>':''}${p.id===ON.id?' <small>you</small>':''}</span>${pCtl(p,host)}</div>`).join('')}</div>
 ${host?`${settings()}<button class="pri" ${P.length<3?'disabled':''} onclick="onStart()">${P.length<3?'Need 3+ players':'Start game'}</button>`:`${cfgView(g.cfg,P.length)}<p class="sub" style="text-align:center">Waiting for the host to start…</p>`}`;
 const imp=(g.imps||[]).includes(ON.id);
-if(g.phase==='role')return hdr+`<div class="card role" onclick="S.peek=!S.peek;render()">${S.peek?(imp?`<div class="big imp">IMPOSTER</div><p class="sub">Blend in. Tap to hide.</p>`:`<div class="lbl">The word is</div><div class="big">${esc(g.word)}</div><p class="sub">${esc(g.cat)} · tap to hide</p>`):`<div class="lbl">Tap to reveal your role</div><div class="big" style="font-size:38px">🤫</div>`}</div>
+if(g.phase==='role')return hdr+`<div class="card role" onclick="S.peek=!S.peek;render()">${S.peek?roleBody(imp,g)+'<p class="sub">Tap to hide</p>':`<div class="lbl">Tap to reveal your secret</div><div class="big" style="font-size:38px">🤫</div>`}</div>
 ${host?`<button class="pri" onclick="onDisc()">Start discussion</button>`:'<p class="sub" style="text-align:center">Waiting for host to begin discussion…</p>'}`;
 if(g.phase==='discuss')return hdr+`<div style="text-align:center;margin-top:20px"><h2>Discussion</h2><p class="sub"><b style="color:var(--tx)">${esc(nameOf(g.start))}</b> goes first. One clue each, then vote.</p></div>
-<div class="card role" style="min-height:110px" onclick="S.peek=!S.peek;render()">${S.peek?(imp?'<div class="big imp" style="font-size:30px;margin:0">IMPOSTER</div>':`<div class="big" style="font-size:30px;margin:0">${esc(g.word)}</div>`):'<span class="lbl">Tap to peek at your role</span>'}</div>
+<div class="card role" style="min-height:110px" onclick="S.peek=!S.peek;render()">${S.peek?(imp&&!g.blind?'<div class="big imp" style="font-size:30px;margin:0">IMPOSTER</div>':`<div class="big" style="font-size:30px;margin:0">${esc(imp?g.dword:g.word)}</div>`):'<span class="lbl">Tap to peek at your secret</span>'}</div>
 ${g.endsAt?'<div class="tm" id="tm"></div>':''}${host?`<button class="pri" onclick="onSet({phase:'vote'})">Call the vote</button>`:'<p class="sub" style="text-align:center">Host will call the vote…</p>'}`;
 const votes=P.filter(p=>p.vote&&p.vote.r===g.round);
 if(g.phase==='guess')return hdr+(g.caught===ON.id?`<h2>You were caught!</h2><p class="sub">Guess the secret word to steal the win.</p><input id="gs" placeholder="Your guess" autofocus onkeydown="if(event.key==='Enter')onGuess()"><button class="pri" onclick="onGuess()">Submit guess</button>`:`<div style="text-align:center;margin-top:40px"><h2>${esc(nameOf(g.caught))} was caught</h2><p class="sub">They’re guessing the word…</p></div>`);
 if(g.phase==='vote')return hdr+`<h2>Who’s the imposter?</h2><p class="sub">${votes.length} of ${P.length} voted</p><div class="bar"><i style="width:${votes.length/P.length*100}%"></i></div><div style="height:16px"></div>
 ${P.filter(p=>p.id!==ON.id).map(p=>`<button class="${me&&me.vote&&me.vote.r===g.round&&me.vote.to===p.id?'sel':''}" onclick="onVote('${p.id}')">${esc(p.name)}</button>`).join('')}`;
 const {t,caught}=tally();const win=caught&&!(g.guess&&g.guess.trim().toLowerCase()===String(g.word).toLowerCase());
-return hdr+`<div style="text-align:center;margin-top:10px"><p class="sub">The imposter${g.imps.length>1?'s were':' was'}</p><div class="big imp" style="font-size:${g.imps.length>1?34:54}px">${g.imps.map(i=>esc(nameOf(i))).join(' &amp; ')}</div><p class="sub">Word: <b style="color:var(--tx)">${esc(g.word)}</b></p>
+return hdr+`<div style="text-align:center;margin-top:10px"><p class="sub">The imposter${g.imps.length>1?'s were':' was'}</p><div class="big imp" style="font-size:${g.imps.length>1?34:54}px">${g.imps.map(i=>esc(nameOf(i))).join(' &amp; ')}</div><p class="sub">Word: <b style="color:var(--tx)">${esc(g.word)}</b></p>${g.blind?`<p class="sub">Imposter’s word: <b style="color:var(--tx)">${esc(g.dword)}</b></p>`:''}
 <div class="card" style="color:${win?'var(--ok)':'var(--ac)'};font-weight:700">${win?'Caught! Crew wins 🎉':(caught?'Imposter steals the win 😈':'Escaped! Imposter wins 😈')}${g.guess?`<div style="font-size:14px;color:var(--mu);font-weight:400;margin-top:6px">Imposter guessed “${esc(g.guess)}”</div>`:''}</div></div>
 <div class="card">${P.map(p=>`<div class="chip"><span>${esc(p.name)}</span><span style="display:flex;align-items:center"><small>${t[p.id]||0} vote${(t[p.id]||0)===1?'':'s'}</small>${pCtl(p,host)}</span></div>`).join('')}</div>
 ${host?`<button class="pri" onclick="onStart()">Play again</button>`:'<p class="sub" style="text-align:center">Waiting for host…</p>'}`}
@@ -119,10 +128,10 @@ const nameOf=id=>(ON.players.find(p=>p.id===id)||{name:'?'}).name;
 /* ---------- pass & play logic ---------- */
 function addName(){const el=document.getElementById('nm'),v=el.value.trim();if(!v)return;if(S.names.length>=12){S.err='Max 12 players';return render()}
 if(S.names.some(n=>n.toLowerCase()===v.toLowerCase())){S.err='That name is taken';return render()}S.names.push(v);S.err='';render()}
-function ppStart(){const d=draw(),n=S.names.length,idx=[...Array(n).keys()].sort(()=>Math.random()-.5);PP={...d,i:0,imps:idx.slice(0,nImps(n)),start:Math.floor(Math.random()*n)};go('pppass',{gdone:false,gres:''})}
+function ppStart(){const d=draw(),n=S.names.length,idx=[...Array(n).keys()].sort(()=>Math.random()-.5);PP={...d,i:0,imps:idx.slice(0,nImps(n)),start:Math.floor(Math.random()*n),blind:ST.blind,hints:ST.hints,guess:ST.guess&&!ST.blind};go('pppass',{gdone:false,gres:''})}
 function ppRes(){const im=PP.imps.map(i=>esc(S.names[i])).join(' &amp; '),multi=PP.imps.length>1;
 return`<div style="text-align:center;margin-top:30px"><p class="sub">The imposter${multi?'s were':' was'}</p><div class="big imp" style="font-size:${multi?34:54}px">${im}</div>
-${ST.guess&&!S.gdone?`<div class="card" style="text-align:left"><p class="sub" style="margin:0 0 12px">If caught, the imposter gets one guess at the word.</p><input id="gs" placeholder="Imposter’s guess" autofocus onkeydown="if(event.key==='Enter')ppGuess()"><button class="pri" style="margin:0" onclick="ppGuess()">Submit guess</button><button class="ghost" style="margin:8px 0 0" onclick="ppGuess(1)">Skip</button></div>`:`${S.gres?`<p style="font-weight:700;color:${S.gres==='ok'?'var(--ac)':'var(--ok)'}">${S.gres==='ok'?'Correct guess — the imposter steals the win!':'Wrong guess — the crew wins!'}</p>`:''}<p class="sub">The word was</p><div class="big" style="font-size:38px">${esc(PP.word)}</div>`}</div>`}
+${PP.guess&&!S.gdone?`<div class="card" style="text-align:left"><p class="sub" style="margin:0 0 12px">If caught, the imposter gets one guess at the word.</p><input id="gs" placeholder="Imposter’s guess" autofocus onkeydown="if(event.key==='Enter')ppGuess()"><button class="pri" style="margin:0" onclick="ppGuess()">Submit guess</button><button class="ghost" style="margin:8px 0 0" onclick="ppGuess(1)">Skip</button></div>`:`${S.gres?`<p style="font-weight:700;color:${S.gres==='ok'?'var(--ac)':'var(--ok)'}">${S.gres==='ok'?'Correct guess — the imposter steals the win!':'Wrong guess — the crew wins!'}</p>`:''}<p class="sub">The word was</p><div class="big" style="font-size:38px">${esc(PP.word)}</div>${PP.blind?`<p class="sub">Imposter’s word was <b style="color:var(--tx)">${esc(PP.dword)}</b></p>`:''}`}</div>`}
 function ppGuess(skip){let r='';if(!skip){const v=(document.getElementById('gs').value||'').trim().toLowerCase();r=v===PP.word.toLowerCase()?'ok':'no'}S.gdone=true;S.gres=r;render()}
 function ppNext(){PP.i++;if(PP.i>=S.names.length)PP.end=ST.timer?Date.now()+ST.timer*1000:0;go(PP.i<S.names.length?'pppass':'ppdiscuss')}
 /* ---------- online (peer-to-peer) ---------- */
@@ -130,18 +139,19 @@ ON.conns={};ON.peer=null;ON.conn=null;ON.joined=false;
 const net=()=>typeof Peer!=='undefined';
 const fail=m=>{cleanup();S.err=m;go('onhome',{err:m})};
 function readName(){const v=document.getElementById('nm').value.trim();if(!v){S.err='Enter your name first';render();return null}ON.name=v;return v}
-function cleanup(){const p=ON.peer;if(p)setTimeout(()=>p.destroy(),400);ON.peer=null;ON.conn=null;ON.conns={};ON.game=null;ON.players=[];ON.code='';ON.joined=false;lastPhase=''}
+function cleanup(){closePub();ST.pub=false;const p=ON.peer;if(p)setTimeout(()=>p.destroy(),400);ON.peer=null;ON.conn=null;ON.conns={};ON.game=null;ON.players=[];ON.code='';ON.joined=false;lastPhase=''}
 function kickedOut(m){cleanup();go('onhome',{err:m})}
 let lastPhase='';
 function onSet(o){if(!ON.game||ON.game.host!==ON.id)return;Object.assign(ON.game,o);bcast()}
 function bcast(){const m={t:'state',g:ON.game,p:ON.players};Object.values(ON.conns).forEach(c=>c.open&&c.send(m));tick()}
 function onCreate(){const n=readName();if(!n)return;if(!net())return fail('Online play needs an internet connection.');
-const L='ABCDEFGHJKMNPQRSTUVWXYZ';ON.code=Array.from({length:4},()=>pick(L)).join('');
+ST.pub=false;ON.pubNote='';ON.wantPub=false;const L='ABCDEFGHJKMNPQRSTUVWXYZ';ON.code=Array.from({length:4},()=>pick(L)).join('');
 const peer=ON.peer=new Peer('imposter-'+ON.code);let open=false;
 peer.on('error',e=>{if(open)return;if(e.type==='unavailable-id'){peer.destroy();ON.peer=null;return onCreate()}fail('Couldn’t create a lobby. Check your connection.')});
 peer.on('open',()=>{open=true;ON.conns={};ON.players=[{id:ON.id,name:n,vote:null,t:Date.now()}];ON.game={host:ON.id,phase:'lobby',round:0,cfg:cfgOf(),bans:[]};go('online');bcast()});
 peer.on('connection',c=>{c.on('data',m=>hostMsg(c,m));c.on('close',()=>drop(c))})}
 function hostMsg(c,m){const g=ON.game;if(!m||!g)return;
+if(m.t==='info'){const h=ON.players.find(p=>p.id===g.host)||{name:'?'};c.send({t:'info',host:h.name,n:ON.players.length,max:12,cfg:g.cfg,phase:g.phase});setTimeout(()=>c.close(),300);return}
 if(m.t==='join'){const nm=String(m.name||'').trim().slice(0,14),low=nm.toLowerCase(),rej=(t)=>{c.send({t});setTimeout(()=>c.close(),300)};
 if(!nm)return c.close();if((g.bans||[]).includes(low))return rej('banned');if(g.phase!=='lobby')return rej('late');
 if(ON.players.length>=12)return rej('full');if(ON.players.some(p=>p.name.toLowerCase()===low))return rej('dup');
@@ -149,8 +159,9 @@ c.pid=m.id;ON.conns[m.id]=c;ON.players.push({id:m.id,name:nm,vote:null,t:Date.no
 else if(m.t==='vote'&&g.phase==='vote'){const p=ON.players.find(x=>x.id===c.pid);if(p&&ON.players.some(x=>x.id===m.to)){p.vote={r:g.round,to:m.to};bcast()}}
 else if(m.t==='guess'&&g.phase==='guess'&&c.pid===g.caught)onSet({phase:'result',guess:String(m.text||'—').slice(0,40)})}
 function drop(c){if(!c.pid||!ON.conns[c.pid])return;delete ON.conns[c.pid];ON.players=ON.players.filter(p=>p.id!==c.pid);bcast()}
-function onJoin(){const n=readName();if(!n)return;if(!net())return fail('Online play needs an internet connection.');
-const c=document.getElementById('cd').value.trim().toUpperCase();if(c.length<4){S.err='Enter the 4-letter code';return render()}
+function onJoin(){const n=readName();if(!n)return;const c=document.getElementById('cd').value.trim().toUpperCase();if(c.length<3){S.err='Enter the lobby code';return render()}joinWith(c,n)}
+function joinCode(c){joinWith(c,ON.name)}
+function joinWith(c,n){if(!net())return fail('Online play needs an internet connection.');
 ON.code=c;const peer=ON.peer=new Peer();
 const to=setTimeout(()=>{if(!ON.joined)fail('Couldn’t reach that lobby.')},12000);
 peer.on('error',e=>{if(!ON.joined){clearTimeout(to);fail(e.type==='peer-unavailable'?'No lobby with that code':'Couldn’t join that lobby.')}});
@@ -169,14 +180,35 @@ function onVote(to){const g=ON.game;if(g.host===ON.id){const me=ON.players.find(
 function onGuess(){const v=document.getElementById('gs').value.trim()||'—';if(ON.game.host===ON.id)onSet({phase:'result',guess:v});else if(ON.conn)ON.conn.send({t:'guess',text:v})}
 function removeP(id,ban){const c=ON.conns[id],p=ON.players.find(x=>x.id===id);if(!p)return;if(ban)ON.game.bans=[...(ON.game.bans||[]),p.name.toLowerCase()];
 ON.players=ON.players.filter(x=>x.id!==id);delete ON.conns[id];if(c){c.send({t:'kick',ban:!!ban});setTimeout(()=>c.close(),300)}bcast()}
+const PUB_N=30,pad=n=>String(n).padStart(2,'0');
+function closePub(){const p=ON.pubPeer;if(p)setTimeout(()=>p.destroy(),200);ON.pubPeer=null}
+function tryPub(i){if(i>PUB_N){ST.pub=false;ON.pubNote='Public rooms are full right now';return render()}
+const p=new Peer('imposter-P'+pad(i));
+p.on('error',e=>{if(e.type==='unavailable-id'){p.destroy();return tryPub(i+1)}if(ON.pubPeer!==p){p.destroy();ST.pub=false;ON.pubNote='Couldn’t list the room';render()}});
+p.on('open',()=>{if(!ON.wantPub||!ON.game){p.destroy();return}ON.pubPeer=p;ON.pubNote='';cfgSync();render()});
+p.on('connection',c=>{c.on('data',m=>hostMsg(c,m));c.on('close',()=>drop(c))})}
+function setPub(on){if(!ON.game||ON.game.host!==ON.id)return;ON.wantPub=on;ST.pub=on;closePub();
+if(!on){ON.pubNote='';cfgSync();return render()}if(!net()){ST.pub=false;ON.pubNote='Online play needs an internet connection.';return render()}ON.pubNote='Listing…';cfgSync();tryPub(1);render()}
+function roomCard(r){const c=r.cfg||{},full=r.n>=r.max;return`<div class="card"><div class="set" style="margin-bottom:10px"><b style="font-size:17px">${esc(r.host)}’s room</b><button class="pri" style="width:auto;margin:0;padding:10px 20px" ${full?'disabled':''} onclick="joinCode('${r.code}')">${full?'Full':'Join'}</button></div>
+<div style="color:var(--mu);font-size:13px;line-height:1.8">👥 ${r.n}/${r.max} players · ⏱ Timer ${fmt(c.timer||0)} · ${c.imps||1} imposter${(c.imps||1)>1?'s':''}<br>${c.blind?'Blind':'Classic'} mode · Hints ${c.hints===false?'off':'on'} · Guess ${c.guess&&!c.blind?'on':'off'}<br>${(c.packs||[]).map(esc).join(', ')}</div></div>`}
+function onSearch(again){if(!again){const n=readName();if(!n)return}
+if(!net())return fail('Online play needs an internet connection.');
+go('search',{rooms:[],scanning:true});const peer=new Peer(),rooms=[];let done=false;
+const finish=()=>{if(done)return;done=true;try{peer.destroy()}catch(e){}if(S.screen==='search'){S.scanning=false;render()}};
+peer.on('error',()=>{});
+peer.on('open',()=>{for(let i=1;i<=PUB_N;i++){const code='P'+pad(i),conn=peer.connect('imposter-'+code);
+conn.on('open',()=>conn.send({t:'info'}));
+conn.on('data',m=>{if(m&&m.t==='info'&&m.phase==='lobby'){rooms.push({...m,code});rooms.sort((a,b)=>a.code<b.code?-1:1);S.rooms=[...rooms];if(S.screen==='search')render()}})}
+setTimeout(finish,5000)});
+setTimeout(finish,12000)}
 function onKick(id){removeP(id,0)}
 function onBan(id){removeP(id,1)}
 function onLeave(){if(ON.game&&ON.game.host===ON.id)Object.values(ON.conns).forEach(c=>c.open&&c.send({t:'closed'}));cleanup();go('onhome')}
-function onStart(){const P=ON.players,d=draw(),ids=P.map(p=>p.id).sort(()=>Math.random()-.5);onSet({phase:'role',round:(ON.game.round||0)+1,cat:d.cat,word:d.word,imps:ids.slice(0,nImps(P.length)),start:pick(P).id,timer:ST.timer,gOn:ST.guess,guess:'',caught:null,endsAt:0})}
+function onStart(){const P=ON.players,d=draw(),ids=P.map(p=>p.id).sort(()=>Math.random()-.5);onSet({phase:'role',round:(ON.game.round||0)+1,cat:d.cat,word:d.word,imps:ids.slice(0,nImps(P.length)),start:pick(P).id,timer:ST.timer,gOn:ST.guess&&!ST.blind,blind:ST.blind,hints:ST.hints,dword:d.dword,guess:'',caught:null,endsAt:0})}
 function onDisc(){ON._adv=0;onSet({phase:'discuss',endsAt:ON.game.timer?Date.now()+ON.game.timer*1000:0})}
-const cfgOf=()=>({timer:ST.timer,imps:ST.imps,guess:ST.guess,packs:[...ST.packs]});
+const cfgOf=()=>({timer:ST.timer,imps:ST.imps,guess:ST.guess,blind:ST.blind,hints:ST.hints,pub:ST.pub,packs:[...ST.packs]});
 function cfgSync(){const g=ON.game;if(g&&g.host===ON.id&&g.phase==='lobby')onSet({cfg:cfgOf()})}
-const cfgView=(c,n)=>{c=c||{};return`<div class="card"><div class="lbl" style="margin-bottom:12px">Host settings</div><div class="set"><span>Discussion timer</span><b>${fmt(c.timer||0)}</b></div><div class="set"><span>Imposters</span><b>${Math.min(c.imps||1,maxImps(n))}</b></div><div class="set"><span>Imposter guess</span><b>${c.guess?'On':'Off'}</b></div><div style="color:var(--mu);font-size:13px;margin:4px 0 8px">Word packs</div>${(c.packs||[]).map(x=>`<span class="pk on">${esc(x)}</span>`).join('')}</div>`};
+const cfgView=(c,n)=>{c=c||{};return`<div class="card"><div class="lbl" style="margin-bottom:12px">Host settings</div><div class="set"><span>Discussion timer</span><b>${fmt(c.timer||0)}</b></div><div class="set"><span>Imposters</span><b>${Math.min(c.imps||1,maxImps(n))}</b></div><div class="set"><span>Imposter guess</span><b>${c.guess&&!c.blind?'On':'Off'}</b></div><div class="set"><span>Game mode</span><b>${c.blind?'Blind':'Classic'}</b></div><div class="set"><span>Hints</span><b>${c.hints===false?'Off':'On'}</b></div><div class="set"><span>Room</span><b>${c.pub?'Public':'Private'}</b></div><div style="color:var(--mu);font-size:13px;margin:4px 0 8px">Word packs</div>${(c.packs||[]).map(x=>`<span class="pk on">${esc(x)}</span>`).join('')}</div>`};
 const pCtl=(p,host)=>host&&p.id!==ON.id?`<span><button class="mini" onclick="onKick('${p.id}')">Kick</button><button class="mini bn" onclick="onBan('${p.id}')">Ban</button></span>`:'';
 function tally(){const g=ON.game,t={};ON.players.filter(p=>p.vote&&p.vote.r===g.round).forEach(p=>t[p.vote.to]=(t[p.vote.to]||0)+1);const mx=Math.max(0,...Object.values(t)),top=Object.keys(t).filter(k=>t[k]===mx);return{t,top,caught:top.length===1&&g.imps.includes(top[0])?top[0]:null}}
 setInterval(()=>{const el=document.getElementById('tm');if(!el)return;const end=S.screen==='ppdiscuss'?PP.end:(ON.game&&ON.game.endsAt);if(!end)return;const l=Math.max(0,Math.ceil((end-Date.now())/1000));el.textContent=l?Math.floor(l/60)+':'+String(l%60).padStart(2,'0'):'Time’s up!';el.classList.toggle('up',!l);
